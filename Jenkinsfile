@@ -48,7 +48,7 @@ node('master') {
 	    checkoutSCM(umbrellaGitUrl, "xtext-umbrella")
 		
 	    //sh("find . -type d -exec chmod 777 {} \\;")
-	    //sh("find . -type f -exec chmod 777 {} \\;")
+	    sh("find . -type f -exec chmod 777 {} \\;")
             //int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
             //if (isBranchExist!=0){
             //   createGitBranch("xtext-extras", branchName)
