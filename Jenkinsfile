@@ -58,18 +58,17 @@ node('master') {
 	
 	stage('Adjust_Pipeline') {
 	    //dir('xtext-umbrella') { 
-	    sh("cd  ${workspace}/xtext-umbrella")
-	    sh """
+	     sh """
 	     pwd
 	     ls -la
 	     export XTEXT_VERSION=${xtextVersion}
              export BRANCHNAME=${releaseType}_${xtextVersion}
              export TAGNAME=v${xtextVersion}   
 	    """
-	    sh('xtext-umbrella/gitAll reset --hard')
-	    sh('xtext-umbrella/gitAll pull')
-	    sh('xtext-umbrella/gitAll checkout -b $BRANCHNAME')
-	    sh('xtext-umbrella/adjustPipelines.sh $BRANCHNAME')
+	    sh('gitAll reset --hard')
+	    sh('gitAll pull')
+	    sh('gitAll checkout -b $BRANCHNAME')
+	    sh('adjustPipelines.sh $BRANCHNAME')
 	    //}
 	    
 
