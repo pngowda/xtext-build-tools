@@ -58,6 +58,7 @@ node('master') {
 	    //dir('xtext-umbrella') { 
 	    sh("cd  ${workspace}/xtext-umbrella")
 	    sh """
+	     ls -la
 	     export XTEXT_VERSION=${xtextVersion}
              export BRANCHNAME=${releaseType}_${xtextVersion}
              export TAGNAME=v${xtextVersion}   
