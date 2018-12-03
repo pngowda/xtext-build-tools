@@ -56,7 +56,7 @@ node('master') {
 	
 	stage('Adjust_Pipeline') {
 	    //dir('xtext-umbrella') { 
-	    sh('pushd  ${workspace}/xtext-umbrella')
+	    sh('cd  ${workspace}/xtext-umbrella')
 	    sh """
 	     export XTEXT_VERSION=${xtextVersion}
              export BRANCHNAME=${releaseType}_${xtextVersion}
@@ -66,7 +66,7 @@ node('master') {
 	    sh('gitAll pull')
 	    sh('gitAll checkout -b $BRANCHNAME')
 	    sh('adjustPipelines.sh $BRANCHNAME')
-	    sh('popd')
+	    sh('cd ${workspace}')
 	    //}
 	    
 
