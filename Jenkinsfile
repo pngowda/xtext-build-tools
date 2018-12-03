@@ -64,11 +64,10 @@ node('master') {
              export BRANCHNAME=${releaseType}_${xtextVersion}
              export TAGNAME=v${xtextVersion}   
 	    """
-	    sh('gitAll reset --hard')
-	    sh('gitAll pull')
-	    sh('gitAll checkout -b $BRANCHNAME')
-	    sh('adjustPipelines.sh $BRANCHNAME')
-	    sh('cd ${workspace}')
+	    sh('xtext-umbrella/gitAll reset --hard')
+	    sh('xtext-umbrella/gitAll pull')
+	    sh('xtext-umbrella/gitAll checkout -b $BRANCHNAME')
+	    sh('xtext-umbrella/adjustPipelines.sh $BRANCHNAME')
 	    //}
 	    
 
