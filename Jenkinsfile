@@ -13,13 +13,18 @@ node('master') {
 	
 	
 	stage('checkout-all') {
-	    dir("${workspace}/extrasWorkDir") { deleteDir() }
+	    dir("${workspace}/xtext-extras") { deleteDir() }
+	    dir("${workspace}/xtext-web") { deleteDir() }
+		
 	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-            checkoutSCM(extrasGitUrl, "extrasWorkDir")
-            int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
-            if (isBranchExist!=0){
-               createGitBranch("extrasWorkDir", branchName)
-            }
+            def extrasGitUrl="https://github.com/pngowda/xtext-web.git"
+		
+	    checkoutSCM(extrasGitUrl, "xtext-extras")
+            checkoutSCM(extrasGitUrl, "xtext-web")
+            //int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
+            //if (isBranchExist!=0){
+            //   createGitBranch("xtext-extras", branchName)
+            //}
 
 	 }
 
