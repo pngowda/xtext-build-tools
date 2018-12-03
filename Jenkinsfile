@@ -53,7 +53,7 @@ node('master') {
 	 }
 	
 	stage('Adjust_Pipeline') {
-	    dir("${workspace}/xtext-umbrella") {  
+	    dir('${workspace}/xtext-umbrella') {  
 	    sh """
 	     export XTEXT_VERSION=${xtextVersion}
              export BRANCHNAME=${releaseType}_${xtextVersion}
