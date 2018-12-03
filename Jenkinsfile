@@ -64,7 +64,7 @@ node('master') {
 	     export XTEXT_VERSION=${xtextVersion}
              export BRANCHNAME=${releaseType}_${xtextVersion}
              export TAGNAME=v${xtextVersion}   
-	     gitAll reset --hard
+	     ./gitAll reset --hard
 	    """
 	    //sh(/gitAll reset --hard')
 	    //sh('/gitAll pull')
