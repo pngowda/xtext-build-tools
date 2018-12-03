@@ -13,14 +13,36 @@ node('master') {
 	
 	
 	stage('checkout-all') {
+	    dir("${workspace}/xtext-lib") { deleteDir() }
+	    dir("${workspace}/xtext-core") { deleteDir() }
 	    dir("${workspace}/xtext-extras") { deleteDir() }
+	    dir("${workspace}/xtext-eclipse") { deleteDir() }
+	    dir("${workspace}/xtext-idea") { deleteDir() }
 	    dir("${workspace}/xtext-web") { deleteDir() }
+	    dir("${workspace}/xtext-maven") { deleteDir() }
+	    dir("${workspace}/xtext-xtend") { deleteDir() }
+	    dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
+	    def extrasGitUrl="https://github.com/pngowda/xtext-lib.git"
+            def webGitUrl="https://github.com/pngowda/xtext-core.git"
 	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
+            def webGitUrl="https://github.com/pngowda/xtext-eclipse.git"
+	    def extrasGitUrl="https://github.com/pngowda/xtext-idea.git"
             def webGitUrl="https://github.com/pngowda/xtext-web.git"
+	    def extrasGitUrl="https://github.com/pngowda/xtext-maven.git"
+            def webGitUrl="https://github.com/pngowda/xtext-xtend.git"
+	    def webGitUrl="https://github.com/pngowda/xtext-umbrella.git"
 		
+	    checkoutSCM(extrasGitUrl, "xtext-lib")
+            checkoutSCM(webGitUrl, "xtext-core")
 	    checkoutSCM(extrasGitUrl, "xtext-extras")
+            checkoutSCM(webGitUrl, "xtext-eclipse")
+	    checkoutSCM(extrasGitUrl, "xtext-idea")
             checkoutSCM(webGitUrl, "xtext-web")
+	    checkoutSCM(extrasGitUrl, "xtext-maven")
+            checkoutSCM(webGitUrl, "xtext-xtend")
+	    checkoutSCM(webGitUrl, "xtext-umbrella")
+		
             //int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
             //if (isBranchExist!=0){
             //   createGitBranch("xtext-extras", branchName)
