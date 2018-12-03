@@ -4,13 +4,14 @@ if [[ $# -eq 0 ]]; then
     echo "usage: "$0" <git-command>"
     exit 1
 fi
-
+echo "in script gitAll"
 directories=$(./allDirectories)
 for directory in $directories
 do
     directory=$(echo $directory | tr -d '\r')
     echo "Processing $directory"
-    pushd $directory &> /dev/null && git "$@"
+    pushd $directory &> /dev/null 
+    git "$@"
     popd &> /dev/null
     echo
 done
