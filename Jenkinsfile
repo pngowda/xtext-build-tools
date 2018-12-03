@@ -12,7 +12,9 @@ node('master') {
            println tagName
 	   println releaseType
 	
-	
+	stage('Checkout') {
+		checkout scm
+	}
 	
 	stage('Checkout-All') {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
