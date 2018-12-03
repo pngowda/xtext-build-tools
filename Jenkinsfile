@@ -25,25 +25,25 @@ node('master') {
 	    dir("${workspace}/xtext-xtend") { deleteDir() }
 	    dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
-	    def extrasGitUrl="https://github.com/pngowda/xtext-lib.git"
-            def webGitUrl="https://github.com/pngowda/xtext-core.git"
+	    def libGitUrl="https://github.com/pngowda/xtext-lib.git"
+            def coreGitUrl="https://github.com/pngowda/xtext-core.git"
 	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-            def webGitUrl="https://github.com/pngowda/xtext-eclipse.git"
-	    def extrasGitUrl="https://github.com/pngowda/xtext-idea.git"
+            def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
+	    def ideaGitUrl="https://github.com/pngowda/xtext-idea.git"
             def webGitUrl="https://github.com/pngowda/xtext-web.git"
-	    def extrasGitUrl="https://github.com/pngowda/xtext-maven.git"
-            def webGitUrl="https://github.com/pngowda/xtext-xtend.git"
-	    def webGitUrl="https://github.com/pngowda/xtext-umbrella.git"
+	    def mavenGitUrl="https://github.com/pngowda/xtext-maven.git"
+            def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
+	    def umbrellaGitUrl="https://github.com/pngowda/xtext-umbrella.git"
 		
-	    checkoutSCM(extrasGitUrl, "xtext-lib")
-            checkoutSCM(webGitUrl, "xtext-core")
+	    checkoutSCM(libGitUrl, "xtext-lib")
+            checkoutSCM(coreGitUrl, "xtext-core")
 	    checkoutSCM(extrasGitUrl, "xtext-extras")
-            checkoutSCM(webGitUrl, "xtext-eclipse")
-	    checkoutSCM(extrasGitUrl, "xtext-idea")
+            checkoutSCM(eclipseGitUrl, "xtext-eclipse")
+	    checkoutSCM(ideaGitUrl, "xtext-idea")
             checkoutSCM(webGitUrl, "xtext-web")
-	    checkoutSCM(extrasGitUrl, "xtext-maven")
-            checkoutSCM(webGitUrl, "xtext-xtend")
-	    checkoutSCM(webGitUrl, "xtext-umbrella")
+	    checkoutSCM(mavenGitUrl, "xtext-maven")
+            checkoutSCM(xtendGitUrl, "xtext-xtend")
+	    checkoutSCM(umbrellaGitUrl, "xtext-umbrella")
 		
             //int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
             //if (isBranchExist!=0){
