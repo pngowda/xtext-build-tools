@@ -65,10 +65,10 @@ node('master') {
              export BRANCHNAME=${releaseType}_${xtextVersion}
              export TAGNAME=v${xtextVersion}   
 	    """
-	    sh('gitAll reset --hard')
-	    sh('gitAll pull')
-	    sh('gitAll checkout -b $BRANCHNAME')
-	    sh('adjustPipelines.sh $BRANCHNAME')
+	    sh('./gitAll reset --hard')
+	    sh('/gitAll pull')
+	    sh('./gitAll checkout -b $BRANCHNAME')
+	    sh('./adjustPipelines.sh $BRANCHNAME')
 	    //}
 	    
 
