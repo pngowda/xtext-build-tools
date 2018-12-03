@@ -5,14 +5,16 @@ node('master') {
            def xtextVersion="${params.XTEXT_VERSION}"
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
+	   def releaseType="${params.RELEASE_TYPE}"
                                  
            println xtextVersion
            println branchName
            println tagName
+	   println tagNamereleaseType
 	
 	
 	
-	stage('checkout-all') {
+	stage('Checkout-All') {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
 	    dir("${workspace}/xtext-core") { deleteDir() }
 	    dir("${workspace}/xtext-extras") { deleteDir() }
@@ -47,6 +49,22 @@ node('master') {
             //if (isBranchExist!=0){
             //   createGitBranch("xtext-extras", branchName)
             //}
+
+	 }
+	
+	stage('Adjust_Pipeline') {
+	    dir("${workspace}/xtext-umbrella") {  
+	    sh """
+	     export XTEXT_VERSION=${xtextVersion}
+             export BRANCHNAME=${releaseType}_${xtextVersion}
+             export TAGNAME=v${xtextVersion}   
+	    """
+	    sh('gitAll reset --hard')
+	    sh('gitAll pull')
+	    sh('gitAll checkout -b $BRANCHNAME')
+	    sh('adjustPipelines.sh $BRANCHNAME')
+	    }
+	    
 
 	 }
 
