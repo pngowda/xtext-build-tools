@@ -17,10 +17,10 @@ node('master') {
 	    dir("${workspace}/xtext-web") { deleteDir() }
 		
 	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-            def extrasGitUrl="https://github.com/pngowda/xtext-web.git"
+            def webGitUrl="https://github.com/pngowda/xtext-web.git"
 		
 	    checkoutSCM(extrasGitUrl, "xtext-extras")
-            checkoutSCM(extrasGitUrl, "xtext-web")
+            checkoutSCM(webGitUrl, "xtext-web")
             //int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
             //if (isBranchExist!=0){
             //   createGitBranch("xtext-extras", branchName)
