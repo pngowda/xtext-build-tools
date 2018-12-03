@@ -10,7 +10,7 @@ node('master') {
            println xtextVersion
            println branchName
            println tagName
-	   println tagNamereleaseType
+	   println releaseType
 	
 	
 	
