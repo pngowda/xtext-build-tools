@@ -90,27 +90,15 @@ node('master') {
 	 }
 	
 	stage('Adjust_Pipeline') {
-		withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-	    //dir('xtext-umbrella') { 
-	     sh """
+	   withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+	   sh """
 	     pwd
 	     ls -la
-	     export XTEXT_VERSION=${xtextVersion}
-             export BRANCHNAME=${releaseType}_${xtextVersion}
-             export TAGNAME=v${xtextVersion}   
-	     ./gitAll reset --hard
-	     ./gitAll pull
-	     ./gitAll checkout -b $BRANCHNAME
 	     ./adjustPipelines.sh $BRANCHNAME
-	    """
-	    //sh(/gitAll reset --hard')
-	    //sh('/gitAll pull')
-	    //sh('./gitAll checkout -b $BRANCHNAME')
+	   """
 	    //sh('./adjustPipelines.sh $BRANCHNAME')
-	    //}
-	    
-		}
-	 }
+	   }
+	}
 
 	
 
