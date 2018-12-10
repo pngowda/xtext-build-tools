@@ -48,9 +48,9 @@ node('master') {
             checkoutSCM(xtendGitUrl, "xtext-xtend")
 	    checkoutSCM(umbrellaGitUrl, "xtext-umbrella")		  
 	    sh("find . -type f -exec chmod 777 {} \\;")
-            int isBranchExist=verifyGitBranch("libGitUrl", branchName)
+            int isBranchExist=verifyGitBranch(libGitUrl, branchName)
             if (isBranchExist!=0){
-               createGitBranch("xtext-extras", branchName)
+               createGitBranch("xtext-lib", branchName)
             }
 	}
 	 }
