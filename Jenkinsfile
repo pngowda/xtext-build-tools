@@ -104,8 +104,7 @@ node('master') {
 	
         }
         stage('prepare_xtext-lib') {
-
-	
+	   gradleVersionUpdate("xtext-lib")
         }
         stage('prepare_xtext-core') {
 
@@ -138,6 +137,16 @@ node('master') {
 
   }
 
+def gradleVersionUpdate(path){
+  def update_cmd
+    dir(path) {
+        update_cmd = sh (
+            script: "sed -i -e "s/version = '2.17.0-SNAPSHOT'/version = '2.17.0'/g" versions.gradle",
+            returnStdout: true
+        ).trim()
+    }
+    return update_cmd
+}
 
 def createGitBranch(path, branch) {
     
@@ -264,6 +273,7 @@ def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
     oldFile.delete()
     newfile.renameTo(oldGradleFile)
 }
+
 
 def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
