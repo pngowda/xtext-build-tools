@@ -99,7 +99,42 @@ node('master') {
 	   }
 	}
 
+     stage('prepare_xtext-umbrella') {
+
 	
+     }
+     stage('prepare_xtext-lib') {
+
+	
+     }
+     stage('prepare_xtext-core') {
+
+	
+     }
+     stage('prepare_xtext-extras') {
+
+	
+     }
+     stage('prepare_xtext-eclipse') {
+
+	
+     }
+     stage('prepare_xtext-idea') {
+
+	
+     }
+     stage('prepare_xtext-web') {
+
+	
+     }
+     stage('prepare_xtext-maven') {
+
+	
+     }
+     stage('prepare_xtext-xtend') {
+
+	
+     }
 
 	
 	
