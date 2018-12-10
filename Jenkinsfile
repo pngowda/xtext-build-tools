@@ -48,32 +48,32 @@ node('master') {
             }
             
             checkoutSCM(coreGitUrl, "xtext-core")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
+            if (verifyGitBranch("xtext-core", branchName)!=0){
                createGitBranch("xtext-core", branchName)
             }
 
             checkoutSCM(extrasGitUrl, "xtext-extras")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
+            if (verifyGitBranch("xtext-extras", branchName)!=0){
                createGitBranch("xtext-extras", branchName)
             }
 
             checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
+            if (verifyGitBranch("xtext-eclipse", branchName)!=0){
                createGitBranch("xtext-eclipse", branchName)
             }
 
             checkoutSCM(ideaGitUrl, "xtext-idea")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
-               createGitBranch("xtext-lib", branchName)
+            if (verifyGitBranch("xtext-idea", branchName)!=0){
+               createGitBranch("xtext-idea", branchName)
             }
 
             checkoutSCM(webGitUrl, "xtext-web")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
+            if (verifyGitBranch("xtext-web", branchName)!=0){
                createGitBranch("xtext-web", branchName)
             }
 
             checkoutSCM(mavenGitUrl, "xtext-maven")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
+            if (verifyGitBranch("xtext-maven", branchName)!=0){
                createGitBranch("xtext-maven", branchName)
             }
 
@@ -83,7 +83,7 @@ node('master') {
             }
 
             checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
+            if (verifyGitBranch("xtext-umbrella", branchName)!=0){
                createGitBranch("xtext-umbrella", branchName)
             }
 	}
