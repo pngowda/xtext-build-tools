@@ -2,21 +2,27 @@ import jenkins.model.*
 import hudson.model.*
 
 node('master') {
+           //def xtextVersionNew="${params.FROM_XTEXT_VERSION}"
+           //def xtextVersionOld="${params.TO_XTEXT_VERSION}"
            def xtextVersion="${params.XTEXT_VERSION}"
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
-                                 
-           println xtextVersion
+           def isBranchExist               
+           
+	   //println xtextVersionNew
+	   //println xtextVersionOld
            println branchName
            println tagName
 	   println releaseType
+
 	
-	stage('Checkout') {
+	stage('checkout_xtext-build-tools') {
 		checkout scm
 	}
 	
-	stage('Checkout-All') {
+	stage('checkout-xtext-repos') {
+	withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
 	    dir("${workspace}/xtext-core") { deleteDir() }
 	    dir("${workspace}/xtext-extras") { deleteDir() }
@@ -28,62 +34,123 @@ node('master') {
 	    dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
 	    def libGitUrl="https://github.com/pngowda/xtext-lib.git"
-            def coreGitUrl="https://github.com/pngowda/xtext-core.git"
+	    def coreGitUrl="https://github.com/pngowda/xtext-core.git"
 	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-            def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
+	    def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
 	    def ideaGitUrl="https://github.com/pngowda/xtext-idea.git"
-            def webGitUrl="https://github.com/pngowda/xtext-web.git"
+	    def webGitUrl="https://github.com/pngowda/xtext-web.git"
 	    def mavenGitUrl="https://github.com/pngowda/xtext-maven.git"
-            def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
+	    def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
 	    def umbrellaGitUrl="https://github.com/pngowda/xtext-umbrella.git"
-		
+	    
+            sh("find . -type f -exec chmod 777 {} \\;")
+            	
 	    checkoutSCM(libGitUrl, "xtext-lib")
+            if (verifyGitBranch("xtext-lib", branchName)!=0){
+               createGitBranch("xtext-lib", branchName)
+            }
+            
             checkoutSCM(coreGitUrl, "xtext-core")
-	    checkoutSCM(extrasGitUrl, "xtext-extras")
-            checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-	    checkoutSCM(ideaGitUrl, "xtext-idea")
-            checkoutSCM(webGitUrl, "xtext-web")
-	    checkoutSCM(mavenGitUrl, "xtext-maven")
-            checkoutSCM(xtendGitUrl, "xtext-xtend")
-	    checkoutSCM(umbrellaGitUrl, "xtext-umbrella")
-		
-	    //sh("find . -type d -exec chmod 777 {} \\;")
-	    sh("find . -type f -exec chmod 777 {} \\;")
-            //int isBranchExist=verifyGitBranch("extrasWorkDir", branchName)
-            //if (isBranchExist!=0){
-            //   createGitBranch("xtext-extras", branchName)
-            //}
+            if (verifyGitBranch("xtext-core", branchName)!=0){
+               createGitBranch("xtext-core", branchName)
+            }
 
+            checkoutSCM(extrasGitUrl, "xtext-extras")
+            if (verifyGitBranch("xtext-extras", branchName)!=0){
+               createGitBranch("xtext-extras", branchName)
+            }
+
+            checkoutSCM(eclipseGitUrl, "xtext-eclipse")
+            if (verifyGitBranch("xtext-eclipse", branchName)!=0){
+               createGitBranch("xtext-eclipse", branchName)
+            }
+
+            checkoutSCM(ideaGitUrl, "xtext-idea")
+            if (verifyGitBranch("xtext-idea", branchName)!=0){
+               createGitBranch("xtext-idea", branchName)
+            }
+
+            checkoutSCM(webGitUrl, "xtext-web")
+            if (verifyGitBranch("xtext-web", branchName)!=0){
+               createGitBranch("xtext-web", branchName)
+            }
+
+            checkoutSCM(mavenGitUrl, "xtext-maven")
+            if (verifyGitBranch("xtext-maven", branchName)!=0){
+               createGitBranch("xtext-maven", branchName)
+            }
+
+            checkoutSCM(xtendGitUrl, "xtext-xtend")
+            if (verifyGitBranch("xtext-lib", branchName)!=0){
+               createGitBranch("xtext-xtend", branchName)
+            }
+
+            checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
+            if (verifyGitBranch("xtext-umbrella", branchName)!=0){
+               createGitBranch("xtext-umbrella", branchName)
+            }
+	}
 	 }
 	
-	stage('Adjust_Pipeline') {
-	    //dir('xtext-umbrella') { 
-	     sh """
+	stage('adjust_pipeline') {
+	   withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+	   sh """
 	     pwd
 	     ls -la
-	     export XTEXT_VERSION=${xtextVersion}
-             export BRANCHNAME=${releaseType}_${xtextVersion}
-             export TAGNAME=v${xtextVersion}   
-	     ./gitAll reset --hard
-	     ./gitAll pull
-	     ./gitAll checkout -b $BRANCHNAME
 	     ./adjustPipelines.sh $BRANCHNAME
-	    """
-	    //sh(/gitAll reset --hard')
-	    //sh('/gitAll pull')
-	    //sh('./gitAll checkout -b $BRANCHNAME')
-	    //sh('./adjustPipelines.sh $BRANCHNAME')
-	    //}
-	    
+	   """
+	   }
+	}
 
-	 }
+        stage('prepare_xtext-umbrella') {
 
 	
+        }
+        stage('prepare_xtext-lib') {
+	   gradleVersionUpdate("xtext-lib", xtextVersion)
+        }
+
+        stage('prepare_xtext-core') {
+           gradleVersionUpdate("xtext-core", xtextVersion)
+        }
+        
+        stage('prepare_xtext-extras') {
+           gradleVersionUpdate("xtext-extras", xtextVersion)
+	}
+        
+        stage('prepare_xtext-eclipse') {
 
 	
+        }
+        
+        stage('prepare_xtext-idea') {
+           gradleVersionUpdate("xtext-idea", xtextVersion)
+	}
+        
+        stage('prepare_xtext-web') {
+           gradleVersionUpdate("xtext-web", xtextVersion)
+	}
+        stage('prepare_xtext-maven') {
+
 	
+        }
+        stage('prepare_xtext-xtend') {
+
+	
+        }
+
+  }
+
+def gradleVersionUpdate(path,xtext_version){
+  def update_cmd
+    dir(path) {
+        update_cmd = sh (
+            script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
+            returnStdout: true
+        ).trim()
+    }
+    return update_cmd
 }
-
 
 def createGitBranch(path, branch) {
     
@@ -210,6 +277,7 @@ def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
     oldFile.delete()
     newfile.renameTo(oldGradleFile)
 }
+
 
 def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
