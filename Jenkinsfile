@@ -141,7 +141,7 @@ def gradleVersionUpdate(path){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "sed -i -e \"s/version = '2.17.0-SNAPSHOT'/version = '2.17.0'/g\" versions.gradle",
+            script: "sed -i -e \"s/version = '2.17.0-SNAPSHOT'/version = '2.17.0'/g\" gradle/versions.gradle",
             returnStdout: true
         ).trim()
     }
