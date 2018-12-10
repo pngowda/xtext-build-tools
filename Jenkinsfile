@@ -17,6 +17,7 @@ node('master') {
 	}
 	
 	stage('Checkout-All') {
+	withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
 	    dir("${workspace}/xtext-core") { deleteDir() }
 	    dir("${workspace}/xtext-extras") { deleteDir() }
@@ -51,10 +52,11 @@ node('master') {
             if (isBranchExist!=0){
                createGitBranch("xtext-extras", branchName)
             }
-
+	}
 	 }
 	
 	stage('Adjust_Pipeline') {
+		withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	    //dir('xtext-umbrella') { 
 	     sh """
 	     pwd
@@ -73,7 +75,7 @@ node('master') {
 	    //sh('./adjustPipelines.sh $BRANCHNAME')
 	    //}
 	    
-
+		}
 	 }
 
 	
