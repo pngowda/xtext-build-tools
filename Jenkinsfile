@@ -14,11 +14,11 @@ node('master') {
 	   println releaseType
 
 	
-	stage('Checkout') {
+	stage('checkout_xtext-build-tools') {
 		checkout scm
 	}
 	
-	stage('Checkout-All') {
+	stage('checkout-xtext-repos') {
 	withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
 	    dir("${workspace}/xtext-core") { deleteDir() }
@@ -89,7 +89,7 @@ node('master') {
 	}
 	 }
 	
-	stage('Adjust_Pipeline') {
+	stage('adjust_pipeline') {
 	   withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	   sh """
 	     pwd
