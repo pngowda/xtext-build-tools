@@ -6,7 +6,7 @@ node('master') {
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
-           int isBranchExist               
+           def isBranchExist               
            
 	   println xtextVersion
            println branchName
