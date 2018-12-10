@@ -2,13 +2,16 @@ import jenkins.model.*
 import hudson.model.*
 
 node('master') {
+           //def xtextVersionNew="${params.FROM_XTEXT_VERSION}"
+           //def xtextVersionOld="${params.TO_XTEXT_VERSION}"
            def xtextVersion="${params.XTEXT_VERSION}"
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
            def isBranchExist               
            
-	   println xtextVersion
+	   //println xtextVersionNew
+	   //println xtextVersionOld
            println branchName
            println tagName
 	   println releaseType
@@ -104,28 +107,29 @@ node('master') {
 	
         }
         stage('prepare_xtext-lib') {
-	   gradleVersionUpdate("xtext-lib")
+	   gradleVersionUpdate("xtext-lib", xtextVersion)
         }
+
         stage('prepare_xtext-core') {
-
-	
+           gradleVersionUpdate("xtext-core", xtextVersion)
         }
+        
         stage('prepare_xtext-extras') {
-
-	
-        }
+           gradleVersionUpdate("xtext-extras", xtextVersion)
+	}
+        
         stage('prepare_xtext-eclipse') {
 
 	
         }
+        
         stage('prepare_xtext-idea') {
-
-	
-        }
+           gradleVersionUpdate("xtext-idea", xtextVersion)
+	}
+        
         stage('prepare_xtext-web') {
-
-	
-        }
+           gradleVersionUpdate("xtext-web", xtextVersion)
+	}
         stage('prepare_xtext-maven') {
 
 	
@@ -137,11 +141,11 @@ node('master') {
 
   }
 
-def gradleVersionUpdate(path){
+def gradleVersionUpdate(path,xtext_version){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "sed -i -e \"s/version = '2.17.0-SNAPSHOT'/version = '2.17.0'/g\" gradle/versions.gradle",
+            script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
             returnStdout: true
         ).trim()
     }
