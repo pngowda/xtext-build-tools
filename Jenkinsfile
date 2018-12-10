@@ -29,13 +29,13 @@ node('master') {
 	    dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
 	    def libGitUrl="https://github.com/pngowda/xtext-lib.git"
-            def coreGitUrl="https://github.com/pngowda/xtext-core.git"
+	    def coreGitUrl="https://github.com/pngowda/xtext-core.git"
 	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-            def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
+	    def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
 	    def ideaGitUrl="https://github.com/pngowda/xtext-idea.git"
-            def webGitUrl="https://github.com/pngowda/xtext-web.git"
+	    def webGitUrl="https://github.com/pngowda/xtext-web.git"
 	    def mavenGitUrl="https://github.com/pngowda/xtext-maven.git"
-            def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
+	    def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
 	    def umbrellaGitUrl="https://github.com/pngowda/xtext-umbrella.git"
 	    
             sh("find . -type f -exec chmod 777 {} \\;")
