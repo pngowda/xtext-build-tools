@@ -6,11 +6,13 @@ node('master') {
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
-                                 
-           println xtextVersion
+           int isBranchExist               
+           
+	   println xtextVersion
            println branchName
            println tagName
 	   println releaseType
+
 	
 	stage('Checkout') {
 		checkout scm
@@ -41,55 +43,55 @@ node('master') {
             sh("find . -type f -exec chmod 777 {} \\;")
             	
 	    checkoutSCM(libGitUrl, "xtext-lib")
-            int isBranchExist=verifyGitBranch("xtext-lib", branchName)
+            isBranchExist=verifyGitBranch("xtext-lib", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-lib", branchName)
             }
             
             checkoutSCM(coreGitUrl, "xtext-core")
-            int isBranchExist=verifyGitBranch("xtext-core", branchName)
+            isBranchExist=verifyGitBranch("xtext-core", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-core", branchName)
             }
 
             checkoutSCM(extrasGitUrl, "xtext-extras")
-            int isBranchExist=verifyGitBranch("xtext-extras", branchName)
+            isBranchExist=verifyGitBranch("xtext-extras", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-extras", branchName)
             }
 
             checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-            int isBranchExist=verifyGitBranch("xtext-eclipse", branchName)
+            isBranchExist=verifyGitBranch("xtext-eclipse", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-eclipse", branchName)
             }
 
             checkoutSCM(ideaGitUrl, "xtext-idea")
-            int isBranchExist=verifyGitBranch("xtext-idea", branchName)
+            isBranchExist=verifyGitBranch("xtext-idea", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-lib", branchName)
             }
 
             checkoutSCM(webGitUrl, "xtext-web")
-            int isBranchExist=verifyGitBranch("xtext-web", branchName)
+            isBranchExist=verifyGitBranch("xtext-web", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-web", branchName)
             }
 
             checkoutSCM(mavenGitUrl, "xtext-maven")
-            int isBranchExist=verifyGitBranch("xtext-maven", branchName)
+            isBranchExist=verifyGitBranch("xtext-maven", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-maven", branchName)
             }
 
             checkoutSCM(xtendGitUrl, "xtext-xtend")
-            int isBranchExist=verifyGitBranch("xtext-xtend", branchName)
+            isBranchExist=verifyGitBranch("xtext-xtend", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-xtend", branchName)
             }
 
             checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
-            int isBranchExist=verifyGitBranch("xtext-umbrella", branchName)
+            isBranchExist=verifyGitBranch("xtext-umbrella", branchName)
             if (isBranchExist!=0){
                createGitBranch("xtext-umbrella", branchName)
             }
