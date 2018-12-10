@@ -44,7 +44,7 @@ node('master') {
             	
 	    checkoutSCM(libGitUrl, "xtext-lib")
             isBranchExist=verifyGitBranch("xtext-lib", branchName)
-            if (isBranchExist!=0){
+            if (verifyGitBranch("xtext-lib", branchName)!=0){
                createGitBranch("xtext-lib", branchName)
             }
             
