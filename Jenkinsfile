@@ -96,7 +96,6 @@ node('master') {
 	     ls -la
 	     ./adjustPipelines.sh $BRANCHNAME
 	   """
-	    //sh('./adjustPipelines.sh $BRANCHNAME')
 	   }
 	}
 
