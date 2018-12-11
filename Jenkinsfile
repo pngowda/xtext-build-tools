@@ -119,7 +119,6 @@ node('master') {
 	}
         
         stage('prepare_xtext-eclipse') {
-
 	
         }
         
@@ -130,15 +129,14 @@ node('master') {
         stage('prepare_xtext-web') {
            gradleVersionUpdate("xtext-web", xtextVersion)
 	}
-        stage('prepare_xtext-maven') {
 
+        stage('prepare_xtext-maven') {
 	
         }
+
         stage('prepare_xtext-xtend') {
 
-	
         }
-
   }
 
 def gradleVersionUpdate(path,xtext_version){
