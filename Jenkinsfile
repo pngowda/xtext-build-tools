@@ -147,6 +147,11 @@ node('master') {
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
         }
+
+        stage('Commit_GIT_Changes') {
+	   commitAll("xtext-umbrella")
+        }
+
   }
 
 def gradleVersionUpdate(path,xtext_version){
@@ -348,6 +353,17 @@ def pushGitChanges(path, branch = 'master', remote = 'origin', credentialsId = n
      }
 }
 
+def commitAll(path) {
+    
+    def git_cmd
+    dir(path) {
+        git_cmd = sh (
+            script: "./gitAll commit -a -m "[release] version $XTEXT_VERSION"",
+            returnStdout: true
+        ).trim()
+    }
+    return git_cmd
+}
 
 def getGitCommit() {
     git_commit = sh (
