@@ -170,7 +170,7 @@ def pomVersionUpdate(path,xtext_version){
     dir(path) {
         update_cmd = sh (
             //script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
-            script: "sed -i \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\" *",
+            script: "find ./ -type f -exec sed -ie \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\" {} \;",
             returnStdout: true
         ).trim()
     }
