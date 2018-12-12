@@ -243,7 +243,7 @@ def readWriteParentMavenVersion2(pomFile){
    //new XmlNodePrinter(new PrintWriter(new FileWriter("${workspace}/extrasWorkDir/pom.xml"))).print(pom)
 
 
-    //writeMavenPom model:pom, file: pomFile
+    writeMavenPom model:pom, file: pomFile
     
 }
 
