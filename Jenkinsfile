@@ -228,7 +228,7 @@ def readWriteParentMavenVersion2(pomFile){
     //def pom = new XmlSlurper().parse(pomFile)
  
     def xmlFromFile = new File(pomFile)
-    def pom = new XmlSlurper().parseText(xmlFromFile.getText())
+    def pom = new XmlSlurper( false, false ).parseText(xmlFromFile.getText())
 
     pom.dependencies.dependency.each { dependency ->
         //println "${dependency.groupId} ${dependency.artifactId} ${dependency.version}"
