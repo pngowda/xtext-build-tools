@@ -139,7 +139,11 @@ node('master') {
         }
 
         stage('prepare_xtext-xtend') {
-
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
         }
   }
 
@@ -176,6 +180,16 @@ def pomVersionUpdate(path,xtext_version){
     return update_cmd
 }
 
+def xtextXtendPomVersionUpdate(path,xtext_version, pomFile){
+  def update_cmd
+    dir(path) {
+        update_cmd = sh (
+            script: "sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\" ${pomFile}",
+	    returnStdout: true
+        ).trim()
+    }
+    return update_cmd
+}
 
 def createGitBranch(path, branch) {
     
