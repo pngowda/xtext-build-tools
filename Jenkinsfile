@@ -169,7 +169,7 @@ def pomVersionUpdate(path,xtext_version){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\""
+            script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\"",
 	    returnStdout: true
         ).trim()
     }
