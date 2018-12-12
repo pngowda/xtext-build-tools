@@ -104,7 +104,7 @@ node('master') {
 	}
 
         stage('prepare_xtext-umbrella') {
-            xtextXtendPomVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
+            pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 
 	
         }
@@ -175,6 +175,17 @@ def pomVersionUpdate(path,xtext_version){
     dir(path) {
         update_cmd = sh (
             script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\"",
+	    returnStdout: true
+        ).trim()
+    }
+    return update_cmd
+}
+
+def pomZipVersionUpdate(path,xtext_version, pomFile){
+  def update_cmd
+    dir(path) {
+        update_cmd = sh (
+            script: "sed -i -e \"s/tofile=*repository-${xtext_version}-SNAPSHOT.zip/tofile=*repository-${xtext_version}.zip/g\" ${pomFile}",
 	    returnStdout: true
         ).trim()
     }
