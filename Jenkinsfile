@@ -169,9 +169,8 @@ def pomVersionUpdate(path,xtext_version){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            //script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
-            script: "find ./ -type f -exec sed -ie \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\" *.xml",
-            returnStdout: true
+            script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\""
+	    returnStdout: true
         ).trim()
     }
     return update_cmd
