@@ -234,16 +234,16 @@ def readWriteParentMavenVersion2(pomFile){
     }
 
 
-    pom.dependencies.dependency.each { dependency ->
-        println dependency.version
-    }
+    //pom.dependencies.dependency.each { dependency ->
+      //  println dependency.version
+    //}
 
 
    //println pom
-   //new XmlNodePrinter(new PrintWriter(new FileWriter("${workspace}/extrasWorkDir/pom.xml"))).print(pom)
+   new XmlNodePrinter(new PrintWriter(new FileWriter(pomFile))).print(pom)
 
 
-    writeMavenPom model:pom, file: pomFile
+    //writeMavenPom model:pom, file: pomFile
     
 }
 
