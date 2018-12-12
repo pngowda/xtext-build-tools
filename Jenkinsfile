@@ -135,7 +135,7 @@ node('master') {
 	}
 
         stage('prepare_xtext-maven') {
-	
+	   pomVersionUpdate("xtext-maven", xtextVersion)
         }
 
         stage('prepare_xtext-xtend') {
@@ -164,6 +164,19 @@ def changePomDependencyVersion(pomFile){
     XmlUtil xmlUtil = new XmlUtil()
     xmlUtil.serialize(pom, new FileWriter(xmlFromFile))
 }
+
+def pomVersionUpdate(path,xtext_version){
+  def update_cmd
+    dir(path) {
+        update_cmd = sh (
+            //script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
+            script: "sed -i \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\" *",
+            returnStdout: true
+        ).trim()
+    }
+    return update_cmd
+}
+
 
 def createGitBranch(path, branch) {
     
