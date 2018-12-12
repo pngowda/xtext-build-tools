@@ -239,7 +239,7 @@ def readWriteParentMavenVersion2(pomFile){
     //}
 
 
-   //println pom
+   println pom
    new XmlNodePrinter(new PrintWriter(new FileWriter(pomFile))).print(pom)
 
 
