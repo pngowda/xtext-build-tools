@@ -109,15 +109,17 @@ node('master') {
         }
         stage('prepare_xtext-lib') {
 	   gradleVersionUpdate("xtext-lib", xtextVersion)
-           readWriteParentMavenVersion2("$workspace/xtext-lib/releng/pom.xml")
+           changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
         }
 
         stage('prepare_xtext-core') {
            gradleVersionUpdate("xtext-core", xtextVersion)
+           changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
         }
         
         stage('prepare_xtext-extras') {
            gradleVersionUpdate("xtext-extras", xtextVersion)
+           changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
 	}
         
         stage('prepare_xtext-eclipse') {
@@ -150,6 +152,17 @@ def gradleVersionUpdate(path,xtext_version){
         ).trim()
     }
     return update_cmd
+}
+
+def changePomDependencyVersion(pomFile){
+    println "Pom File to process: "+pomFile
+    def xmlFromFile = new File(pomFile)
+    def pom = new XmlSlurper( false, false ).parseText(xmlFromFile.getText())
+    pom.dependencies.dependency.each { dependency ->
+       pom.dependencies.dependency.version="${dependency.version}".replace("-SNAPSHOT", "")
+    }
+    XmlUtil xmlUtil = new XmlUtil()
+    xmlUtil.serialize(pom, new FileWriter(xmlFromFile))
 }
 
 def createGitBranch(path, branch) {
@@ -220,38 +233,7 @@ def modifyPomVersions(){
    // }
     //return gitRemote
 }
-def readWriteParentMavenVersion2(pomFile){
-    println "Pom File to process: "+pomFile
-    //pom = readMavenPom file: pomFile
-    
-    
-    //def pom = new XmlSlurper().parse(pomFile)
- 
-    def xmlFromFile = new File(pomFile)
-    def pom = new XmlSlurper( false, false ).parseText(xmlFromFile.getText())
 
-    pom.dependencies.dependency.each { dependency ->
-        //println "${dependency.groupId} ${dependency.artifactId} ${dependency.version}"
-        //println "${dependency.version}".replace("-SNAPSHOT", "")
-        //println dependency.version
-        pom.dependencies.dependency.version="${dependency.version}".replace("-SNAPSHOT", "")
-    }
-
-
-    //pom.dependencies.dependency.each { dependency ->
-      //  println dependency.version
-    //}
-
-
-   println pom
-   //new XmlNodePrinter(new PrintWriter(new FileWriter(pomFile))).print(pom)
-   
-   XmlUtil xmlUtil = new XmlUtil()
-   xmlUtil.serialize(pom, new FileWriter(xmlFromFile))
-
-   //writeMavenPom model:pom, file: pomFile
-    
-}
 
 def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
     
