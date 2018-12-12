@@ -185,7 +185,7 @@ def pomZipVersionUpdate(path,xtext_version, pomFile){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "sed -i -e \'s/tofile=.*repository-${xtext_version}-SNAPSHOT.zip/tofile=.*repository-${xtext_version}.zip/g\' ${pomFile}",
+            script: "sed -i -e \'s/tofile=\(.*\)repository-${xtext_version}-SNAPSHOT.zip/tofile=\\1repository-${xtext_version}.zip/g\' ${pomFile}",
 	    returnStdout: true
         ).trim()
     }
