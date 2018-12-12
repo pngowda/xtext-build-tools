@@ -1,5 +1,6 @@
 import jenkins.model.*
 import hudson.model.*
+import groovy.xml.XmlUtil
 
 node('master') {
            //def xtextVersionNew="${params.FROM_XTEXT_VERSION}"
@@ -224,8 +225,11 @@ def readWriteParentMavenVersion2(pomFile){
     //pom = readMavenPom file: pomFile
     
     
-    def pom = new XmlSlurper().parse(pomFile)
+    //def pom = new XmlSlurper().parse(pomFile)
  
+    def xmlFromFile = new File(pomFile)
+    def pom = new XmlSlurper().parseText(xmlFromFile.getText())
+
     pom.dependencies.dependency.each { dependency ->
         //println "${dependency.groupId} ${dependency.artifactId} ${dependency.version}"
         //println "${dependency.version}".replace("-SNAPSHOT", "")
@@ -240,10 +244,12 @@ def readWriteParentMavenVersion2(pomFile){
 
 
    println pom
-   new XmlNodePrinter(new PrintWriter(new FileWriter(pomFile))).print(pom)
+   //new XmlNodePrinter(new PrintWriter(new FileWriter(pomFile))).print(pom)
+   
+   XmlUtil xmlUtil = new XmlUtil()
+   xmlUtil.serialize(pom, new FileWriter(xmlFromFile))
 
-
-    //writeMavenPom model:pom, file: pomFile
+   //writeMavenPom model:pom, file: pomFile
     
 }
 
