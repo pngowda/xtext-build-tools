@@ -104,6 +104,7 @@ node('master') {
 	}
 
         stage('prepare_xtext-umbrella') {
+            xtextXtendPomVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 
 	
         }
