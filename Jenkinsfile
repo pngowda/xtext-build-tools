@@ -108,7 +108,7 @@ node('master') {
         }
         stage('prepare_xtext-lib') {
 	   gradleVersionUpdate("xtext-lib", xtextVersion)
-           readWriteParentMavenVersion2("xtext-lib/releng/pom.xml")
+           readWriteParentMavenVersion2("$workspace/xtext-lib/releng/pom.xml")
         }
 
         stage('prepare_xtext-core') {
