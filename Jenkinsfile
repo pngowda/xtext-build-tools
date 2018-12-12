@@ -3,20 +3,20 @@ import hudson.model.*
 import groovy.xml.XmlUtil
 
 node('master') {
-           //def xtextVersionNew="${params.FROM_XTEXT_VERSION}"
-           //def xtextVersionOld="${params.TO_XTEXT_VERSION}"
            def snapshotVersion="${params.SNAPSHOT_VERSION}"
            def xtextVersion=snapshotVersion.split('_')[0]
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
+           def variant="${params.VARIANT}"
            def isBranchExist               
            
-	   //println xtextVersionNew
+           println snapshotVersion
 	   println xtextVersion
            println branchName
            println tagName
 	   println releaseType
+           println variant
 
 	
 	stage('checkout_xtext-build-tools') {
