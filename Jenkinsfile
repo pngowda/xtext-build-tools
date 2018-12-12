@@ -5,14 +5,15 @@ import groovy.xml.XmlUtil
 node('master') {
            //def xtextVersionNew="${params.FROM_XTEXT_VERSION}"
            //def xtextVersionOld="${params.TO_XTEXT_VERSION}"
-           def xtextVersion="${params.XTEXT_VERSION}"
+           def snapshotVersion="${params.SNAPSHOT_VERSION}"
+           def xtextVersion=snapshotVersion.split('_')[0]
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
            def isBranchExist               
            
 	   //println xtextVersionNew
-	   //println xtextVersionOld
+	   println xtextVersion
            println branchName
            println tagName
 	   println releaseType
@@ -106,8 +107,8 @@ node('master') {
         stage('prepare_xtext-umbrella') {
             pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 
-	
-        }
+	}
+        
         stage('prepare_xtext-lib') {
 	   gradleVersionUpdate("xtext-lib", xtextVersion)
            changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
