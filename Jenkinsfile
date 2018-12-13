@@ -287,14 +287,14 @@ def getGitRemote(name = '', type = 'fetch') {
 }
 
 def pushGitChanges(path, branch, credentialsId, remote = 'origin') {
-    def ssh = new com.mirantis.mk.Ssh()
+    def sshgroovy = load 'Ssh.groovy'
     dir(path) {
         if (credentialsId == null) {
             sh script: "git push ${remote} ${branch}"
         }
         else {
-            ssh.prepareSshAgentKey(credentialsId)
-            ssh.runSshAgentCommand("git push ${remote} ${branch}")
+            sshgroovy.prepareSshAgentKey(credentialsId)
+            sshgroovy.runSshAgentCommand("git push ${remote} ${branch}")
         }
     }
 }
