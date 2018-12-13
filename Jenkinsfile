@@ -149,13 +149,15 @@ node('master') {
         }
 
         stage('Commit_GIT_Changes') {
-	   //commitAll("xtext-umbrella", xtextVersion)
-           commitGitChanges("xtext-umbrella", "test message")
-           //commitGitChanges("xtext-umbrella", "test message")
-           //commitGitChanges("xtext-umbrella", "test message")
-           //commitGitChanges("xtext-umbrella", "test message")
-           //commitGitChanges("xtext-umbrella", "test message")
-           //commitGitChanges("xtext-umbrella", "test message")
+           commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
+           commitGitChanges("xtext-lib", xtextVersion, "[release] version")
+           commitGitChanges("xtext-core", xtextVersion, "[release] version")
+           commitGitChanges("xtext-extras", xtextVersion, "[release] version")
+           commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
+           commitGitChanges("xtext-idea", xtextVersion, "[release] version")
+           commitGitChanges("xtext-web", xtextVersion, "[release] version")
+           commitGitChanges("xtext-maven", xtextVersion, "[release] version")
+           commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
         }
 
   }
@@ -316,22 +318,21 @@ def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
 }
 
 
-def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
+def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
     dir(path) {
-        //sh "git config --global user.email '${gitEmail}'"
-        //sh "git config --global user.name '${gitName}'"
+        sh "git config --global user.email '${gitEmail}'"
+        sh "git config --global user.name '${gitName}'"
 
         sh(
             script: 'git add -A',
             returnStdout: true
         ).trim()
         git_cmd = sh(
-            script: "git commit -a -m '${message}'",
+            script: "git commit -a -m '${message} ${xtext_version}'",
             returnStdout: true
         ).trim()
-        
-        sh("git diff-index --quiet HEAD || git commit -m '${message}'")
+        sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
     }
     println "retrun statment "+git_cmd
     
