@@ -162,7 +162,7 @@ node('master') {
 
         stage('Push_GIT_Changes') {
            withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-              pushGitChanges("xtext-umbrella", branchName, "pngowda" )
+              pushGitChanges("xtext-umbrella", branchName)
            }
            //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
            //pushGitChanges("xtext-core", xtextVersion, "[release] version")
@@ -286,7 +286,7 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch, credentialsId, remote = 'origin') {
+def pushGitChanges(path, branch, credentialsId=null, remote = 'origin') {
     def sshgroovy = load 'Ssh.groovy'
     dir(path) {
         if (credentialsId == null) {
