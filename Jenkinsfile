@@ -149,7 +149,8 @@ node('master') {
         }
 
         stage('Commit_GIT_Changes') {
-	   commitAll("xtext-umbrella", xtextVersion)
+	   //commitAll("xtext-umbrella", xtextVersion)
+           commitGitChanges("xtext-umbrella", "test message")
         }
 
   }
@@ -313,17 +314,17 @@ def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
 def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
     dir(path) {
-        sh "git config --global user.email '${gitEmail}'"
-        sh "git config --global user.name '${gitName}'"
+        //sh "git config --global user.email '${gitEmail}'"
+        //sh "git config --global user.name '${gitName}'"
 
-        sh(
-            script: 'git add -A',
-            returnStdout: true
-        ).trim()
-        //git_cmd = sh(
-        //    script: "git commit -m '${message}'",
+        //sh(
+         //   script: 'git add -A',
         //    returnStdout: true
         //).trim()
+        git_cmd = sh(
+            script: "git commit -m '${message}'",
+            returnStdout: true
+        ).trim()
         
         sh("git diff-index --quiet HEAD || git commit -m '${message}'")
     }
