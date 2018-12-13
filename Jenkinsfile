@@ -180,7 +180,7 @@ node('master') {
            //pushGitChanges("xtext-xtend", xtextVersion, "[release] version")
        // }
 
-  //}
+ }
 
 
 def gradleVersionUpdate(path,xtext_version){
