@@ -149,7 +149,7 @@ node('master') {
         }
 
         stage('Commit_GIT_Changes') {
-	   commitAll("xtext-umbrella")
+	   commitAll("xtext-umbrella", xtextVersion)
         }
 
   }
@@ -353,7 +353,7 @@ def pushGitChanges(path, branch = 'master', remote = 'origin', credentialsId = n
      }
 }
 
-def commitAll(path) {
+def commitAll(path, xtextVersion) {
     
     def git_cmd
     dir(path) {
