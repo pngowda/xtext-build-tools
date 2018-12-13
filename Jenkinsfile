@@ -322,7 +322,7 @@ def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenki
         //    returnStdout: true
         //).trim()
         git_cmd = sh(
-            script: "git commit -m '${message}'",
+            script: "gitAll commit -a -m '${message}'",
             returnStdout: true
         ).trim()
         
