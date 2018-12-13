@@ -358,7 +358,7 @@ def commitAll(path) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
-            script: "gitAll commit -a -m \"[release] version $XTEXT_VERSION\"",
+            script: "gitAll commit -a -m \"[release] version $xtextVersion\"",
             returnStdout: true
         ).trim()
     }
