@@ -161,7 +161,7 @@ node('master') {
         }
 
         stage('Push_GIT_Changes') {
-           //pushGitChanges("xtext-umbrella", branchName)
+           pushGitChanges("xtext-umbrella", branchName)
            //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
            //pushGitChanges("xtext-core", xtextVersion, "[release] version")
            //pushGitChanges("xtext-extras", xtextVersion, "[release] version")
