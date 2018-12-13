@@ -99,7 +99,7 @@ node('master') {
 	   sh """
 	     pwd
 	     ls -la
-	     ./adjustPipelines.sh $BRANCHNAME
+	     ./adjustPipelines.sh $branchName
 	   """
 	   }
 	}
@@ -158,6 +158,20 @@ node('master') {
            commitGitChanges("xtext-web", xtextVersion, "[release] version")
            commitGitChanges("xtext-maven", xtextVersion, "[release] version")
            commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
+        }
+
+        stage('Push_GIT_Changes') {
+           withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+              pushGitChanges("xtext-umbrella", branchName, adminCred "[release] version")
+           }
+           //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-core", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-extras", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-eclipse", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-idea", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-web", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-maven", xtextVersion, "[release] version")
+           //pushGitChanges("xtext-xtend", xtextVersion, "[release] version")
         }
 
   }
@@ -272,12 +286,17 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch = 'master', remote = 'origin', credentialsId = null) {
+def pushGitChanges(path, branch, credentialsId, remote = 'origin') {
+    def ssh = new com.mirantis.mk.Ssh()
     dir(path) {
         if (credentialsId == null) {
             sh script: "git push ${remote} ${branch}"
         }
-     }
+        else {
+            ssh.prepareSshAgentKey(credentialsId)
+            ssh.runSshAgentCommand("git push ${remote} ${branch}")
+        }
+    }
 }
 
 def getGitCommit() {
