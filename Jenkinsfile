@@ -285,15 +285,8 @@ def getGitRemote(name = '', type = 'fetch') {
 }
 
 def pushGitChanges(path, branch, credentialsId=null, remote = 'origin') {
-    def sshgroovy = load 'Ssh.groovy'
     dir(path) {
-        if (credentialsId == null) {
-            sh script: "git push ${remote} ${branch}"
-        }
-        else {
-            sshgroovy.prepareSshAgentKey(credentialsId)
-            sshgroovy.runSshAgentCommand("git push ${remote} ${branch}")
-        }
+           sh script: "git push ${remote} ${branch}"
     }
 }
 
