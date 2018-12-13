@@ -164,9 +164,11 @@ node('master') {
         stage('Push_GIT_Changes') {
 
 	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'adminCred', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+         dir("xtext-umbrella") {
 	    String encoded_password = java.net.URLEncoder.encode(env.GIT_PASSWORD, "UTF-8")
             sh("git checkout ${branchName}")
 	    sh("git push https://${env.GIT_USERNAME}:${encoded_password}@github.com/${env.GIT_USERNAME}/xtext-umbrella.git")
+          }
 	}
            pushGitChanges("xtext-umbrella", branchName)
            //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
