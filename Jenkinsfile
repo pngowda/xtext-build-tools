@@ -162,7 +162,7 @@ node('master') {
 
         stage('Push_GIT_Changes') {
            withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-              pushGitChanges("xtext-umbrella", branchName, adminCred "[release] version")
+              pushGitChanges("xtext-umbrella", branchName, adminCred )
            }
            //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
            //pushGitChanges("xtext-core", xtextVersion, "[release] version")
