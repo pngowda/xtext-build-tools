@@ -167,9 +167,7 @@ node('master') {
          dir("xtext-umbrella") {
 	    String encoded_password = java.net.URLEncoder.encode(env.GIT_PASSWORD, "UTF-8")
             sh("git checkout ${branchName}")
-            userName="pngowda"
-            password="Dec2017@91"
-	    sh("git push https://${userName}:${password}@github.com/${userName}/xtext-umbrella.git")
+	    sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/xtext-umbrella.git")
           }
 	}
            pushGitChanges("xtext-umbrella", branchName)
