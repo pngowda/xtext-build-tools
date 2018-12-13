@@ -162,6 +162,7 @@ node('master') {
 
   }
 
+
 def gradleVersionUpdate(path,xtext_version){
   def update_cmd
     dir(path) {
@@ -173,6 +174,7 @@ def gradleVersionUpdate(path,xtext_version){
     return update_cmd
 }
 
+
 def changePomDependencyVersion(pomFile){
     println "Pom File to process: "+pomFile
     def xmlFromFile = new File(pomFile)
@@ -183,6 +185,7 @@ def changePomDependencyVersion(pomFile){
     XmlUtil xmlUtil = new XmlUtil()
     xmlUtil.serialize(pom, new FileWriter(xmlFromFile))
 }
+
 
 def pomVersionUpdate(path,xtext_version){
   def update_cmd
@@ -237,86 +240,6 @@ def verifyGitBranch(path, branch) {
     return "${proc1.exitValue()}"
 }
 
-def readWriteMavenVersion(pomFile){
-    println "Pom File to process: "+pomFile
-    pom = readMavenPom file: pomFile
-    
-    println "pom version: "+ pom.version
-    
-    def version = pom.version.replace("-SNAPSHOT", "")
-    pom.version = version
-    println "pom version: "+ pom.version
-    
-    writeMavenPom model:pom, file: pomFile
-    
-}
-
-def readWriteParentMavenVersion(pomFile){
-    println "Pom File to process: "+pomFile
-    pom = readMavenPom file: pomFile
-    
-    println "pom parent version: "+ pom.parent.version
-    
-    def version = pom.parent.version.replace("-SNAPSHOT", "")
-    pom.parent.version = version
-    println "pom parent version: "+ pom.parent.version
-    
-    writeMavenPom model:pom, file: pomFile
-    
-}
-
-def modifyPomVersions(){
-    dir("extrasWorkDir") {
-    //def command = "find ${workspace}/extrasWorkDir/releng/pom.xml | xargs sed"
-    def proc = 'find \"${workspace}\"/extrasWorkDir/releng/pom.xml'.execute() | 'xargs sed -i -e s/2.16.0-SNAPSHOT/2.17.0/g'.execute() 
-    //def proc = command.execute()
-    proc.waitFor()              
-
-    println "Process exit code: ${proc.exitValue()}"
-    println "Std Err: ${proc.err.text}"
-    println "Std Out: ${proc.in.text}" 
-    }
-    
-    //dir("extrasWorkDir") {
-    //gitRemote = sh (
-      //  script: "find ./releng/pom.xml | xargs sed -i -e s/2.16.0-SNAPSHOT/2.17.0/g",
-    //returnStdout: true
-    //).trim()
-   // }
-    //return gitRemote
-}
-
-
-def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
-    
-    println "Parsing Gradle File : "+oldGradleFile
-    println "RegEX: "+regXStr
-    println "Delimiter: "+ deLmr
-    println "Replace String: "+regXRpStr
-
-    File oldFile=new File(oldGradleFile)
-    File newfile = new File(newGradleFile)
-        
-    def lines = oldFile.readLines()
-            
-    lines.each { String line ->
-    //println line
-    //regXStr=regXStr.replaceAll("\\s","")
-    //println line
-    //if(line.startsWith(/\s*'xtext_bootstrap'/)){
-    if(line.matches(/\s*$regXStr.*/)){
-    //if(line.contains(regXStr)){
-        //line=line.replaceAll("\\s","")
-        println "inside if: "+regXStr
-        def values = line.split(deLmr)
-        line=line.replace(values[1],regXRpStr)
-    }
-    newfile.append(line+"\n")
-    }
-    oldFile.delete()
-    newfile.renameTo(oldGradleFile)
-}
-
 
 def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
@@ -339,7 +262,6 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
     return git_cmd
 }
 
-
 def getGitRemote(name = '', type = 'fetch') {
     dir("workDir") {
     gitRemote = sh (
@@ -350,26 +272,12 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-
-
 def pushGitChanges(path, branch = 'master', remote = 'origin', credentialsId = null) {
     dir(path) {
         if (credentialsId == null) {
             sh script: "git push ${remote} ${branch}"
         }
      }
-}
-
-def commitAll(path, xtextVersion) {
-    
-    def git_cmd
-    dir(path) {
-        git_cmd = sh (
-            script: "gitAll commit -a -m \"[release] version $xtextVersion\"",
-            returnStdout: true
-        ).trim()
-    }
-    return git_cmd
 }
 
 def getGitCommit() {
