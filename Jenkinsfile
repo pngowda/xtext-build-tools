@@ -151,6 +151,11 @@ node('master') {
         stage('Commit_GIT_Changes') {
 	   //commitAll("xtext-umbrella", xtextVersion)
            commitGitChanges("xtext-umbrella", "test message")
+           //commitGitChanges("xtext-umbrella", "test message")
+           //commitGitChanges("xtext-umbrella", "test message")
+           //commitGitChanges("xtext-umbrella", "test message")
+           //commitGitChanges("xtext-umbrella", "test message")
+           //commitGitChanges("xtext-umbrella", "test message")
         }
 
   }
@@ -317,12 +322,12 @@ def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenki
         //sh "git config --global user.email '${gitEmail}'"
         //sh "git config --global user.name '${gitName}'"
 
-        //sh(
-         //   script: 'git add -A',
-        //    returnStdout: true
-        //).trim()
+        sh(
+            script: 'git add -A',
+            returnStdout: true
+        ).trim()
         git_cmd = sh(
-            script: "./gitAll commit -a -m '${message}'",
+            script: "git commit -a -m '${message}'",
             returnStdout: true
         ).trim()
         
@@ -330,7 +335,7 @@ def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenki
     }
     println "retrun statment "+git_cmd
     
-    //return git_cmd
+    return git_cmd
 }
 
 
