@@ -161,9 +161,9 @@ node('master') {
            commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
         }
 
-      /*  
+      
       stage('Push_GIT_Changes') {
-
+      /*  
 	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'adminCred', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
          dir("xtext-umbrella") {
 	   String encoded_password = java.net.URLEncoder.encode(env.GIT_PASSWORD, "UTF-8")
@@ -179,9 +179,8 @@ node('master') {
            //pushGitChanges("xtext-web", xtextVersion, "[release] version")
            //pushGitChanges("xtext-maven", xtextVersion, "[release] version")
            //pushGitChanges("xtext-xtend", xtextVersion, "[release] version")
-        }
-     */
-
+      */
+    }
  }
 
 
