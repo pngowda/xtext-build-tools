@@ -291,10 +291,10 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
         sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
 	
 	//print "******** Changes in repo "+path+" >>${workspace}/change.log"
-	sh "echo \"\n#################### Changes in repo ${path} ##################\n \" >> ${workspace}/change.log"
+	sh "echo \"\n#################### Changes in repo ${path} ##################\n \" >> ${workspace}/change.log > /dev/null"
 	sh(
 		script: "git show --name-only HEAD >> ${workspace}/change.log",
-            returnStdout: true
+            returnStdout: false
          ).trim()
     }
     println "retrun statment "+git_cmd
