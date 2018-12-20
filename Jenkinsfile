@@ -151,15 +151,15 @@ node('master') {
         }
 
         stage('Commit_GIT_Changes') {
-           commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
-           commitGitChanges("xtext-lib", xtextVersion, "[release] version")
-           commitGitChanges("xtext-core", xtextVersion, "[release] version")
-           commitGitChanges("xtext-extras", xtextVersion, "[release] version")
-           commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
-           commitGitChanges("xtext-idea", xtextVersion, "[release] version")
-           commitGitChanges("xtext-web", xtextVersion, "[release] version")
-           commitGitChanges("xtext-maven", xtextVersion, "[release] version")
-           commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-lib", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-core", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-extras", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-idea", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-web", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-maven", xtextVersion, "[release] version")
+           //commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
         }
 
       
