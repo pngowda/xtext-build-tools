@@ -290,7 +290,7 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
         ).trim()
         sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
 	sh(
-		script: 'git show --name-only HEAD >> ${workspace}/change.log',
+		script: "git show --name-only HEAD >> ${workspace}/change.log",
             returnStdout: true
          ).trim()
     }
