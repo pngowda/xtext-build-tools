@@ -10,7 +10,8 @@ node('master') {
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
            def variant="${params.VARIANT}"
-           def isBranchExist               
+           def isBranchExist
+	   def baseGitURL='https://github.com/pngowda'
            
            println snapshotVersion
 	   println xtextVersion
@@ -19,15 +20,15 @@ node('master') {
 	   println releaseType
            println variant
 
-	    def libGitUrl="https://github.com/pngowda/xtext-lib.git"
-	    def coreGitUrl="https://github.com/pngowda/xtext-core.git"
-	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-	    def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
-	    def ideaGitUrl="https://github.com/pngowda/xtext-idea.git"
-	    def webGitUrl="https://github.com/pngowda/xtext-web.git"
-	    def mavenGitUrl="https://github.com/pngowda/xtext-maven.git"
-	    def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
-	    def umbrellaGitUrl="https://github.com/pngowda/xtext-umbrella.git"
+	    def libGitUrl=$baseGitURL+'/xtext-lib.git'
+	    def coreGitUrl=$baseGitURL+'xtext-core.git'
+	    def extrasGitUrl=$baseGitURL+'xtext-extras.git'
+	    def eclipseGitUrl=$baseGitURL+'xtext-eclipse.git'
+	    def ideaGitUrl=$baseGitURL+'xtext-idea.git'
+	    def webGitUrl=$baseGitURL+'xtext-web.git'
+	    def mavenGitUrl=$baseGitURL+'xtext-maven.git'
+	    def xtendGitUrl=$baseGitURL+'xtext-xtend.git'
+	    def umbrellaGitUrl=$baseGitURL+'xtext-umbrella.git'
 	
 	stage('checkout_xtext-build-tools') {
 		checkout scm
@@ -106,7 +107,43 @@ node('master') {
 	   }
 	}
 
-        stage('prepare_xtext-umbrella') {
+	stage('release_preparation_xtext-repos') {
+            //preparing xtext-umbrella
+	    pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
+	   
+	    //preparing xtext-lib
+	    gradleVersionUpdate("xtext-lib", xtextVersion)
+            changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
+		
+	    //preparing xtext-core
+	    gradleVersionUpdate("xtext-core", xtextVersion)
+            changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
+	    
+	    //preparing xtext-extras
+	    gradleVersionUpdate("xtext-extras", xtextVersion)
+            changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
+	 
+	    //preparing xtext-eclipse
+	    //Nothing to do here
+		
+	    //preparing xtext-idea
+	    gradleVersionUpdate("xtext-idea", xtextVersion)
+	
+	    //preparing xtext-web
+	    gradleVersionUpdate("xtext-web", xtextVersion)
+	
+	    //preparing xtext-maven
+	    pomVersionUpdate("xtext-maven", xtextVersion)
+	
+	   //preparing xtext-xtend
+	   xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
+           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
+	}
+	
+        /*stage('prepare_xtext-umbrella') {
             pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 
 	}
@@ -149,6 +186,7 @@ node('master') {
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
         }
+	 */
 
         stage('Commit_GIT_Changes') {
            commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
