@@ -302,6 +302,7 @@ def getGitChanges(path) {
           returnStdout: true
       ).trim()
     }
+    print git_changes
     return git_changes
 }
 
