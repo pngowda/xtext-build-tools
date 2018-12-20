@@ -294,7 +294,7 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
 	sh "echo \"\n#################### Changes in repo ${path} ##################\n \" >> ${workspace}/change.log > /dev/null"
 	sh(
 		script: "git show --name-only HEAD >> ${workspace}/change.log",
-            returnStdout: false
+            returnStdout: true
          ).trim()
     }
     println "retrun statment "+git_cmd
