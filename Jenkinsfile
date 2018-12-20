@@ -111,37 +111,45 @@ node('master') {
             //preparing xtext-umbrella
 	    print "##### Preparing xtext-umbrella ########"
 	    pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
+	    getGitChanges("xtext-umbrella")
 	   
 	    //preparing xtext-lib
 	    print "##### Preparing xtext-lib ########"
 	    gradleVersionUpdate("xtext-lib", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
+	    getGitChanges("xtext-lib")
 		
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    gradleVersionUpdate("xtext-core", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
+	    getGitChanges("xtext-core")
 	    
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    gradleVersionUpdate("xtext-extras", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
+	    getGitChanges("xtext-extras")
 	 
 	    //preparing xtext-eclipse
 	    print "##### Preparing xtext-eclipse ########"
 	    //Nothing to do here
+	    getGitChanges("xtext-eclipse")
 		
 	    //preparing xtext-idea
 	    print "##### Preparing xtext-idea ########"
 	    gradleVersionUpdate("xtext-idea", xtextVersion)
+	    getGitChanges("xtext-idea")
 	
 	    //preparing xtext-web
 	    print "##### Preparing xtext-web ########"
 	    gradleVersionUpdate("xtext-web", xtextVersion)
+	    getGitChanges("xtext-web")
 	
 	    //preparing xtext-maven
 	    print "##### Preparing xtext-maven ########"
 	    pomVersionUpdate("xtext-maven", xtextVersion)
+	    getGitChanges("xtext-maven")
 	
 	   //preparing xtext-xtend
 	   print "##### Preparing xtext-xtend ########"
@@ -150,6 +158,7 @@ node('master') {
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
+	   getGitChanges("xtext-xtend")
 	}
 	
         stage('Commit_GIT_Changes') {
@@ -285,6 +294,17 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
     
     return git_cmd
 }
+
+def getGitChanges(path) {
+    dir(path) {
+      git_changes = sh (
+          script: 'git show --name-only HEAD',
+          returnStdout: true
+      ).trim()
+    }
+    return git_changes
+}
+
 
 def getGitRemote(name = '', type = 'fetch') {
     dir("workDir") {
