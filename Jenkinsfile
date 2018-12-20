@@ -3,6 +3,7 @@ import hudson.model.*
 import groovy.xml.XmlUtil
 
 node('master') {
+	   deleteDir()
            def snapshotVersion="${params.SNAPSHOT_VERSION}"
            def xtextVersion=snapshotVersion.split('_')[0]
            def branchName="${params.BRANCHNAME}"
