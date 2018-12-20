@@ -298,7 +298,7 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
 def getGitChanges(path) {
     dir(path) {
       git_changes = sh (
-          script: 'git show --name-only HEAD',
+          script: 'git show --name-only HEAD > change.log',
           returnStdout: true
       ).trim()
     }
