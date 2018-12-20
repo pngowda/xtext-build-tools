@@ -109,33 +109,42 @@ node('master') {
 
 	stage('release_preparation_xtext-repos') {
             //preparing xtext-umbrella
+	    print "##### Preparing xtext-umbrella ########
 	    pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	   
 	    //preparing xtext-lib
+	    print "##### Preparing xtext-lib ########
 	    gradleVersionUpdate("xtext-lib", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
 		
 	    //preparing xtext-core
+	    print "##### Preparing xtext-core ########
 	    gradleVersionUpdate("xtext-core", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
 	    
 	    //preparing xtext-extras
+	    print "##### Preparing xtext-extras ########
 	    gradleVersionUpdate("xtext-extras", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
 	 
 	    //preparing xtext-eclipse
+	    print "##### Preparing xtext-eclipse ########
 	    //Nothing to do here
 		
 	    //preparing xtext-idea
+	    print "##### Preparing xtext-idea ########
 	    gradleVersionUpdate("xtext-idea", xtextVersion)
 	
 	    //preparing xtext-web
+	    print "##### Preparing xtext-web ########
 	    gradleVersionUpdate("xtext-web", xtextVersion)
 	
 	    //preparing xtext-maven
+	    print "##### Preparing xtext-maven ########
 	    pomVersionUpdate("xtext-maven", xtextVersion)
 	
 	   //preparing xtext-xtend
+	   print "##### Preparing xtext-xtend ########
 	   xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
