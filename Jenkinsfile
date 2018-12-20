@@ -5,7 +5,7 @@ import groovy.xml.XmlUtil
 node('master') {
 	   deleteDir()
            def snapshotVersion="${params.SNAPSHOT_VERSION}"
-           def xtextVersion=snapshotVersion.split('_')[0]
+           def xtextVersion=snapshotVersion.split('-')[0]
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
