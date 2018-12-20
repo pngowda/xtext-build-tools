@@ -289,8 +289,10 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
             returnStdout: true
         ).trim()
         sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
+	
+	print "###########Changes in git repo "+path+"\n"
 	sh(
-		script: "git show --name-only HEAD >> ${workspace}/change.log",
+	    script: git show --name-only HEAD >> ${workspace}/change.log",
             returnStdout: true
          ).trim()
     }
