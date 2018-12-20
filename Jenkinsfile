@@ -20,15 +20,15 @@ node('master') {
 	   println releaseType
            println variant
 
-	    def libGitUrl=$baseGitURL+'/xtext-lib.git'
-	    def coreGitUrl=$baseGitURL+'xtext-core.git'
-	    def extrasGitUrl=$baseGitURL+'xtext-extras.git'
-	    def eclipseGitUrl=$baseGitURL+'xtext-eclipse.git'
-	    def ideaGitUrl=$baseGitURL+'xtext-idea.git'
-	    def webGitUrl=$baseGitURL+'xtext-web.git'
-	    def mavenGitUrl=$baseGitURL+'xtext-maven.git'
-	    def xtendGitUrl=$baseGitURL+'xtext-xtend.git'
-	    def umbrellaGitUrl=$baseGitURL+'xtext-umbrella.git'
+	    def libGitUrl=baseGitURL+'/xtext-lib.git'
+	    def coreGitUrl=baseGitURL+'xtext-core.git'
+	    def extrasGitUrl=baseGitURL+'xtext-extras.git'
+	    def eclipseGitUrl=baseGitURL+'xtext-eclipse.git'
+	    def ideaGitUrl=baseGitURL+'xtext-idea.git'
+	    def webGitUrl=baseGitURL+'xtext-web.git'
+	    def mavenGitUrl=baseGitURL+'xtext-maven.git'
+	    def xtendGitUrl=baseGitURL+'xtext-xtend.git'
+	    def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
 	
 	stage('checkout_xtext-build-tools') {
 		checkout scm
