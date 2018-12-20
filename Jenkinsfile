@@ -109,42 +109,42 @@ node('master') {
 
 	stage('release_preparation_xtext-repos') {
             //preparing xtext-umbrella
-	    print "##### Preparing xtext-umbrella ########
+	    print "##### Preparing xtext-umbrella ########"
 	    pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	   
 	    //preparing xtext-lib
-	    print "##### Preparing xtext-lib ########
+	    print "##### Preparing xtext-lib ########"
 	    gradleVersionUpdate("xtext-lib", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
 		
 	    //preparing xtext-core
-	    print "##### Preparing xtext-core ########
+	    print "##### Preparing xtext-core ########"
 	    gradleVersionUpdate("xtext-core", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
 	    
 	    //preparing xtext-extras
-	    print "##### Preparing xtext-extras ########
+	    print "##### Preparing xtext-extras ########"
 	    gradleVersionUpdate("xtext-extras", xtextVersion)
             changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
 	 
 	    //preparing xtext-eclipse
-	    print "##### Preparing xtext-eclipse ########
+	    print "##### Preparing xtext-eclipse ########"
 	    //Nothing to do here
 		
 	    //preparing xtext-idea
-	    print "##### Preparing xtext-idea ########
+	    print "##### Preparing xtext-idea ########"
 	    gradleVersionUpdate("xtext-idea", xtextVersion)
 	
 	    //preparing xtext-web
-	    print "##### Preparing xtext-web ########
+	    print "##### Preparing xtext-web ########"
 	    gradleVersionUpdate("xtext-web", xtextVersion)
 	
 	    //preparing xtext-maven
-	    print "##### Preparing xtext-maven ########
+	    print "##### Preparing xtext-maven ########"
 	    pomVersionUpdate("xtext-maven", xtextVersion)
 	
 	   //preparing xtext-xtend
-	   print "##### Preparing xtext-xtend ########
+	   print "##### Preparing xtext-xtend ########"
 	   xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
@@ -152,51 +152,6 @@ node('master') {
            xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
 	}
 	
-        /*stage('prepare_xtext-umbrella') {
-            pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
-
-	}
-        
-        stage('prepare_xtext-lib') {
-	   gradleVersionUpdate("xtext-lib", xtextVersion)
-           changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
-        }
-
-        stage('prepare_xtext-core') {
-           gradleVersionUpdate("xtext-core", xtextVersion)
-           changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
-        }
-        
-        stage('prepare_xtext-extras') {
-           gradleVersionUpdate("xtext-extras", xtextVersion)
-           changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
-	}
-        
-        stage('prepare_xtext-eclipse') {
-	
-        }
-        
-        stage('prepare_xtext-idea') {
-           gradleVersionUpdate("xtext-idea", xtextVersion)
-	}
-        
-        stage('prepare_xtext-web') {
-           gradleVersionUpdate("xtext-web", xtextVersion)
-	}
-
-        stage('prepare_xtext-maven') {
-	   pomVersionUpdate("xtext-maven", xtextVersion)
-        }
-
-        stage('prepare_xtext-xtend') {
-           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
-           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
-           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
-           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
-           xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
-        }
-	 */
-
         stage('Commit_GIT_Changes') {
            commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
            commitGitChanges("xtext-lib", xtextVersion, "[release] version")
