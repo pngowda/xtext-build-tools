@@ -11,7 +11,7 @@ node('master') {
 	   def releaseType="${params.RELEASE_TYPE}"
            def variant="${params.VARIANT}"
            def isBranchExist
-	   def baseGitURL='https://github.com/pngowda'
+	   def baseGitURL='https://github.com/pngowda/'
            
            println snapshotVersion
 	   println xtextVersion
@@ -20,7 +20,7 @@ node('master') {
 	   println releaseType
            println variant
 
-	    def libGitUrl=baseGitURL+'/xtext-lib.git'
+	    def libGitUrl=baseGitURL+'xtext-lib.git'
 	    def coreGitUrl=baseGitURL+'xtext-core.git'
 	    def extrasGitUrl=baseGitURL+'xtext-extras.git'
 	    def eclipseGitUrl=baseGitURL+'xtext-eclipse.git'
