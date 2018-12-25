@@ -110,7 +110,7 @@ node('master') {
 	stage('release_preparation_xtext-repos') {
             //preparing xtext-umbrella
 	    print "##### Preparing xtext-umbrella ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       println "I am inside"
    	       pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	       getGitChanges("xtext-umbrella")
@@ -118,7 +118,7 @@ node('master') {
 	   
 	    //preparing xtext-lib
 	    print "##### Preparing xtext-lib ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       println "I am inside"
 	       gradleVersionUpdate("xtext-lib", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
@@ -126,44 +126,44 @@ node('master') {
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       gradleVersionUpdate("xtext-core", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
 	       getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       gradleVersionUpdate("xtext-extras", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
 	       getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
 	    print "##### Preparing xtext-eclipse ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       getGitChanges("xtext-eclipse")
 	    }	
 	    //preparing xtext-idea
 	    print "##### Preparing xtext-idea ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       gradleVersionUpdate("xtext-idea", xtextVersion)
 	       getGitChanges("xtext-idea")
 	    }
 	    //preparing xtext-web
 	    print "##### Preparing xtext-web ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       gradleVersionUpdate("xtext-web", xtextVersion)
 	       getGitChanges("xtext-web")
 	    }
 	    //preparing xtext-maven
 	    print "##### Preparing xtext-maven ########"
-	    if(releaseType=="Sprint_Release"){
+	    if(releaseType=="Release"){
 	       pomVersionUpdate("xtext-maven", xtextVersion)
 	       getGitChanges("xtext-maven")
 	    }
 	   //preparing xtext-xtend
 	   print "##### Preparing xtext-xtend ########"
-	   if(releaseType=="Sprint_Release"){
+	   if(releaseType=="Release"){
 	      xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
               xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
               xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
