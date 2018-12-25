@@ -111,15 +111,13 @@ node('master') {
             //preparing xtext-umbrella
 	    print "##### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release"){
-	       println "I am inside"
-   	       pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
+	       pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	       getGitChanges("xtext-umbrella")
 	    }
 	   
 	    //preparing xtext-lib
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release"){
-	       println "I am inside"
 	       gradleVersionUpdate("xtext-lib", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
 	       getGitChanges("xtext-lib")
