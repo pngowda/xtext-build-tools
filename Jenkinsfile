@@ -335,7 +335,7 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch, credentialsId=null, remote = 'origin') {
+def pushGitChanges(path, branch, credentialsId=null, remote = 'git push https://pngowda:8e8435f577f7c3bd30096bb6db2854e71005c5f8@github.com/pngowda/xtext-umbrella.git') {
     dir(path) {
            sh script: "git push ${remote} ${branch}"
     }
