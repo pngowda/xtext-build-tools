@@ -4,6 +4,7 @@ import groovy.xml.XmlUtil
 node('master') {
 
 	   deleteDir()
+	   def pomFunctions = load “pom_changes.groovy”
            def snapshotVersion="${params.SNAPSHOT_VERSION}"
            def xtextVersion=snapshotVersion.split('-')[0]
            def branchName="${params.BRANCHNAME}"
@@ -112,7 +113,7 @@ node('master') {
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
+	       pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	       getGitChanges("xtext-umbrella")
 	    }
 	   
@@ -120,21 +121,21 @@ node('master') {
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-lib", xtextVersion)
-               changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
+               pomFunctions.changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
 	       getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-core", xtextVersion)
-               changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
+               pomFunctions.changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
 	       getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-extras", xtextVersion)
-               changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
+               pomFunctions.changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
 	       getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
@@ -157,7 +158,7 @@ node('master') {
 	    //preparing xtext-maven
 	    print "##### Preparing xtext-maven ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       pomVersionUpdate("xtext-maven", xtextVersion)
+	       pomFunctions.pomVersionUpdate("xtext-maven", xtextVersion)
 	       getGitChanges("xtext-maven")
 	    }
 	   //preparing xtext-xtend
