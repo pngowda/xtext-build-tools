@@ -109,7 +109,7 @@ node('master') {
 
 	stage('release_preparation_xtext-repos') {
             //preparing xtext-umbrella
-	    print "##### Preparing xtext-umbrella ########"
+	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	       getGitChanges("xtext-umbrella")
