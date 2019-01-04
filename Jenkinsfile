@@ -35,7 +35,6 @@ node('master') {
 	stage('checkout_xtext-build-tools') {
 		println "checking out"
 		checkout scm
-		pomFunctions = load "pom_changes.groovy"
 	}
 	
 	stage('checkout-xtext-repos') {
@@ -112,6 +111,7 @@ node('master') {
 	}
 
 	stage('release_preparation_xtext-repos') {
+	    pomFunctions = load "pom_changes.groovy"
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
