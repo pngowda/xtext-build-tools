@@ -32,6 +32,7 @@ node('master') {
 	    def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
 	
 	stage('checkout_xtext-build-tools') {
+		println "checking out"
 		checkout scm
 	}
 	
