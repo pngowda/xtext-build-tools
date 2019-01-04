@@ -1,8 +1,9 @@
 import jenkins.model.*
 import hudson.model.*
 import groovy.xml.XmlUtil
-
+properties([pipelineTriggers([cron('H/2 * * * *')])])
 node('master') {
+
 	   deleteDir()
            def snapshotVersion="${params.SNAPSHOT_VERSION}"
            def xtextVersion=snapshotVersion.split('-')[0]
