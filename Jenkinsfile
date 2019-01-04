@@ -12,9 +12,7 @@ node('master') {
            def variant="${params.VARIANT}"
            def isBranchExist
 	   def baseGitURL='https://github.com/pngowda/'
-	   def pomFunctions
-	
-           
+	             
            println snapshotVersion
 	   println xtextVersion
            println branchName
@@ -111,7 +109,9 @@ node('master') {
 	}
 
 	stage('release_preparation_xtext-repos') {
-	    pomFunctions = load "pom_changes.groovy"
+	    def pomFunctions = load "pom_changes.groovy"
+	    def gradleFunctions = load "pom_changes.groovy"
+	    def gitFunctions = load "pom_changes.groovy"
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
