@@ -193,7 +193,8 @@ node('master') {
 	    //sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/xtext-umbrella.git")
          }
 	 //}
-           //pushGitChanges("xtext-umbrella", branchName)
+	 */
+           pushGitChanges("xtext-umbrella", branchName)
            //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
            //pushGitChanges("xtext-core", xtextVersion, "[release] version")
            //pushGitChanges("xtext-extras", xtextVersion, "[release] version")
@@ -202,7 +203,7 @@ node('master') {
            //pushGitChanges("xtext-web", xtextVersion, "[release] version")
            //pushGitChanges("xtext-maven", xtextVersion, "[release] version")
            //pushGitChanges("xtext-xtend", xtextVersion, "[release] version")
-      */
+      
     }
  }
 
