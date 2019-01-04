@@ -109,9 +109,9 @@ node('master') {
 	}
 
 	stage('release_preparation_xtext-repos') {
-	    def pomFunctions = load "pom_changes.groovy"
-	    def gradleFunctions = load "pom_changes.groovy"
-	    def gitFunctions = load "pom_changes.groovy"
+	    def pomFunctions = load "${workspace}/pom_changes.groovy"
+	    def gradleFunctions = load "${workspace}/pom_changes.groovy"
+	    def gitFunctions = load "${workspace}/pom_changes.groovy"
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
