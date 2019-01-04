@@ -4,8 +4,7 @@ import groovy.xml.XmlUtil
 node('master') {
 
 	   deleteDir()
-	   def pomFunctions = load "pom_changes.groovy"
-           def snapshotVersion="${params.SNAPSHOT_VERSION}"
+	   def snapshotVersion="${params.SNAPSHOT_VERSION}"
            def xtextVersion=snapshotVersion.split('-')[0]
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
@@ -13,6 +12,8 @@ node('master') {
            def variant="${params.VARIANT}"
            def isBranchExist
 	   def baseGitURL='https://github.com/pngowda/'
+	   def pomFunctions
+	
            
            println snapshotVersion
 	   println xtextVersion
@@ -34,6 +35,7 @@ node('master') {
 	stage('checkout_xtext-build-tools') {
 		println "checking out"
 		checkout scm
+		pomFunctions = load "pom_changes.groovy"
 	}
 	
 	stage('checkout-xtext-repos') {
