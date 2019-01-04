@@ -110,58 +110,58 @@ node('master') {
 	stage('release_preparation_xtext-repos') {
             //preparing xtext-umbrella
 	    print "##### Preparing xtext-umbrella ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
 	       getGitChanges("xtext-umbrella")
 	    }
 	   
 	    //preparing xtext-lib
 	    print "##### Preparing xtext-lib ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-lib", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
 	       getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-core", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
 	       getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-extras", xtextVersion)
                changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
 	       getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
 	    print "##### Preparing xtext-eclipse ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       getGitChanges("xtext-eclipse")
 	    }	
 	    //preparing xtext-idea
 	    print "##### Preparing xtext-idea ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-idea", xtextVersion)
 	       getGitChanges("xtext-idea")
 	    }
 	    //preparing xtext-web
 	    print "##### Preparing xtext-web ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleVersionUpdate("xtext-web", xtextVersion)
 	       getGitChanges("xtext-web")
 	    }
 	    //preparing xtext-maven
 	    print "##### Preparing xtext-maven ########"
-	    if(releaseType=="Release"){
+	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       pomVersionUpdate("xtext-maven", xtextVersion)
 	       getGitChanges("xtext-maven")
 	    }
 	   //preparing xtext-xtend
 	   print "##### Preparing xtext-xtend ########"
-	   if(releaseType=="Release"){
+	   if(releaseType=="Release" || releaseType=="Milestone"){
 	      xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
               xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
               xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
