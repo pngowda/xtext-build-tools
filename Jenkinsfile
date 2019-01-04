@@ -4,7 +4,7 @@ import groovy.xml.XmlUtil
 node('master') {
 
 	   deleteDir()
-	   def pomFunctions = load “pom_changes.groovy”
+	   def pomFunctions = load "pom_changes.groovy"
            def snapshotVersion="${params.SNAPSHOT_VERSION}"
            def xtextVersion=snapshotVersion.split('-')[0]
            def branchName="${params.BRANCHNAME}"
