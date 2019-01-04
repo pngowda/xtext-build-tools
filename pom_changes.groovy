@@ -1,3 +1,6 @@
+import jenkins.model.*
+import hudson.model.*
+import groovy.xml.XmlUtil
 
 def changePomDependencyVersion(pomFile){
     println "Pom File to process: "+pomFile
