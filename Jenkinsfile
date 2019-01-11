@@ -36,6 +36,8 @@ node('master') {
 	}
 	
 	stage('checkout-xtext-repos') {
+	def rootDir = pwd()
+	def gitFunctions = load "${rootDir}/git_functions.groovy"
 	withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
 	    dir("${workspace}/xtext-core") { deleteDir() }
@@ -52,48 +54,48 @@ node('master') {
             sh("find . -type f -exec chmod 777 {} \\;")
             	
 	    checkoutSCM(libGitUrl, "xtext-lib")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
-               createGitBranch("xtext-lib", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-lib", branchName)
             }
             
             checkoutSCM(coreGitUrl, "xtext-core")
-            if (verifyGitBranch("xtext-core", branchName)!=0){
-               createGitBranch("xtext-core", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-core", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-core", branchName)
             }
 
             checkoutSCM(extrasGitUrl, "xtext-extras")
-            if (verifyGitBranch("xtext-extras", branchName)!=0){
-               createGitBranch("xtext-extras", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-extras", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-extras", branchName)
             }
 
             checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-            if (verifyGitBranch("xtext-eclipse", branchName)!=0){
-               createGitBranch("xtext-eclipse", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-eclipse", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-eclipse", branchName)
             }
 
             checkoutSCM(ideaGitUrl, "xtext-idea")
-            if (verifyGitBranch("xtext-idea", branchName)!=0){
-               createGitBranch("xtext-idea", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-idea", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-idea", branchName)
             }
 
             checkoutSCM(webGitUrl, "xtext-web")
-            if (verifyGitBranch("xtext-web", branchName)!=0){
-               createGitBranch("xtext-web", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-web", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-web", branchName)
             }
 
             checkoutSCM(mavenGitUrl, "xtext-maven")
-            if (verifyGitBranch("xtext-maven", branchName)!=0){
-               createGitBranch("xtext-maven", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-maven", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-maven", branchName)
             }
 
             checkoutSCM(xtendGitUrl, "xtext-xtend")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
-               createGitBranch("xtext-xtend", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-xtend", branchName)
             }
 
             checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
-            if (verifyGitBranch("xtext-umbrella", branchName)!=0){
-               createGitBranch("xtext-umbrella", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-umbrella", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-umbrella", branchName)
             }
 	}
 	 }
