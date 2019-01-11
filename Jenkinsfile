@@ -112,81 +112,81 @@ node('master') {
 	    def rootDir = pwd()
 	    println rootDir
 	    def pomFunctions = load "${rootDir}/pom_changes.groovy"
-	    //def gradleFunctions = load "${rootDir}/pom_changes.groovy"
-	    //def gitFunctions = load "${rootDir}/pom_changes.groovy"
+	    def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
+	    def gitFunctions = load "${rootDir}/git_functions.groovy"
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
-	       getGitChanges("xtext-umbrella")
+	       gitFunctions.getGitChanges("xtext-umbrella")
 	    }
 	   
 	    //preparing xtext-lib
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleVersionUpdate("xtext-lib", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion)
                pomFunctions.changePomDependencyVersion("$workspace/xtext-lib/releng/pom.xml")
-	       getGitChanges("xtext-lib")
+	       gitFunctions.getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleVersionUpdate("xtext-core", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion)
                pomFunctions.changePomDependencyVersion("$workspace/xtext-core/releng/pom.xml")
-	       getGitChanges("xtext-core")
+	       gitFunctions.getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleVersionUpdate("xtext-extras", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion)
                pomFunctions.changePomDependencyVersion("$workspace/xtext-extras/releng/pom.xml")
-	       getGitChanges("xtext-extras")
+	       gitFunctions.getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
 	    print "##### Preparing xtext-eclipse ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       getGitChanges("xtext-eclipse")
+	       gitFunctions.getGitChanges("xtext-eclipse")
 	    }	
 	    //preparing xtext-idea
 	    print "##### Preparing xtext-idea ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleVersionUpdate("xtext-idea", xtextVersion)
-	       getGitChanges("xtext-idea")
+	       gradleFunctions.gradleVersionUpdate("xtext-idea", xtextVersion)
+	       gitFunctions.getGitChanges("xtext-idea")
 	    }
 	    //preparing xtext-web
 	    print "##### Preparing xtext-web ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleVersionUpdate("xtext-web", xtextVersion)
-	       getGitChanges("xtext-web")
+	       gradleFunctions.gradleVersionUpdate("xtext-web", xtextVersion)
+	       gitFunctions.getGitChanges("xtext-web")
 	    }
 	    //preparing xtext-maven
 	    print "##### Preparing xtext-maven ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       pomFunctions.pomVersionUpdate("xtext-maven", xtextVersion)
-	       getGitChanges("xtext-maven")
+	       gitFunctions.getGitChanges("xtext-maven")
 	    }
 	   //preparing xtext-xtend
 	   print "##### Preparing xtext-xtend ########"
 	   if(releaseType=="Release" || releaseType=="Milestone"){
-	      xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
-              xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
-              xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
-              xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
-              xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
-	      getGitChanges("xtext-xtend")
+	      pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
+	      gitFunctions.getGitChanges("xtext-xtend")
 	   }
 	}
 	
         stage('Commit_GIT_Changes') {
-           commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
-           commitGitChanges("xtext-lib", xtextVersion, "[release] version")
-           commitGitChanges("xtext-core", xtextVersion, "[release] version")
-           commitGitChanges("xtext-extras", xtextVersion, "[release] version")
-           commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
-           commitGitChanges("xtext-idea", xtextVersion, "[release] version")
-           commitGitChanges("xtext-web", xtextVersion, "[release] version")
-           commitGitChanges("xtext-maven", xtextVersion, "[release] version")
-           commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-idea", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
         }
 
       
@@ -214,16 +214,6 @@ node('master') {
  }
 
 
-def gradleVersionUpdate(path,xtext_version){
-  def update_cmd
-    dir(path) {
-        update_cmd = sh (
-            script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
-            returnStdout: true
-        ).trim()
-    }
-    return update_cmd
-}
 
 
 
