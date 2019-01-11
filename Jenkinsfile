@@ -109,9 +109,11 @@ node('master') {
 	}
 
 	stage('release_preparation_xtext-repos') {
-	    def pomFunctions = load "${workspace}/pom_changes.groovy"
-	    def gradleFunctions = load "${workspace}/pom_changes.groovy"
-	    def gitFunctions = load "${workspace}/pom_changes.groovy"
+	    def rootDir = pwd()
+	    println rootDir
+	    def pomFunctions = load "${rootDir}/pom_changes.groovy"
+	    def gradleFunctions = load "${rootDir}/pom_changes.groovy"
+	    def gitFunctions = load "${rootDir}/pom_changes.groovy"
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
