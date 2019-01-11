@@ -112,8 +112,8 @@ node('master') {
 	    def rootDir = pwd()
 	    println rootDir
 	    def pomFunctions = load "${rootDir}/pom_changes.groovy"
-	    def gradleFunctions = load "${rootDir}/pom_changes.groovy"
-	    def gitFunctions = load "${rootDir}/pom_changes.groovy"
+	    //def gradleFunctions = load "${rootDir}/pom_changes.groovy"
+	    //def gitFunctions = load "${rootDir}/pom_changes.groovy"
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
