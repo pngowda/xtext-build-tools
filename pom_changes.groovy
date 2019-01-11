@@ -46,3 +46,4 @@ def xtextXtendPomVersionUpdate(path,xtext_version, pomFile){
     }
     return update_cmd
 }
+return this
