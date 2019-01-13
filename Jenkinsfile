@@ -11,6 +11,7 @@ node('master') {
 	   def releaseType="${params.RELEASE_TYPE}"
            def variant="${params.VARIANT}"
            def isBranchExist
+	   def variantString
 	   def baseGitURL='https://github.com/pngowda/'
 	             
            println snapshotVersion
@@ -26,6 +27,7 @@ node('master') {
 	   if(releaseType=="Milestone"){
 	      xtextVersion=xtextVersion+"."+variant
 	      branchName="milestone_"+xtextVersion
+	      variantString="."+variant
 	   }
 	   println "xtext version to be released " + xtextVersion
 	   println "branch to be created " + branchName
@@ -139,21 +141,21 @@ node('master') {
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml")
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", variantString)
 	       gitFunctions.getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml")
+               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", variantString)
 	       gitFunctions.getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml")
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", variantString)
 	       gitFunctions.getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
