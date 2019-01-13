@@ -134,7 +134,7 @@ node('master') {
             //preparing xtext-umbrella
 	    print "###### Preparing xtext-umbrella ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml")
+	       pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-umbrella")
 	    }
 	   
@@ -179,17 +179,17 @@ node('master') {
 	    //preparing xtext-maven
 	    print "##### Preparing xtext-maven ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       pomFunctions.pomVersionUpdate("xtext-maven", xtextVersion)
+	       pomFunctions.pomVersionUpdate("xtext-maven", xtextVersion, snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-maven")
 	    }
 	   //preparing xtext-xtend
 	   print "##### Preparing xtext-xtend ########"
 	   if(releaseType=="Release" || releaseType=="Milestone"){
-	      pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml")
-              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml")
-              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml")
-              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml")
-              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml")
+	      pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml", snapshotVersion)
 	      gitFunctions.getGitChanges("xtext-xtend")
 	   }
 	}
