@@ -33,8 +33,6 @@ node('master') {
 	   println "xtext version to be released " + xtextVersion
 	   println "branch to be created " + branchName
 	
-	
-	
 	    def libGitUrl=baseGitURL+'xtext-lib.git'
 	    def coreGitUrl=baseGitURL+'xtext-core.git'
 	    def extrasGitUrl=baseGitURL+'xtext-extras.git'
@@ -142,21 +140,21 @@ node('master') {
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion,snapshotVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", snapshotVersion, variantString)
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion, snapshotVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion, variantString)
+               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion, snapshotVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion, variantString)
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
@@ -197,8 +195,7 @@ node('master') {
         stage('Commit_GIT_Changes') {
 	   def rootDir = pwd()
            def gitFunctions = load "${rootDir}/git_functions.groovy"
-	
-           /*gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
+	   gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
@@ -207,8 +204,6 @@ node('master') {
            gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
-	   */
-	   
         }
 
       
