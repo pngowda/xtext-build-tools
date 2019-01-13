@@ -15,33 +15,33 @@ def changePomDependencyVersion(xtext_version, pomFile, variant_string){
 }
 
 
-def pomVersionUpdate(path,xtext_version){
+def pomVersionUpdate(path,xtext_version, snapshot_version){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\"",
+		script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${snapshot_version}/${xtext_version}/g\"",
 	    returnStdout: true
         ).trim()
     }
     return update_cmd
 }
 
-def pomZipVersionUpdate(path,xtext_version, pomFile){
+def pomZipVersionUpdate(path,xtext_version, pomFile,snapshot_version){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "sed -i -r 's/tofile=(.*)repository-${xtext_version}-SNAPSHOT.zip/tofile=\\1repository-${xtext_version}.zip/g\' ${pomFile}",
+            script: "sed -i -r 's/tofile=(.*)repository-${snapshot_version}.zip/tofile=\\1repository-${xtext_version}.zip/g\' ${pomFile}",
 	    returnStdout: true
         ).trim()
     }
     return update_cmd
 }
 
-def xtextXtendPomVersionUpdate(path,xtext_version, pomFile){
+def xtextXtendPomVersionUpdate(path,xtext_version, pomFile, snapshot_version){
   def update_cmd
     dir(path) {
         update_cmd = sh (
-            script: "sed -i -e \"s/${xtext_version}-SNAPSHOT/${xtext_version}/g\" ${pomFile}",
+            script: "sed -i -e \"s/${snapshot_version}/${xtext_version}/g\" ${pomFile}",
 	    returnStdout: true
         ).trim()
     }
