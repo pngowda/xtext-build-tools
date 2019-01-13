@@ -21,11 +21,16 @@ node('master') {
            println variant
            if(releaseType=="Release"){
               xtextVersion=xtextVersion
+	      branchName="release_"+xtextVersion
 	   }
 	   if(releaseType=="Milestone"){
 	      xtextVersion=xtextVersion+"."+variant
+	      branchName="milestone_"+xtextVersion
 	   }
-	   println "xtext version" + xtextVersion
+	   println "xtext version to be released " + xtextVersion
+	   println "branch to be created " + branchName
+	
+	
 	
 	    def libGitUrl=baseGitURL+'xtext-lib.git'
 	    def coreGitUrl=baseGitURL+'xtext-core.git'
