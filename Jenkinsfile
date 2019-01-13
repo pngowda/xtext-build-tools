@@ -202,11 +202,11 @@ node('master') {
            gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
-           //gitFunctions.commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
-           //gitFunctions.commitGitChanges("xtext-idea", xtextVersion, "[release] version")
-           //gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
-           //gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
-           //gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-idea", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
 	   
         }
 
