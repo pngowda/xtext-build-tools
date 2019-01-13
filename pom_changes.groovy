@@ -2,7 +2,7 @@ import jenkins.model.*
 import hudson.model.*
 import groovy.xml.XmlUtil
 
-def changePomDependencyVersion(xtext_version, pomFile, snapshot_version, variant_string){
+def changePomDependencyVersion(xtext_version, pomFile, snapshot_version){
     println "Pom File to process: "+pomFile
     def xmlFromFile = new File(pomFile)
     def pom = new XmlSlurper( false, false ).parseText(xmlFromFile.getText())
