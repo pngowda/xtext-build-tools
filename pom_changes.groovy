@@ -2,13 +2,13 @@ import jenkins.model.*
 import hudson.model.*
 import groovy.xml.XmlUtil
 
-def changePomDependencyVersion(xtext_version, pomFile, variant_string){
+def changePomDependencyVersion(xtext_version, pomFile, snapshot_version, variant_string){
     println "Pom File to process: "+pomFile
     def xmlFromFile = new File(pomFile)
     def pom = new XmlSlurper( false, false ).parseText(xmlFromFile.getText())
 	
     pom.dependencies.dependency.each { dependency ->
-       pom.dependencies.dependency.version="${dependency.version}".replace("-SNAPSHOT", variant_string)
+       pom.dependencies.dependency.version="${dependency.version}".replace(snapshot_version, xtext_version)
     }
     XmlUtil xmlUtil = new XmlUtil()
     xmlUtil.serialize(pom, new FileWriter(xmlFromFile))
