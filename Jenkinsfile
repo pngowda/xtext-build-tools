@@ -142,21 +142,21 @@ node('master') {
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion,snapshotVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", variantString)
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", snapshotVersion, variantString)
 	       gitFunctions.getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion, snapshotVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", variantString)
+               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion, variantString)
 	       gitFunctions.getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
 	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion, snapshotVersion)
-               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", variantString)
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion, variantString)
 	       gitFunctions.getGitChanges("xtext-extras")
 	    }
 	    //preparing xtext-eclipse
