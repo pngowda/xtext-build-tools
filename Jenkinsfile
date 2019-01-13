@@ -23,6 +23,7 @@ node('master') {
            if(releaseType=="Release"){
               xtextVersion=xtextVersion
 	      branchName="release_"+xtextVersion
+	      variantString=""
 	   }
 	   if(releaseType=="Milestone"){
 	      xtextVersion=xtextVersion+"."+variant
