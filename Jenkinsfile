@@ -197,6 +197,7 @@ node('master') {
         stage('Commit_GIT_Changes') {
 	   def rootDir = pwd()
            def gitFunctions = load "${rootDir}/git_functions.groovy"
+	/*
            gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
@@ -206,6 +207,7 @@ node('master') {
            gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
            gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
+	   */
         }
 
       
