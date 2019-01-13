@@ -19,7 +19,14 @@ node('master') {
            println tagName
 	   println releaseType
            println variant
-
+           if(releaseType=="Release"){
+              xtextVersion=xtextVersion
+	   }
+	   if(releaseType=="Milestone"){
+	      xtextVersion=xtextVersion+"."+variant
+	   }
+	   println "xtext version" + xtextVersion
+	
 	    def libGitUrl=baseGitURL+'xtext-lib.git'
 	    def coreGitUrl=baseGitURL+'xtext-core.git'
 	    def extrasGitUrl=baseGitURL+'xtext-extras.git'
