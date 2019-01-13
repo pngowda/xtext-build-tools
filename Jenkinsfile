@@ -141,21 +141,21 @@ node('master') {
 	    //preparing xtext-lib
 	    print "##### Preparing xtext-lib ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion,snapshotVersion)
                pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", variantString)
 	       gitFunctions.getGitChanges("xtext-lib")
 	    }	
 	    //preparing xtext-core
 	    print "##### Preparing xtext-core ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion, snapshotVersion)
                pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", variantString)
 	       gitFunctions.getGitChanges("xtext-core")
 	    }
 	    //preparing xtext-extras
 	    print "##### Preparing xtext-extras ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion, snapshotVersion)
                pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", variantString)
 	       gitFunctions.getGitChanges("xtext-extras")
 	    }
@@ -167,13 +167,13 @@ node('master') {
 	    //preparing xtext-idea
 	    print "##### Preparing xtext-idea ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleFunctions.gradleVersionUpdate("xtext-idea", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-idea", xtextVersion, snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-idea")
 	    }
 	    //preparing xtext-web
 	    print "##### Preparing xtext-web ########"
 	    if(releaseType=="Release" || releaseType=="Milestone"){
-	       gradleFunctions.gradleVersionUpdate("xtext-web", xtextVersion)
+	       gradleFunctions.gradleVersionUpdate("xtext-web", xtextVersion, snapshotVersion)
 	       gitFunctions.getGitChanges("xtext-web")
 	    }
 	    //preparing xtext-maven
