@@ -208,34 +208,20 @@ node('master') {
 
       
       stage('Push_GIT_Changes') {
-      /*  
-	withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'adminCred', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-         dir("xtext-umbrella") {
-	   String encoded_password = java.net.URLEncoder.encode(env.GIT_PASSWORD, "UTF-8")
-	    //sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/xtext-umbrella.git")
-         }
-	 //}
-	 
-           //pushGitChanges("xtext-umbrella", branchName)
-           //pushGitChanges("xtext-lib", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-core", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-extras", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-eclipse", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-idea", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-web", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-maven", xtextVersion, "[release] version")
-           //pushGitChanges("xtext-xtend", xtextVersion, "[release] version")
-	   */
-      
+	   def rootDir = pwd()
+           def gitFunctions = load "${rootDir}/git_functions.groovy"
+           //gitFunctions.pushGitChanges("xtext-umbrella", branchName)
+           //gitFunctions.pushGitChanges("xtext-lib", branchName)
+           //gitFunctions.pushGitChanges("xtext-core", branchName)
+           //gitFunctions.pushGitChanges("xtext-extras", branchName)
+           //gitFunctions.pushGitChanges("xtext-eclipse", branchName)
+           //gitFunctions.pushGitChanges("xtext-idea", branchName)
+           //gitFunctions.pushGitChanges("xtext-web", branchName)
+           //gitFunctions.pushGitChanges("xtext-maven", branchName)
+           //gitFunctions.pushGitChanges("xtext-xtend", branchName)
+    
     }
  }
-
-
-
-
-
-
-
 
 def checkoutSCM(urlPath, wrkDir){
   checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'UserExclusion', excludedUsers: 'pngowda'],[$class: 'RelativeTargetDirectory', relativeTargetDir: wrkDir]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'adminCred',url: urlPath]]])
