@@ -1,27 +1,56 @@
 import jenkins.model.*
 import hudson.model.*
-
+import groovy.xml.XmlUtil
 node('master') {
-           //def xtextVersionNew="${params.FROM_XTEXT_VERSION}"
-           //def xtextVersionOld="${params.TO_XTEXT_VERSION}"
-           def xtextVersion="${params.XTEXT_VERSION}"
+
+	   deleteDir()
+	   def snapshotVersion="${params.SNAPSHOT_VERSION}"
+           def xtextVersion=snapshotVersion.split('-')[0]
            def branchName="${params.BRANCHNAME}"
            def tagName="${params.TAGNAME}"
 	   def releaseType="${params.RELEASE_TYPE}"
-           def isBranchExist               
-           
-	   //println xtextVersionNew
-	   //println xtextVersionOld
+           def variant="${params.VARIANT}"
+           def isBranchExist
+	   def variantString
+	   def baseGitURL='https://github.com/pngowda/'
+	             
+           println snapshotVersion
+	   println xtextVersion
            println branchName
            println tagName
 	   println releaseType
-
+           println variant
+           if(releaseType=="Release"){
+              xtextVersion=xtextVersion
+	      branchName="release_"+xtextVersion
+	      variantString=""
+	   }
+	   if(releaseType=="Milestone"){
+	      xtextVersion=xtextVersion+"."+variant
+	      branchName="milestone_"+xtextVersion
+	      variantString="."+variant
+	   }
+	   println "xtext version to be released " + xtextVersion
+	   println "branch to be created " + branchName
+	
+	    def libGitUrl=baseGitURL+'xtext-lib.git'
+	    def coreGitUrl=baseGitURL+'xtext-core.git'
+	    def extrasGitUrl=baseGitURL+'xtext-extras.git'
+	    def eclipseGitUrl=baseGitURL+'xtext-eclipse.git'
+	    def ideaGitUrl=baseGitURL+'xtext-idea.git'
+	    def webGitUrl=baseGitURL+'xtext-web.git'
+	    def mavenGitUrl=baseGitURL+'xtext-maven.git'
+	    def xtendGitUrl=baseGitURL+'xtext-xtend.git'
+	    def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
 	
 	stage('checkout_xtext-build-tools') {
+		println "checking out"
 		checkout scm
 	}
 	
 	stage('checkout-xtext-repos') {
+	def rootDir = pwd()
+	def gitFunctions = load "${rootDir}/git_functions.groovy"
 	withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 	    dir("${workspace}/xtext-lib") { deleteDir() }
 	    dir("${workspace}/xtext-core") { deleteDir() }
@@ -33,61 +62,53 @@ node('master') {
 	    dir("${workspace}/xtext-xtend") { deleteDir() }
 	    dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
-	    def libGitUrl="https://github.com/pngowda/xtext-lib.git"
-	    def coreGitUrl="https://github.com/pngowda/xtext-core.git"
-	    def extrasGitUrl="https://github.com/pngowda/xtext-extras.git"
-	    def eclipseGitUrl="https://github.com/pngowda/xtext-eclipse.git"
-	    def ideaGitUrl="https://github.com/pngowda/xtext-idea.git"
-	    def webGitUrl="https://github.com/pngowda/xtext-web.git"
-	    def mavenGitUrl="https://github.com/pngowda/xtext-maven.git"
-	    def xtendGitUrl="https://github.com/pngowda/xtext-xtend.git"
-	    def umbrellaGitUrl="https://github.com/pngowda/xtext-umbrella.git"
+
 	    
             sh("find . -type f -exec chmod 777 {} \\;")
             	
 	    checkoutSCM(libGitUrl, "xtext-lib")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
-               createGitBranch("xtext-lib", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-lib", branchName)
             }
             
             checkoutSCM(coreGitUrl, "xtext-core")
-            if (verifyGitBranch("xtext-core", branchName)!=0){
-               createGitBranch("xtext-core", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-core", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-core", branchName)
             }
 
             checkoutSCM(extrasGitUrl, "xtext-extras")
-            if (verifyGitBranch("xtext-extras", branchName)!=0){
-               createGitBranch("xtext-extras", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-extras", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-extras", branchName)
             }
 
             checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-            if (verifyGitBranch("xtext-eclipse", branchName)!=0){
-               createGitBranch("xtext-eclipse", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-eclipse", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-eclipse", branchName)
             }
 
             checkoutSCM(ideaGitUrl, "xtext-idea")
-            if (verifyGitBranch("xtext-idea", branchName)!=0){
-               createGitBranch("xtext-idea", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-idea", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-idea", branchName)
             }
 
             checkoutSCM(webGitUrl, "xtext-web")
-            if (verifyGitBranch("xtext-web", branchName)!=0){
-               createGitBranch("xtext-web", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-web", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-web", branchName)
             }
 
             checkoutSCM(mavenGitUrl, "xtext-maven")
-            if (verifyGitBranch("xtext-maven", branchName)!=0){
-               createGitBranch("xtext-maven", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-maven", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-maven", branchName)
             }
 
             checkoutSCM(xtendGitUrl, "xtext-xtend")
-            if (verifyGitBranch("xtext-lib", branchName)!=0){
-               createGitBranch("xtext-xtend", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-xtend", branchName)
             }
 
             checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
-            if (verifyGitBranch("xtext-umbrella", branchName)!=0){
-               createGitBranch("xtext-umbrella", branchName)
+            if (gitFunctions.verifyGitBranch("xtext-umbrella", branchName)!=0){
+               gitFunctions.createGitBranch("xtext-umbrella", branchName)
             }
 	}
 	 }
@@ -97,242 +118,113 @@ node('master') {
 	   sh """
 	     pwd
 	     ls -la
-	     ./adjustPipelines.sh $BRANCHNAME
+	     ./adjustPipelines.sh $branchName
 	   """
 	   }
 	}
 
-        stage('prepare_xtext-umbrella') {
-
-	
-        }
-        stage('prepare_xtext-lib') {
-	   gradleVersionUpdate("xtext-lib", xtextVersion)
-        }
-
-        stage('prepare_xtext-core') {
-           gradleVersionUpdate("xtext-core", xtextVersion)
-        }
-        
-        stage('prepare_xtext-extras') {
-           gradleVersionUpdate("xtext-extras", xtextVersion)
+	stage('release_preparation_xtext-repos') {
+	    def rootDir = pwd()
+	    println rootDir
+	    def pomFunctions = load "${rootDir}/pom_changes.groovy"
+	    def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
+	    def gitFunctions = load "${rootDir}/git_functions.groovy"
+            //preparing xtext-umbrella
+	    print "###### Preparing xtext-umbrella ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-umbrella")
+	    }
+	   
+	    //preparing xtext-lib
+	    print "##### Preparing xtext-lib ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       gradleFunctions.gradleVersionUpdate("xtext-lib", xtextVersion,snapshotVersion)
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-lib")
+	    }	
+	    //preparing xtext-core
+	    print "##### Preparing xtext-core ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       gradleFunctions.gradleVersionUpdate("xtext-core", xtextVersion, snapshotVersion)
+               pomFunctions.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-core")
+	    }
+	    //preparing xtext-extras
+	    print "##### Preparing xtext-extras ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       gradleFunctions.gradleVersionUpdate("xtext-extras", xtextVersion, snapshotVersion)
+               pomFunctions.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-extras")
+	    }
+	    //preparing xtext-eclipse
+	    print "##### Preparing xtext-eclipse ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       gitFunctions.getGitChanges("xtext-eclipse")
+	    }	
+	    //preparing xtext-idea
+	    print "##### Preparing xtext-idea ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       gradleFunctions.gradleVersionUpdate("xtext-idea", xtextVersion, snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-idea")
+	    }
+	    //preparing xtext-web
+	    print "##### Preparing xtext-web ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       gradleFunctions.gradleVersionUpdate("xtext-web", xtextVersion, snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-web")
+	    }
+	    //preparing xtext-maven
+	    print "##### Preparing xtext-maven ########"
+	    if(releaseType=="Release" || releaseType=="Milestone"){
+	       pomFunctions.pomVersionUpdate("xtext-maven", xtextVersion, snapshotVersion)
+	       gitFunctions.getGitChanges("xtext-maven")
+	    }
+	   //preparing xtext-xtend
+	   print "##### Preparing xtext-xtend ########"
+	   if(releaseType=="Release" || releaseType=="Milestone"){
+	      pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "maven-pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml", snapshotVersion)
+              pomFunctions.xtextXtendPomVersionUpdate("xtext-xtend", xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml", snapshotVersion)
+	      gitFunctions.getGitChanges("xtext-xtend")
+	   }
 	}
-        
-        stage('prepare_xtext-eclipse') {
-
 	
-        }
-        
-        stage('prepare_xtext-idea') {
-           gradleVersionUpdate("xtext-idea", xtextVersion)
-	}
-        
-        stage('prepare_xtext-web') {
-           gradleVersionUpdate("xtext-web", xtextVersion)
-	}
-        stage('prepare_xtext-maven') {
-
-	
-        }
-        stage('prepare_xtext-xtend') {
-
-	
+        stage('Commit_GIT_Changes') {
+	   def rootDir = pwd()
+           def gitFunctions = load "${rootDir}/git_functions.groovy"
+	   gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-idea", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
+           gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
         }
 
-  }
-
-def gradleVersionUpdate(path,xtext_version){
-  def update_cmd
-    dir(path) {
-        update_cmd = sh (
-            script: "sed -i -e \"s/version = '${xtext_version}-SNAPSHOT'/version = '${xtext_version}'/g\" gradle/versions.gradle",
-            returnStdout: true
-        ).trim()
+      
+      stage('Push_GIT_Changes') {
+	   def rootDir = pwd()
+           def gitFunctions = load "${rootDir}/git_functions.groovy"
+           //gitFunctions.pushGitChanges("xtext-umbrella", branchName)
+           //gitFunctions.pushGitChanges("xtext-lib", branchName)
+           //gitFunctions.pushGitChanges("xtext-core", branchName)
+           //gitFunctions.pushGitChanges("xtext-extras", branchName)
+           //gitFunctions.pushGitChanges("xtext-eclipse", branchName)
+           //gitFunctions.pushGitChanges("xtext-idea", branchName)
+           //gitFunctions.pushGitChanges("xtext-web", branchName)
+           //gitFunctions.pushGitChanges("xtext-maven", branchName)
+           //gitFunctions.pushGitChanges("xtext-xtend", branchName)
+    
     }
-    return update_cmd
-}
-
-def createGitBranch(path, branch) {
-    
-    def git_cmd
-    dir(path) {
-        git_cmd = sh (
-            script: "git checkout -b ${branch}",
-            returnStdout: true
-        ).trim()
-    }
-    return git_cmd
-}
-
-def verifyGitBranch(path, branch) {
-    def command1 = "git rev-parse --verify ${branch}"
-    def proc1 = command1.execute(null, new File("${workspace}/${path}"))
-    proc1.waitFor()
-    println "Process exit code: ${proc1.exitValue()}"
-    return "${proc1.exitValue()}"
-}
-
-def readWriteMavenVersion(pomFile){
-    println "Pom File to process: "+pomFile
-    pom = readMavenPom file: pomFile
-    
-    println "pom version: "+ pom.version
-    
-    def version = pom.version.replace("-SNAPSHOT", "")
-    pom.version = version
-    println "pom version: "+ pom.version
-    
-    writeMavenPom model:pom, file: pomFile
-    
-}
-
-def readWriteParentMavenVersion(pomFile){
-    println "Pom File to process: "+pomFile
-    pom = readMavenPom file: pomFile
-    
-    println "pom parent version: "+ pom.parent.version
-    
-    def version = pom.parent.version.replace("-SNAPSHOT", "")
-    pom.parent.version = version
-    println "pom parent version: "+ pom.parent.version
-    
-    writeMavenPom model:pom, file: pomFile
-    
-}
-
-def modifyPomVersions(){
-    dir("extrasWorkDir") {
-    //def command = "find ${workspace}/extrasWorkDir/releng/pom.xml | xargs sed"
-    def proc = 'find \"${workspace}\"/extrasWorkDir/releng/pom.xml'.execute() | 'xargs sed -i -e s/2.16.0-SNAPSHOT/2.17.0/g'.execute() 
-    //def proc = command.execute()
-    proc.waitFor()              
-
-    println "Process exit code: ${proc.exitValue()}"
-    println "Std Err: ${proc.err.text}"
-    println "Std Out: ${proc.in.text}" 
-    }
-    
-    //dir("extrasWorkDir") {
-    //gitRemote = sh (
-      //  script: "find ./releng/pom.xml | xargs sed -i -e s/2.16.0-SNAPSHOT/2.17.0/g",
-    //returnStdout: true
-    //).trim()
-   // }
-    //return gitRemote
-}
-def readWriteParentMavenVersion2(pomFile){
-    println "Pom File to process: "+pomFile
-    //pom = readMavenPom file: pomFile
-    
-    
-    def pom = new XmlSlurper().parse(pomFile)
- 
-    pom.dependencies.dependency.each { dependency ->
-        //println "${dependency.groupId} ${dependency.artifactId} ${dependency.version}"
-        //println "${dependency.version}".replace("-SNAPSHOT", "")
-        //println dependency.version
-        pom.dependencies.dependency.version="${dependency.version}".replace("-SNAPSHOT", "")
-    }
-
-
-    pom.dependencies.dependency.each { dependency ->
-        println dependency.version
-    }
-
-
-   //println pom
-   //new XmlNodePrinter(new PrintWriter(new FileWriter("${workspace}/extrasWorkDir/pom.xml"))).print(pom)
-
-
-    //writeMavenPom model:pom, file: pomFile
-    
-}
-
-def parseGradleFile(oldGradleFile, newGradleFile, regXStr, deLmr, regXRpStr){
-    
-    println "Parsing Gradle File : "+oldGradleFile
-    println "RegEX: "+regXStr
-    println "Delimiter: "+ deLmr
-    println "Replace String: "+regXRpStr
-
-    File oldFile=new File(oldGradleFile)
-    File newfile = new File(newGradleFile)
-        
-    def lines = oldFile.readLines()
-            
-    lines.each { String line ->
-    //println line
-    //regXStr=regXStr.replaceAll("\\s","")
-    //println line
-    //if(line.startsWith(/\s*'xtext_bootstrap'/)){
-    if(line.matches(/\s*$regXStr.*/)){
-    //if(line.contains(regXStr)){
-        //line=line.replaceAll("\\s","")
-        println "inside if: "+regXStr
-        def values = line.split(deLmr)
-        line=line.replace(values[1],regXRpStr)
-    }
-    newfile.append(line+"\n")
-    }
-    oldFile.delete()
-    newfile.renameTo(oldGradleFile)
-}
-
-
-def commitGitChanges(path, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
-    def git_cmd
-    dir(path) {
-        sh "git config --global user.email '${gitEmail}'"
-        sh "git config --global user.name '${gitName}'"
-
-        sh(
-            script: 'git add -A',
-            returnStdout: true
-        ).trim()
-        //git_cmd = sh(
-        //    script: "git commit -m '${message}'",
-        //    returnStdout: true
-        //).trim()
-        
-        sh("git diff-index --quiet HEAD || git commit -m '${message}'")
-    }
-    println "retrun statment "+git_cmd
-    
-    //return git_cmd
-}
-
-
-def getGitRemote(name = '', type = 'fetch') {
-    dir("workDir") {
-    gitRemote = sh (
-        script: "git remote -v | grep '${name}' | grep ${type} | awk '{print \$2}' | head -1",
-        returnStdout: true
-    ).trim()
-    }
-    return gitRemote
-}
-
-
-
-def pushGitChanges(path, branch = 'master', remote = 'origin', credentialsId = null) {
-    dir(path) {
-        if (credentialsId == null) {
-            sh script: "git push ${remote} ${branch}"
-        }
-     }
-}
-
-
-def getGitCommit() {
-    git_commit = sh (
-        script: 'git rev-parse HEAD',
-        returnStdout: true
-    ).trim()
-    return git_commit
-}
+ }
 
 def checkoutSCM(urlPath, wrkDir){
-  checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: wrkDir]], submoduleCfg: [], userRemoteConfigs: [[url: urlPath]]])
+  checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'UserExclusion', excludedUsers: 'pngowda'],[$class: 'RelativeTargetDirectory', relativeTargetDir: wrkDir]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'adminCred',url: urlPath]]])
 }
 
 
