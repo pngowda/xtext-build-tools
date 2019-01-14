@@ -68,9 +68,13 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch, credentialsId=null, remote = 'https://@github.com/pngowda/xtext-umbrella.git') {
+def pushGitChanges(path, branch, remote) {
     dir(path) {
-           sh script: "git push ${remote} ${branch}"
+	sshagent(['token here']) { //
+        sh '''
+           git push origin ${branch}
+         '''
+        }
     }
 }
 
