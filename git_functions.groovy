@@ -2,9 +2,9 @@ def createGitBranch(path, branch) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
-            script: '''git checkout -b ${branch}''',
-            returnStdout: true
-        ).trim()
+            script: "git checkout -b ${branch}",
+            returnStatus: true
+        )
     }
     return git_cmd
 }
@@ -13,8 +13,8 @@ def verifyGitBranch(path, branch) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
-            script: '''git rev-parse --verify ${branch}''',
-            returnStatus:true
+            script: "git rev-parse --verify ${branch}",
+            returnStatus: true
         )
     }
     return git_cmd
@@ -24,8 +24,8 @@ def verifyGitBranch(path, branch) {
 def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
     dir(path) {
-        sh "git config --global user.email '${gitEmail}'"
-        sh "git config --global user.name '${gitName}'"
+        sh "git config user.email 'genie-xtext@git.eclipse.org'"
+        sh "git config user.name 'genie-xtext'"
 
         sh(
             script: 'git add -A',
@@ -43,7 +43,7 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
              returnStdout: true
          ).trim()
     }
-    println "retrun statment "+git_cmd
+    println "return statment "+git_cmd
     
     return git_cmd
 }
@@ -82,10 +82,10 @@ def tagGit(path, tagName) {
 
 }
 
-def pushGitChanges(path, branch, tag, remote) {
+def pushGitChanges(path, branch) {
     dir(path) {
         sh '''
-           git push origin ${branch} ${tag}
+           git push --force --tags origin ${branch}
          '''
     }
 }
