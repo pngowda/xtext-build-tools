@@ -70,7 +70,7 @@ def getGitRemote(name = '', type = 'fetch') {
 
 def pushGitChanges(path, branch, remote) {
     dir(path) {
-	sshagent(['token here']) { //
+	sshagent(['559af3c2-7b91-482e-81d1-37792c7cb861']) { //
         sh '''
            git push origin ${branch}
          '''
