@@ -11,11 +11,21 @@ def createGitBranch(path, branch) {
 }
 
 def verifyGitBranch(path, branch) {
+    def git_cmd
+    dir(path) {
+        git_cmd = sh (
+            script: '''git rev-parse --verify ${branch} && echo $?''',
+            returnStatus:true
+        )
+    }
+    return git_cmd
+/*
     def command1 = "git rev-parse --verify ${branch}"
     def proc1 = command1.execute(null, new File("${workspace}/${path}"))
     proc1.waitFor()
     println "Process exit code: ${proc1.exitValue()}"
     return "${proc1.exitValue()}"
+*/
 }
 
 
