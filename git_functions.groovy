@@ -72,7 +72,7 @@ def pushGitChanges(path, branch) {
     dir(path) {
 	sshagent(['559af3c2-7b91-482e-81d1-37792c7cb861']) { //
         sh '''
-           git push origin ${branch}
+           git push --set-upstream origin ${branch}
          '''
         }
     }
