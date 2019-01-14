@@ -4,6 +4,8 @@ function subLastXtext {
     xtext=$(echo "xtext-" | rev)
     replace="[^/]*"$xtext
     by=$(echo $1 | rev)$xtext
+    echo "b ${by}"
+    echo "r ${replace}"
     cat locations.properties | head -n 1 | rev | sed "s/${replace}/${by}/" | rev
 }
 
