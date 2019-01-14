@@ -229,15 +229,15 @@ node('master') {
 		def rootDir = pwd()
 		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
-			gitFunctions.pushGitChanges("xtext-umbrella", branchName)
-			gitFunctions.pushGitChanges("xtext-lib", branchName)
-			gitFunctions.pushGitChanges("xtext-core", branchName)
-			gitFunctions.pushGitChanges("xtext-extras", branchName)
-			gitFunctions.pushGitChanges("xtext-eclipse", branchName)
-			gitFunctions.pushGitChanges("xtext-idea", branchName)
-			gitFunctions.pushGitChanges("xtext-web", branchName)
-			gitFunctions.pushGitChanges("xtext-maven", branchName)
-			gitFunctions.pushGitChanges("xtext-xtend", branchName)
+			gitFunctions.pushGitChanges("xtext-umbrella", branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-lib"     , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-core"    , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-extras"  , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-eclipse" , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-idea"    , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-web"     , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-maven"   , branchName, tagName)
+			gitFunctions.pushGitChanges("xtext-xtend"   , branchName, tagName)
 		}
 	}
 }

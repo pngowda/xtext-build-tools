@@ -1,9 +1,8 @@
 def createGitBranch(path, branch) {
-    
     def git_cmd
     dir(path) {
         git_cmd = sh (
-            script: "git checkout -b ${branch}",
+            script: '''git checkout -b ${branch}''',
             returnStdout: true
         ).trim()
     }
@@ -14,18 +13,11 @@ def verifyGitBranch(path, branch) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
-            script: '''git rev-parse --verify ${branch} && echo $?''',
+            script: '''git rev-parse --verify ${branch}''',
             returnStatus:true
         )
     }
     return git_cmd
-/*
-    def command1 = "git rev-parse --verify ${branch}"
-    def proc1 = command1.execute(null, new File("${workspace}/${path}"))
-    proc1.waitFor()
-    println "Process exit code: ${proc1.exitValue()}"
-    return "${proc1.exitValue()}"
-*/
 }
 
 
@@ -78,13 +70,23 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch, remote) {
+def tagGit(path, tagName) {
+    def git_cmd
     dir(path) {
-	sshagent(['559af3c2-7b91-482e-81d1-37792c7cb861']) { //
+        git_cmd = sh (
+            script: '''git tag -a -m "release ${tagName}"''',
+            returnStdout: true
+        ).trim()
+    }
+    return git_cmd
+
+}
+
+def pushGitChanges(path, branch, tag, remote) {
+    dir(path) {
         sh '''
-           git push origin ${branch}
+           git push origin ${branch} ${tag}
          '''
-        }
     }
 }
 
