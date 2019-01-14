@@ -13,5 +13,5 @@ def addUpstream(){
     }
   }
   
- retrun true
+return this
        
