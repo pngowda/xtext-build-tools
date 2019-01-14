@@ -115,6 +115,14 @@ node('master') {
 	
 	stage('adjust_pipeline') {
 	   withCredentials([usernamePassword(credentialsId: 'adminCred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+	   File file = new File("${workspace}/locations.properties")
+     	   file.append("git.clone.xtext.lib.location=${workspace}/xtext-lib")
+           file.append("git.clone.xtext.core.location=${workspace}/xtext-core")
+           file.append("git.clone.xtext.extras.location=${workspace}/xtext-extras")
+           file.append("git.clone.xtext.idea.location=${workspace}/xtext-idea")
+           file.append("git.clone.xtext.xtend.location=${workspace}/xtext-xtend")
+           file.append("git.clone.xtext.web.location=${workspace}/xtext-web")
+           println file.text   
 	   sh """
 	     pwd
 	     ls -la
