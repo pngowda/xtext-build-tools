@@ -68,7 +68,7 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch, remote) {
+def pushGitChanges(path, branch) {
     dir(path) {
 	sshagent(['559af3c2-7b91-482e-81d1-37792c7cb861']) { //
         sh '''
