@@ -218,7 +218,7 @@ node('master') {
       stage('Push_GIT_Changes') {
 	   def rootDir = pwd()
            def gitFunctions = load "${rootDir}/git_functions.groovy"
-           gitFunctions.pushGitChanges("xtext-umbrella", branchName)
+          /* gitFunctions.pushGitChanges("xtext-umbrella", branchName)
            gitFunctions.pushGitChanges("xtext-lib", branchName)
            gitFunctions.pushGitChanges("xtext-core", branchName)
            gitFunctions.pushGitChanges("xtext-extras", branchName)
@@ -227,6 +227,7 @@ node('master') {
            gitFunctions.pushGitChanges("xtext-web", branchName)
            gitFunctions.pushGitChanges("xtext-maven", branchName)
            gitFunctions.pushGitChanges("xtext-xtend", branchName)
+	   */
     
     }
  }
