@@ -24,9 +24,6 @@ def verifyGitBranch(path, branch) {
 def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
     dir(path) {
-        sh "git config user.email 'genie-xtext@git.eclipse.org'"
-        sh "git config user.name 'genie-xtext'"
-
         sh(
             script: 'git add -A',
             returnStdout: true
