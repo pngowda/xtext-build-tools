@@ -17,7 +17,7 @@ node('master') {
 	def branchName="${params.BRANCHNAME}"
 	def releaseType="${params.RELEASE}"
 	def isBranchExist
-	def baseGitURL="https://github.com/eclipse/"
+	def baseGitURL="git@github.com:eclipse/"
 	if (!xtextVersion.startsWith("2.")) {
 		currentBuild.result = 'ABORTED'
 		error('XTEXT_VERSION invalid')
@@ -67,7 +67,7 @@ node('master') {
 		//dir("${workspace}/xtext-xtend") { deleteDir() }
 		//dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
-		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
+		sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
 			// make scripts executable
 			sh("find . -type f -exec chmod 777 {} \\;")
 		
