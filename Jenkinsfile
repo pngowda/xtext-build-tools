@@ -49,12 +49,10 @@ node('master') {
 	def xtendGitUrl=baseGitURL+'xtext-xtend.git'
 	def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
 	
-	stage('checkout_xtext-build-tools') {
-		println "checking out"
-		checkout scm
-	}
-	
 	stage('Checkout') {
+		// checkout xtext-build-tools
+		checkout scm
+
 		def rootDir = pwd()
 		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		dir("${workspace}/xtext-lib") { deleteDir() }
