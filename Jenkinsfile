@@ -50,13 +50,16 @@ node('master') {
 	def mavenGitUrl=baseGitURL+'xtext-maven.git'
 	def xtendGitUrl=baseGitURL+'xtext-xtend.git'
 	def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
+
+	def pomFunctions = load "${rootDir}/pom_changes.groovy"
+	def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
+	def gitFunctions = load "${rootDir}/git_functions.groovy"
 	
 	stage('Checkout') {
 		// checkout xtext-build-tools
 		checkout scm
 
 		def rootDir = pwd()
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		
 		repositoryNames.each {
 			dir("${workspace}/${it}") { deleteDir() }
@@ -128,9 +131,6 @@ node('master') {
 	stage('Modify') {
 		def rootDir = pwd()
 		println rootDir
-		def pomFunctions = load "${rootDir}/pom_changes.groovy"
-		def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		
 		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
 			sh """
@@ -194,7 +194,6 @@ node('master') {
 
 	stage('Commit & Push') {
 		def rootDir = pwd()
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
 //		gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
 //		gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
