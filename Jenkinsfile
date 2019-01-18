@@ -12,22 +12,22 @@ node('master') {
 	])
 
 	def xtextVersion="${params.XTEXT_VERSION}"
-	def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
-	def branchName="${params.BRANCHNAME}"
-	def releaseType="${params.RELEASE}"
-	def baseGitURL='git@github.com:eclipse'
 	if (!xtextVersion.startsWith('2.')) {
 		currentBuild.result = 'ABORTED'
 		error('XTEXT_VERSION invalid')
 	
 	}
+
+	def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
+	def releaseType="${params.RELEASE}"
+	def baseGitURL='git@github.com:eclipse'
 	
+	def branchName
 	def isIntermediateRelease = releaseType != 'GA'
 	if(isIntermediateRelease){
 		xtextVersion=xtextVersion+"."+releaseType
 		branchName="milestone_"+xtextVersion
 	} else { // GA release
-		xtextVersion=xtextVersion
 		branchName="release_"+xtextVersion
 	}
 
@@ -49,13 +49,7 @@ node('master') {
 		checkout scm
 
 		repositoryNames.each {
-			dir("${workspace}/${it}") { deleteDir() }
-		}
-		
-		// make scripts executable
-		sh("find . -type f -exec chmod 777 {} \\;")
-	
-		repositoryNames.each {
+			dir(it) { deleteDir() }
 			dir(it) {
 				git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
 			}
@@ -70,6 +64,8 @@ node('master') {
 			sh """
 			  pwd
 			  ls -la
+			  # make scripts executable
+			  find . -type f -exec chmod 777 {} \\;
 			  ./adjustPipelines.sh $branchName
 			"""
 		}
@@ -138,9 +134,4 @@ node('master') {
 		}
 	}
 }
-
-def checkoutSCM(urlPath, wrkDir){
-	checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'UserExclusion', excludedUsers: 'pngowda'],[$class: 'RelativeTargetDirectory', relativeTargetDir: wrkDir]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'adminCred',url: urlPath]]])
-}
-
 
