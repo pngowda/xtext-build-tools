@@ -17,7 +17,7 @@ node('master') {
 	def branchName="${params.BRANCHNAME}"
 	def releaseType="${params.RELEASE}"
 	def isBranchExist
-	def baseGitURL="git@github.com:eclipse/"
+	def baseGitURL="https://github.com/eclipse/"
 	if (!xtextVersion.startsWith("2.")) {
 		currentBuild.result = 'ABORTED'
 		error('XTEXT_VERSION invalid')
