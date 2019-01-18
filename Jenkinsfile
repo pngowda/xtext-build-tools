@@ -11,14 +11,12 @@ node('master') {
 		])
 	])
 
-	deleteDir()
 	def xtextVersion="${params.XTEXT_VERSION}"
 	def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
 	def branchName="${params.BRANCHNAME}"
 	def releaseType="${params.RELEASE}"
-	def isBranchExist
-	def baseGitURL="git@github.com:eclipse"
-	if (!xtextVersion.startsWith("2.")) {
+	def baseGitURL='git@github.com:eclipse'
+	if (!xtextVersion.startsWith('2.')) {
 		currentBuild.result = 'ABORTED'
 		error('XTEXT_VERSION invalid')
 	
@@ -42,16 +40,6 @@ node('master') {
 	// list of Xtext repository names
 	def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella' */]
 	
-	def libGitUrl=baseGitURL+'xtext-lib.git'
-	def coreGitUrl=baseGitURL+'xtext-core.git'
-	def extrasGitUrl=baseGitURL+'xtext-extras.git'
-	def eclipseGitUrl=baseGitURL+'xtext-eclipse.git'
-	def ideaGitUrl=baseGitURL+'xtext-idea.git'
-	def webGitUrl=baseGitURL+'xtext-web.git'
-	def mavenGitUrl=baseGitURL+'xtext-maven.git'
-	def xtendGitUrl=baseGitURL+'xtext-xtend.git'
-	def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
-
 	def pomFunctions    = load 'pom_changes.groovy'
 	def gradleFunctions = load 'gradle_functions.groovy'
 	def gitFunctions    = load 'git_functions.groovy'
@@ -68,7 +56,9 @@ node('master') {
 		sh("find . -type f -exec chmod 777 {} \\;")
 	
 		repositoryNames.each {
-			git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+			dir(it) {
+				git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+			}
 			if (gitFunctions.verifyGitBranch(it, branchName)!=0){
 				gitFunctions.createGitBranch(it, branchName)
 			}
@@ -137,26 +127,14 @@ node('master') {
 	}
 
 	stage('Commit & Push') {
-		gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-idea", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
-//		gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
+		repositoryNames.each {
+			gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
+		}
 
 		sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
-			gitFunctions.pushGitChanges("xtext-lib"     , branchName)
-//			gitFunctions.pushGitChanges("xtext-core"    , branchName)
-//			gitFunctions.pushGitChanges("xtext-extras"  , branchName)
-//			gitFunctions.pushGitChanges("xtext-eclipse" , branchName)
-//			gitFunctions.pushGitChanges("xtext-idea"    , branchName)
-//			gitFunctions.pushGitChanges("xtext-web"     , branchName)
-//			gitFunctions.pushGitChanges("xtext-maven"   , branchName)
-//			gitFunctions.pushGitChanges("xtext-xtend"   , branchName)
-//			gitFunctions.pushGitChanges("xtext-umbrella", branchName)
+			repositoryNames.each {
+				gitFunctions.pushGitChanges(it, branchName)
+			}
 		}
 	}
 }
