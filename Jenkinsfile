@@ -39,7 +39,8 @@ node('master') {
 	println "branch to be created " + branchName
 	println "tag to be created " + tagName
 	
-	def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea' */]
+	// list of Xtext repository names
+	def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella' */]
 	
 	def libGitUrl=baseGitURL+'xtext-lib.git'
 	def coreGitUrl=baseGitURL+'xtext-core.git'
@@ -51,28 +52,17 @@ node('master') {
 	def xtendGitUrl=baseGitURL+'xtext-xtend.git'
 	def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
 
-	def pomFunctions = load "${rootDir}/pom_changes.groovy"
-	def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
-	def gitFunctions = load "${rootDir}/git_functions.groovy"
+	def pomFunctions    = load 'pom_changes.groovy'
+	def gradleFunctions = load 'gradle_functions.groovy'
+	def gitFunctions    = load 'git_functions.groovy'
 	
 	stage('Checkout') {
 		// checkout xtext-build-tools
 		checkout scm
 
-		def rootDir = pwd()
-		
 		repositoryNames.each {
 			dir("${workspace}/${it}") { deleteDir() }
 		}
-		//dir("${workspace}/xtext-lib") { deleteDir() }
-		//dir("${workspace}/xtext-core") { deleteDir() }
-		//dir("${workspace}/xtext-extras") { deleteDir() }
-		//dir("${workspace}/xtext-eclipse") { deleteDir() }
-		//dir("${workspace}/xtext-idea") { deleteDir() }
-		//dir("${workspace}/xtext-web") { deleteDir() }
-		//dir("${workspace}/xtext-maven") { deleteDir() }
-		//dir("${workspace}/xtext-xtend") { deleteDir() }
-		//dir("${workspace}/xtext-umbrella") { deleteDir() }
 		
 		// make scripts executable
 		sh("find . -type f -exec chmod 777 {} \\;")
@@ -83,55 +73,9 @@ node('master') {
 				gitFunctions.createGitBranch(it, branchName)
 			}
 		}
-		
-		// git url: "${baseGitURL}/xtext-lib.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
-		
-		
-		//checkoutSCM(coreGitUrl, "xtext-core")
-		//if (gitFunctions.verifyGitBranch("xtext-core", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-core", branchName)
-		//}
-        //
-		//checkoutSCM(extrasGitUrl, "xtext-extras")
-		//if (gitFunctions.verifyGitBranch("xtext-extras", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-extras", branchName)
-		//}
-        //
-		//checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-		//if (gitFunctions.verifyGitBranch("xtext-eclipse", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-eclipse", branchName)
-		//}
-        //
-		//checkoutSCM(ideaGitUrl, "xtext-idea")
-		//if (gitFunctions.verifyGitBranch("xtext-idea", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-idea", branchName)
-		//}
-        //
-		//checkoutSCM(webGitUrl, "xtext-web")
-		//if (gitFunctions.verifyGitBranch("xtext-web", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-web", branchName)
-		//}
-        //
-		//checkoutSCM(mavenGitUrl, "xtext-maven")
-		//if (gitFunctions.verifyGitBranch("xtext-maven", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-maven", branchName)
-		//}
-        //
-		//checkoutSCM(xtendGitUrl, "xtext-xtend")
-		//if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-xtend", branchName)
-		//}
-        //
-		//checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
-		//if (gitFunctions.verifyGitBranch("xtext-umbrella", branchName)!=0){
-		//	gitFunctions.createGitBranch("xtext-umbrella", branchName)
-		//}
 	}
 	
 	stage('Modify') {
-		def rootDir = pwd()
-		println rootDir
-		
 		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
 			sh """
 			  pwd
@@ -193,7 +137,6 @@ node('master') {
 	}
 
 	stage('Commit & Push') {
-		def rootDir = pwd()
 		gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
 //		gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
 //		gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
