@@ -54,7 +54,7 @@ node('master') {
 		checkout scm
 	}
 	
-	stage('checkout-xtext-repos') {
+	stage('Checkout') {
 		def rootDir = pwd()
 		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		dir("${workspace}/xtext-lib") { deleteDir() }
@@ -119,7 +119,13 @@ node('master') {
 		}
 	}
 	
-	stage('adjust_pipeline') {
+	stage('Modify') {
+		def rootDir = pwd()
+		println rootDir
+		def pomFunctions = load "${rootDir}/pom_changes.groovy"
+		def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
+		def gitFunctions = load "${rootDir}/git_functions.groovy"
+		
 		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
 			sh """
 			  pwd
@@ -127,14 +133,6 @@ node('master') {
 			  ./adjustPipelines.sh $branchName
 			"""
 		}
-	}
-
-	stage('release_preparation_xtext-repos') {
-		def rootDir = pwd()
-		println rootDir
-		def pomFunctions = load "${rootDir}/pom_changes.groovy"
-		def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		
 		//preparing xtext-lib
 		print "##### Preparing xtext-lib ########"
@@ -187,8 +185,8 @@ node('master') {
 //		pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
 //		gitFunctions.getGitChanges("xtext-umbrella")
 	}
-	
-	stage('Commit_GIT_Changes') {
+
+	stage('Commit & Push') {
 		def rootDir = pwd()
 		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
@@ -200,11 +198,7 @@ node('master') {
 //		gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
 //		gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
 //		gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
-	}
 
-	stage('Push_GIT_Changes') {
-		def rootDir = pwd()
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
 			gitFunctions.pushGitChanges("xtext-lib"     , branchName)
 //			gitFunctions.pushGitChanges("xtext-core"    , branchName)
