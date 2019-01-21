@@ -11,131 +11,65 @@ node('master') {
 		])
 	])
 
-	deleteDir()
 	def xtextVersion="${params.XTEXT_VERSION}"
-	def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
-	def branchName="${params.BRANCHNAME}"
-	def releaseType="${params.RELEASE}"
-	def isBranchExist
-	def baseGitURL="https://github.com/eclipse/"
-	if (!xtextVersion.startsWith("2.")) {
+	if (!xtextVersion.startsWith('2.')) {
 		currentBuild.result = 'ABORTED'
 		error('XTEXT_VERSION invalid')
 	
 	}
+
+	def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
+	def releaseType="${params.RELEASE}"
+	def baseGitURL='git@github.com:eclipse'
 	
+	def branchName
 	def isIntermediateRelease = releaseType != 'GA'
 	if(isIntermediateRelease){
-		xtextVersion=xtextVersion+"."+releaseType
-		branchName="milestone_"+xtextVersion
+		xtextVersion="${xtextVersion}.${releaseType}"
+		branchName="milestone_${xtextVersion}"
 	} else { // GA release
-		xtextVersion=xtextVersion
-		branchName="release_"+xtextVersion
+		branchName="release_${xtextVersion}"
 	}
 
 	def tagName="v${xtextVersion}"
 	
-	println "xtext version to be released " + xtextVersion
-	println "branch to be created " + branchName
-	println "tag to be created " + tagName
+	println "xtext version to be released ${xtextVersion}"
+	println "branch to be created ${branchName}"
+	println "tag to be created ${tagName}"
 	
-	def libGitUrl=baseGitURL+'xtext-lib.git'
-	def coreGitUrl=baseGitURL+'xtext-core.git'
-	def extrasGitUrl=baseGitURL+'xtext-extras.git'
-	def eclipseGitUrl=baseGitURL+'xtext-eclipse.git'
-	def ideaGitUrl=baseGitURL+'xtext-idea.git'
-	def webGitUrl=baseGitURL+'xtext-web.git'
-	def mavenGitUrl=baseGitURL+'xtext-maven.git'
-	def xtendGitUrl=baseGitURL+'xtext-xtend.git'
-	def umbrellaGitUrl=baseGitURL+'xtext-umbrella.git'
+	// list of Xtext repository names
+	def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
 	
-	stage('checkout_xtext-build-tools') {
-		println "checking out"
+	stage('Checkout') {
+		def gitFunctions    = load 'git_functions.groovy'
+		// checkout xtext-build-tools
 		checkout scm
-	}
-	
-	stage('checkout-xtext-repos') {
-		def rootDir = pwd()
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
-		dir("${workspace}/xtext-lib") { deleteDir() }
-		//dir("${workspace}/xtext-core") { deleteDir() }
-		//dir("${workspace}/xtext-extras") { deleteDir() }
-		//dir("${workspace}/xtext-eclipse") { deleteDir() }
-		//dir("${workspace}/xtext-idea") { deleteDir() }
-		//dir("${workspace}/xtext-web") { deleteDir() }
-		//dir("${workspace}/xtext-maven") { deleteDir() }
-		//dir("${workspace}/xtext-xtend") { deleteDir() }
-		//dir("${workspace}/xtext-umbrella") { deleteDir() }
-		
-		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
 
-			// make scripts executable
-			sh("find . -type f -exec chmod 777 {} \\;")
-		
-			checkoutSCM(libGitUrl, "xtext-lib")
-			
-			if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-lib", branchName)
+		repositoryNames.each {
+			dir(it) { deleteDir() }
+			dir(it) {
+				git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
 			}
-			
-			checkoutSCM(coreGitUrl, "xtext-core")
-			if (gitFunctions.verifyGitBranch("xtext-core", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-core", branchName)
-			}
-            
-			checkoutSCM(extrasGitUrl, "xtext-extras")
-			if (gitFunctions.verifyGitBranch("xtext-extras", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-extras", branchName)
-			}
-            
-			checkoutSCM(eclipseGitUrl, "xtext-eclipse")
-			if (gitFunctions.verifyGitBranch("xtext-eclipse", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-eclipse", branchName)
-			}
-            
-			checkoutSCM(ideaGitUrl, "xtext-idea")
-			if (gitFunctions.verifyGitBranch("xtext-idea", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-idea", branchName)
-			}
-            
-			checkoutSCM(webGitUrl, "xtext-web")
-			if (gitFunctions.verifyGitBranch("xtext-web", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-web", branchName)
-			}
-            
-			checkoutSCM(mavenGitUrl, "xtext-maven")
-			if (gitFunctions.verifyGitBranch("xtext-maven", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-maven", branchName)
-			}
-            
-			checkoutSCM(xtendGitUrl, "xtext-xtend")
-			if (gitFunctions.verifyGitBranch("xtext-lib", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-xtend", branchName)
-			}
-            
-			checkoutSCM(umbrellaGitUrl, "xtext-umbrella")	
-			if (gitFunctions.verifyGitBranch("xtext-umbrella", branchName)!=0){
-				gitFunctions.createGitBranch("xtext-umbrella", branchName)
+			if (gitFunctions.verifyGitBranch(it, branchName)!=0){
+				gitFunctions.createGitBranch(it, branchName)
 			}
 		}
 	}
 	
-	stage('adjust_pipeline') {
+	stage('Modify') {
+		def pomFunctions    = load 'pom_changes.groovy'
+		def gradleFunctions = load 'gradle_functions.groovy'
+		def gitFunctions    = load 'git_functions.groovy'
+	
 		sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
 			sh """
 			  pwd
 			  ls -la
+			  # make scripts executable
+			  chmod +x adjustPipelines.sh
 			  ./adjustPipelines.sh $branchName
 			"""
 		}
-	}
-
-	stage('release_preparation_xtext-repos') {
-		def rootDir = pwd()
-		println rootDir
-		def pomFunctions = load "${rootDir}/pom_changes.groovy"
-		def gradleFunctions = load "${rootDir}/gradle_functions.groovy"
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 		
 		//preparing xtext-lib
 		print "##### Preparing xtext-lib ########"
@@ -188,41 +122,23 @@ node('master') {
 		pomFunctions.pomZipVersionUpdate("xtext-umbrella", xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
 		gitFunctions.getGitChanges("xtext-umbrella")
 	}
-	
-	stage('Commit_GIT_Changes') {
-		def rootDir = pwd()
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
 
-		gitFunctions.commitGitChanges("xtext-lib", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-core", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-extras", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-eclipse", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-idea", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-web", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-maven", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-xtend", xtextVersion, "[release] version")
-		gitFunctions.commitGitChanges("xtext-umbrella", xtextVersion, "[release] version")
-	}
+	stage('Commit & Push') {
+		def gitFunctions    = load 'git_functions.groovy'
 
-	stage('Push_GIT_Changes') {
-		def rootDir = pwd()
-		def gitFunctions = load "${rootDir}/git_functions.groovy"
-		sshagent(['b15f63d8-f093-4658-916a-4e63f09a72de']) {
-			gitFunctions.pushGitChanges("xtext-lib"     , branchName)
-			gitFunctions.pushGitChanges("xtext-core"    , branchName)
-			gitFunctions.pushGitChanges("xtext-extras"  , branchName)
-			gitFunctions.pushGitChanges("xtext-eclipse" , branchName)
-			gitFunctions.pushGitChanges("xtext-idea"    , branchName)
-			gitFunctions.pushGitChanges("xtext-web"     , branchName)
-			gitFunctions.pushGitChanges("xtext-maven"   , branchName)
-			gitFunctions.pushGitChanges("xtext-xtend"   , branchName)
-			gitFunctions.pushGitChanges("xtext-umbrella", branchName)
+		repositoryNames.each {
+			gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
+			gitFunctions.tagGit(it, tagName)
 		}
+
+		sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
+			sh "echo pushing branch ${branchName}"
+			repositoryNames.each {
+				gitFunctions.pushGitChanges(it, branchName)
+			}
+		}
+		
+		slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
 	}
 }
-
-def checkoutSCM(urlPath, wrkDir){
-	checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'UserExclusion', excludedUsers: 'pngowda'],[$class: 'RelativeTargetDirectory', relativeTargetDir: wrkDir]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'adminCred',url: urlPath]]])
-}
-
 

@@ -24,26 +24,22 @@ def verifyGitBranch(path, branch) {
 def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
     dir(path) {
-        sh "git config user.email 'genie-xtext@git.eclipse.org'"
-        sh "git config user.name 'genie-xtext'"
-
-        sh(
+        print sh(
             script: 'git add -A',
             returnStdout: true
-        ).trim()
-        git_cmd = sh(
-            script: "git commit -a -m '${message} ${xtext_version}'",
-            returnStdout: true
-        ).trim()
-        sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
-	
-	sh "echo \"\n#################### Changes in repo ${path} ##################\n \" >> ${workspace}/change.log"
-	sh(
-	     script: "git show --name-only HEAD >> ${workspace}/change.log",
-             returnStdout: true
-         ).trim()
+        )
+        // return status, but ignore
+        sh(
+            script: "git commit -a -m '${message} ${xtext_version}' >> commit.log",
+            returnStatus: true
+        )
+        print sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
+
+        print sh(
+             script: "git show --name-only HEAD",
+                 returnStdout: true
+             )
     }
-    println "return statment "+git_cmd
     
     return git_cmd
 }
@@ -74,7 +70,7 @@ def tagGit(path, tagName) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
-            script: '''git tag -a -m "release ${tagName}"''',
+            script: "git tag --force -a ${tagName} -m 'release ${tagName}'",
             returnStdout: true
         ).trim()
     }
@@ -83,11 +79,14 @@ def tagGit(path, tagName) {
 }
 
 def pushGitChanges(path, branch) {
+    def git_cmd
     dir(path) {
-        sh '''
-           git push --force --tags origin ${branch}
-         '''
+        git_cmd = sh (
+            script: "git push --force --tags origin ${branch}",
+            returnStatus: true
+        )
     }
+    return git_cmd
 }
 
 def getGitCommit() {
