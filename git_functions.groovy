@@ -1,47 +1,45 @@
 def createGitBranch(path, branch) {
-    
     def git_cmd
     dir(path) {
         git_cmd = sh (
             script: "git checkout -b ${branch}",
-            returnStdout: true
-        ).trim()
+            returnStatus: true
+        )
     }
     return git_cmd
 }
 
 def verifyGitBranch(path, branch) {
-    def command1 = "git rev-parse --verify ${branch}"
-    def proc1 = command1.execute(null, new File("${workspace}/${path}"))
-    proc1.waitFor()
-    println "Process exit code: ${proc1.exitValue()}"
-    return "${proc1.exitValue()}"
+    def git_cmd
+    dir(path) {
+        git_cmd = sh (
+            script: "git rev-parse --verify ${branch}",
+            returnStatus: true
+        )
+    }
+    return git_cmd
 }
 
 
 def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
     def git_cmd
     dir(path) {
-        sh "git config --global user.email '${gitEmail}'"
-        sh "git config --global user.name '${gitName}'"
-
-        sh(
+        print sh(
             script: 'git add -A',
             returnStdout: true
-        ).trim()
-        git_cmd = sh(
-            script: "git commit -a -m '${message} ${xtext_version}'",
-            returnStdout: true
-        ).trim()
-        sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
-	
-	sh "echo \"\n#################### Changes in repo ${path} ##################\n \" >> ${workspace}/change.log"
-	sh(
-	     script: "git show --name-only HEAD >> ${workspace}/change.log",
-             returnStdout: true
-         ).trim()
+        )
+        // return status, but ignore
+        sh(
+            script: "git commit -a -m '${message} ${xtext_version}' >> commit.log",
+            returnStatus: true
+        )
+        print sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
+
+        print sh(
+             script: "git show --name-only HEAD",
+                 returnStdout: true
+             )
     }
-    println "retrun statment "+git_cmd
     
     return git_cmd
 }
@@ -68,15 +66,28 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
-def pushGitChanges(path, branch) {
+
+def tagGit(path, tagName) {
+    def git_cmd
     dir(path) {
-	sshagent(['559af3c2-7b91-482e-81d1-37792c7cb861']) { //
-        gitpush = sh (
-           script: "git push --set-upstream origin ${branch}",
-           returnStdout: true
-	).trim()
-        }
+        git_cmd = sh (
+            script: "git tag --force -a ${tagName} -m 'release ${tagName}'",
+            returnStdout: true
+        ).trim()
     }
+    return git_cmd
+
+}
+
+def pushGitChanges(path, branch) {
+    def git_cmd
+    dir(path) {
+        git_cmd = sh (
+            script: "git push --force --tags origin ${branch}",
+            returnStatus: true
+        )
+    }
+    return git_cmd
 }
 
 def getGitCommit() {
