@@ -62,7 +62,8 @@ node('master') {
 	}
 	
 	stage('addUpstream') {
-	def pomFunctions    = load 'add_upstream.groovy'
+	    def Functions    = load 'add_upstreamjob.groovy'
+	     Functions.addUpstream()
 	}
 	/*
 	stage('Modify') {
