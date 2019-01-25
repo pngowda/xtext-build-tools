@@ -10,6 +10,9 @@ node('master') {
 		//	choice(name: 'RELEASE', choices: ["Beta\nM1\nM2\nM3\nRC1\nRC2\nGA"], description: 'Type of release to build')
 		//])
 	])
+	properties([
+		disableConcurrentBuilds()
+	])
 
 	def xtextVersion="${params.XTEXT_VERSION}"
 	if (!xtextVersion.startsWith('2.')) {
