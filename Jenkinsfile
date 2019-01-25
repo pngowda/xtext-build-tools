@@ -43,6 +43,7 @@ node('master') {
 	stage('Checkout') {
 	        // checkout xtext-build-tools
 		checkout scm
+		def gitFunctions    = load 'git_functions.groovy'
 		repositoryNames.each {
 			dir(it) { deleteDir() }
 			dir(it) {
@@ -52,7 +53,7 @@ node('master') {
 				gitFunctions.createGitBranch(it, branchName)
 			}
 		}
-		def gitFunctions    = load 'git_functions.groovy'
+		
 	}
 	
 	stage('Modify') {
