@@ -11,6 +11,8 @@ def addUpstream(){
 		    lines.add(linenum, insertstring)
 		   }
     }
+	
+    fh.write lines
   }
   
 return this
