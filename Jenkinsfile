@@ -41,10 +41,8 @@ node('master') {
 	def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
 	
 	stage('Checkout') {
-		def gitFunctions    = load 'git_functions.groovy'
-		// checkout xtext-build-tools
+	        // checkout xtext-build-tools
 		checkout scm
-
 		repositoryNames.each {
 			dir(it) { deleteDir() }
 			dir(it) {
@@ -54,6 +52,7 @@ node('master') {
 				gitFunctions.createGitBranch(it, branchName)
 			}
 		}
+		def gitFunctions    = load 'git_functions.groovy'
 	}
 	
 	stage('Modify') {
