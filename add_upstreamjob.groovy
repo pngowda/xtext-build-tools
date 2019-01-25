@@ -12,8 +12,11 @@ def addUpstream(){
 		   }
     }
 for (line in lines) {
-    println line+"\n"
+    //println line+"\n"
+    fh.append(line+"\n")
+  
 }
+	println fh.text
   }
   
 return this
