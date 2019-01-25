@@ -46,7 +46,7 @@ node('master') {
 		repositoryNames.each {
 			dir(it) { deleteDir() }
 			dir(it) {
-				git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+				git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: '559af3c2-7b91-482e-81d1-37792c7cb861'
 			}
 			if (gitFunctions.verifyGitBranch(it, branchName)!=0){
 				gitFunctions.createGitBranch(it, branchName)
