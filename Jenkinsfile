@@ -43,6 +43,8 @@ node('master') {
 	// list of Xtext repository names
 	def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
 	
+		
+	
 	stage('Checkout') {
 	        // checkout xtext-build-tools
 		checkout scm
@@ -59,6 +61,10 @@ node('master') {
 		
 	}
 	
+	stage('addUpstream') {
+	def pomFunctions    = load 'add_upstream.groovy'
+	}
+	/*
 	stage('Modify') {
 		def pomFunctions    = load 'pom_changes.groovy'
 		def gradleFunctions = load 'gradle_functions.groovy'
@@ -142,5 +148,6 @@ node('master') {
 		
 		//slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
 	}
+	*/
 }
 
