@@ -123,14 +123,13 @@ node('master') {
 		gitFunctions.getGitChanges("xtext-umbrella")
 	}
 
+
 	stage('Commit & Push') {
 		def gitFunctions    = load 'git_functions.groovy'
-
 		repositoryNames.each {
 			gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
 			gitFunctions.tagGit(it, tagName)
 		}
-
 		sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
 			sh "echo pushing branch ${branchName}"
 			repositoryNames.each {

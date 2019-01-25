@@ -66,6 +66,7 @@ def getGitRemote(name = '', type = 'fetch') {
     return gitRemote
 }
 
+
 def tagGit(path, tagName) {
     def git_cmd
     dir(path) {
