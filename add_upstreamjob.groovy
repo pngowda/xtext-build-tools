@@ -6,6 +6,7 @@ def addUpstream(upstreamJob){
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
    def lines = fh.readLines()
+   println lines
    LineNumberReader reader = fh.newReader()
    while ((line = reader.readLine()) != null) {
      linenum++
