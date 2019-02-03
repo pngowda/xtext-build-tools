@@ -4,7 +4,7 @@ def BRANCH_NAME="test"
 //  def insertstring=",pipelineTriggers([upstream(threshold: \'SUCCESS\',upstreamProjects: \'xtext-lib/\' + URLEncoder.encode(\"BRANCH_NAME\", \"UTF-8\"))])"
 
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$BRANCH_NAME\", \"UTF-8\"))])"
-
+   def lines
    println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
