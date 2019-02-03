@@ -13,8 +13,7 @@ def addUpstream(upstreamJob){
      linenum++
      println line
      if (line=~/^\s+]/){
-       println line
-       println linenum
+       println "matched here" 
        lines.add(linenum-1, insertTrigger)
      }
    }   
