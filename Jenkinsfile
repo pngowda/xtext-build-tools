@@ -2,38 +2,14 @@ import jenkins.model.*
 import hudson.model.*
 import groovy.xml.XmlUtil
 
+
 node('master') {
 	properties([
 		[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']]
 
 	])
 
-	def xtextVersion="${params.XTEXT_VERSION}"
-	if (!xtextVersion.startsWith('2.')) {
-		currentBuild.result = 'ABORTED'
-		error('XTEXT_VERSION invalid')
-	
-	}
 
-	def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
-	def releaseType="${params.RELEASE}"
-	def baseGitURL='git@github.com:eclipse'
-	
-	def branchName
-	def isIntermediateRelease = releaseType != 'GA'
-	if(isIntermediateRelease){
-		xtextVersion="${xtextVersion}.${releaseType}"
-		branchName="milestone_${xtextVersion}"
-	} else { // GA release
-		branchName="release_${xtextVersion}"
-	}
-
-	def tagName="v${xtextVersion}"
-	
-	println "xtext version to be released ${xtextVersion}"
-	println "branch to be created ${branchName}"
-	println "tag to be created ${tagName}"
-	
 	// list of Xtext repository names
 	def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
 	
@@ -57,8 +33,9 @@ node('master') {
 	
 	stage('addUpstream') {
 	    def Functions    = load 'add_upstreamjob.groovy'
-	     Functions.addUpstream()
+	     Functions.addUpstream("xtext_lib")
 	}
+	
 	/*
 	stage('Modify') {
 		def pomFunctions    = load 'pom_changes.groovy'
