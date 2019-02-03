@@ -17,6 +17,7 @@ node('master') {
 	
 	stage('Checkout') {
 	        // checkout xtext-build-tools
+		deleteDir()
 		checkout scm
 		def gitFunctions    = load 'git_functions.groovy'
 		//repositoryNames.each {
