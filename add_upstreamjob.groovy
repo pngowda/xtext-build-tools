@@ -1,7 +1,6 @@
 
-def addUpstream(upstreamJob){
-   def BRANCH_NAME="test"
-   def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$BRANCH_NAME\", \"UTF-8\"))])"
+def addUpstream(upstreamJob, branchName){
+   def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))])"
    println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
