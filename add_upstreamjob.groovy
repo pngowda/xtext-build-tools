@@ -10,6 +10,8 @@ def addUpstream(upstreamJob){
    while ((line = reader.readLine()) != null) {
      linenum++
      if (line=~/^\s+]/){
+       println line
+       println linenum
        lines.add(linenum-1, insertstring)
      }
    }   
