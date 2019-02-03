@@ -15,13 +15,13 @@ def addUpstream(upstreamJob){
      if (line=~/^\s+]/){
        println line
        println linenum
-       lines.add(linenum-1, insertstring)
+       lines.add(linenum-1, insertTrigger)
      }
    }   
    def w = fh.newWriter() 
-   //for(wline in lines){
-       //w<< wline +"\n"
-     //}
+   for(wline in lines){
+       w<< wline +"\n"
+     }
    w.close()
 }
 return this
