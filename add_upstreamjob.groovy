@@ -1,10 +1,8 @@
 
 def addUpstream(upstreamJob){
-def BRANCH_NAME="test"
-//  def insertstring=",pipelineTriggers([upstream(threshold: \'SUCCESS\',upstreamProjects: \'xtext-lib/\' + URLEncoder.encode(\"BRANCH_NAME\", \"UTF-8\"))])"
-
+   def BRANCH_NAME="test"
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$BRANCH_NAME\", \"UTF-8\"))])"
-   def lines
+   def lines = fh.readLines()
    println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
@@ -15,7 +13,6 @@ def BRANCH_NAME="test"
        lines.add(linenum-1, insertstring)
      }
    }   
-
    def w = fh.newWriter() 
    for(wline in lines){
        w<< wline +"\n"
