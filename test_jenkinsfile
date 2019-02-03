@@ -4,13 +4,8 @@ import groovy.xml.XmlUtil
 
 node('master') {
 	properties([
-		[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
-		//parameters([
-		//	string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
-		//	choice(name: 'RELEASE', choices: ["Beta\nM1\nM2\nM3\nRC1\nRC2\nGA"], description: 'Type of release to build')
-		//])
+		[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']]
 	])
-
 
 	def xtextVersion="${params.XTEXT_VERSION}"
 	if (!xtextVersion.startsWith('2.')) {
@@ -41,22 +36,29 @@ node('master') {
 	// list of Xtext repository names
 	def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
 	
+		
+	
 	stage('Checkout') {
 	        // checkout xtext-build-tools
 		checkout scm
 		def gitFunctions    = load 'git_functions.groovy'
-		repositoryNames.each {
-			dir(it) { deleteDir() }
-			dir(it) {
-				git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: '559af3c2-7b91-482e-81d1-37792c7cb861'
-			}
-			if (gitFunctions.verifyGitBranch(it, branchName)!=0){
-				gitFunctions.createGitBranch(it, branchName)
-			}
-		}
+		//repositoryNames.each {
+		//	dir(it) { deleteDir() }
+		//	dir(it) {
+		//		git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: '559af3c2-7b91-482e-81d1-37792c7cb861'
+		//	}
+		//	if (gitFunctions.verifyGitBranch(it, branchName)!=0){
+		//		gitFunctions.createGitBranch(it, branchName)
+		//	}
+		//}
 		
 	}
 	
+	stage('addUpstream') {
+	    def Functions    = load 'add_upstreamjob.groovy'
+	     Functions.addUpstream()
+	}
+	/*
 	stage('Modify') {
 		def pomFunctions    = load 'pom_changes.groovy'
 		def gradleFunctions = load 'gradle_functions.groovy'
@@ -140,5 +142,6 @@ node('master') {
 		
 		//slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
 	}
+	*/
 }
 

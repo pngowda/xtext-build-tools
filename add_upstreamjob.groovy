@@ -1,23 +1,26 @@
 
-def addUpstream(){
-   def insertstring="pipelineTriggers([upstream(threshold: \'SUCCESS\',upstreamProjects: \'xtext-lib/\' + URLEncoder.encode(\"BRANCH_NAME\", \"UTF-8\"))])"
-   filename="test_jenkinsfile"
-	 File fh = new File("${workspace}//test_jenkinsfile")
+def addUpstream(upstreamJob){
+
+//  def insertstring=",pipelineTriggers([upstream(threshold: \'SUCCESS\',upstreamProjects: \'xtext-lib/\' + URLEncoder.encode(\"BRANCH_NAME\", \"UTF-8\"))])"
+
+   def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$BRANCH_NAME\", \"UTF-8\"))])"
+
+   println insertTrigger
+   File fh = new File("test_jenkinsfile")
    def linenum=0
-   def lines = fh.readLines()
-   for (line in lines) {
-	    linenum++
-	    if (line=~/BuildDiscarderProperty/){
-		    lines.add(linenum, insertstring)
-		   }
-    }
-for (line in lines) {
-    //println line+"\n"
-    fh.append(line+"\n")
-  
+   LineNumberReader reader = fh.newReader()
+   while ((line = reader.readLine()) != null) {
+     linenum++
+     if (line=~/^\s+]/){
+       lines.add(linenum-1, insertstring)
+     }
+   }   
+
+   def w = fh.newWriter() 
+   for(wline in lines){
+       w<< wline +"\n"
+     }
+   w.close()
 }
-	println fh.text
-  }
-  
 return this
-       
+   
