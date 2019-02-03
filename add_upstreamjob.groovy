@@ -9,6 +9,7 @@ def addUpstream(upstreamJob){
    LineNumberReader reader = fh.newReader()
    while ((line = reader.readLine()) != null) {
      linenum++
+     println line
      if (line=~/^\s+]/){
        println line
        println linenum
