@@ -6,7 +6,7 @@ def BRANCH_NAME="test"
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$BRANCH_NAME\", \"UTF-8\"))])"
 
    println insertTrigger
-   File fh = new File("test_jenkinsfile")
+   File fh = new File("./test_jenkinsfile")
    def linenum=0
    LineNumberReader reader = fh.newReader()
    while ((line = reader.readLine()) != null) {
