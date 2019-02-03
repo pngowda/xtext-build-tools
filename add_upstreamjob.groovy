@@ -14,7 +14,7 @@ def addUpstream(upstreamJob){
      println line
      if (line=~/^\s+]/){
        println "matched here" 
-       lines.add(linenum-1, insertTrigger)
+       //lines.add(linenum-1, insertTrigger)
      }
    }   
    def w = fh.newWriter() 
