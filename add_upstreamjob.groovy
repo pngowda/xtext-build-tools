@@ -2,10 +2,10 @@
 def addUpstream(upstreamJob){
    def BRANCH_NAME="test"
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$BRANCH_NAME\", \"UTF-8\"))])"
-   def lines = fh.readLines()
    println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
+   def lines = fh.readLines()
    LineNumberReader reader = fh.newReader()
    while ((line = reader.readLine()) != null) {
      linenum++
