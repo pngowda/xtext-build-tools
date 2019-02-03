@@ -6,6 +6,7 @@ def addUpstream(upstreamJob){
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
    def lines = fh.readLines()
+   def linesw = fl.readLines()
    //println lines
    LineNumberReader reader = fh.newReader()
    for (line in lines){
@@ -14,11 +15,11 @@ def addUpstream(upstreamJob){
      println line
      if (line=~/^\s+]/){
        println "matched here" 
-       //lines.add(linenum-1, insertTrigger)
+       linesw.add(linenum-1, insertTrigger)
      }
    }   
    def w = fh.newWriter() 
-   for(wline in lines){
+   for(wline in linesw){
        w<< wline +"\n"
      }
    w.close()
