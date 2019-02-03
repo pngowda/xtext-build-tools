@@ -5,21 +5,16 @@ def addUpstream(upstreamJob){
    println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
-   def lines = fh.readLines()
-   def linesw = fh.readLines()
-   //println lines
-   LineNumberReader reader = fh.newReader()
-   for (line in lines){
-   //while ((line = reader.readLine()) != null) {
+   def linesR = fh.readLines()
+   def linesW = fh.readLines()
+   for (line in linesR){
      linenum++
-     println line
      if (line=~/^\s+]/){
-       println "matched here" 
-       linesw.add(linenum-1, insertTrigger)
+       linesW.add(linenum-1, insertTrigger)
      }
    }   
    def w = fh.newWriter() 
-   for(wline in linesw){
+   for(wline in linesW){
        w<< wline +"\n"
      }
    w.close()
