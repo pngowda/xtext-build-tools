@@ -5,10 +5,10 @@ import groovy.xml.XmlUtil
 node('master') {
 	properties([
 		[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
-		//parameters([
-		//	string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
-		//	choice(name: 'RELEASE', choices: ["Beta\nM1\nM2\nM3\nRC1\nRC2\nGA"], description: 'Type of release to build')
-		//])
+		parameters([
+			string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
+			choice(name: 'RELEASE', choices: ["Beta\nM1\nM2\nM3\nRC1\nRC2\nGA"], description: 'Type of release to build')
+		])
 	])
 	properties([
 		disableConcurrentBuilds()
