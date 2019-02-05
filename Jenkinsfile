@@ -120,7 +120,7 @@ node {
     print "##### Preparing xtext-web ########"
     dir('xtext-web') {
       gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-web/Jenkinsfile", 'xtext-xtend', branchName)
+      jenkinsfile.addUpstream("$workspace/xtext-web/Jenkinsfile", 'xtext-web', branchName)
     }
     
     //preparing xtext-maven
