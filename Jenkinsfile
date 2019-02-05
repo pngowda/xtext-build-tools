@@ -134,6 +134,7 @@ node {
     //preparing xtext-xtend
     print "##### Preparing xtext-xtend ########"
     dir('xtext-xtend') {
+      gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "maven-pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml", snapshotVersion)
