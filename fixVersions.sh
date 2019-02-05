@@ -132,7 +132,7 @@ checkVersionFormat "$to"
 
 if [ "$bump" == "StoS" ]; then
    echo "# bumping version from Snapshot to Snapshot"
-   directories=$(./allDirectories)
+   directories=$(find $(pwd) -d 1 -type d -name "xtext-*")
    for directory in $directories
    do
        directory=$(echo $directory | tr -d '\r')
@@ -147,7 +147,7 @@ fi
 if [ "$bump" == "BST" ]; then
    echo "# bootstrapping version from $from to $to"
   
-   directories=$(./allDirectories)
+   directories=$(find $(pwd) -d 1 -type d -name "xtext-*")
    for directory in $directories
    do
        directory=$(echo $directory | tr -d '\r')
