@@ -74,6 +74,7 @@ node {
         sh ./adjustPipelines.sh $branchName
       """
     }
+  }
     /*
     //preparing xtext-lib
     print "##### Preparing xtext-lib ########"
