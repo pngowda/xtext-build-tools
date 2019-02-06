@@ -8,7 +8,7 @@ node {
     [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
     parameters([
       string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
-      choice(name: 'RELEASE', choices: ['Beta','M1','M2','M3','RC1','RC2','GA'], description: 'Type of release to build')
+      choice(name: 'RELEASE', choices: 'Beta\nM1\nM2\nM3\n', description: 'Type of release to build')
       // TODO: Add DRY_RUN
     ])
   ])
