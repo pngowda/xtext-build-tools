@@ -16,6 +16,8 @@ node {
 
   // TODO Make property XTEXT_VERSION obsolete. The base version can be retrieved from xtext-lib/gradle/version.gradle
   def xtextVersion="${params.XTEXT_VERSION}"
+  def dryRunMode="${params.DRY_RUN}"
+  println dryRunMode
   if (!xtextVersion.startsWith('2.')) {
     currentBuild.result = 'ABORTED'
     error('XTEXT_VERSION invalid')
