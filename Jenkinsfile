@@ -78,7 +78,7 @@ node {
       """
     }
   }
-    /*
+    
     //preparing xtext-lib
     print "##### Preparing xtext-lib ########"
     dir('xtext-lib') {
@@ -164,15 +164,17 @@ node {
       gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
       gitFunctions.tagGit(it, tagName)
     }
-    sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
-      sh "echo pushing branch ${branchName}"
-      repositoryNames.each {
-        gitFunctions.pushGitChanges(it, branchName)
-      }
-    }
+    if(!dryRunMode){     
+      sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
+        sh "echo pushing branch ${branchName}"
+        repositoryNames.each {
+          gitFunctions.pushGitChanges(it, branchName)
+        }
+       }
+     }
     
     // slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
   }
-  */
+  
 }
 
