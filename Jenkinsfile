@@ -74,7 +74,7 @@ node {
         sh ./adjustPipelines.sh $branchName
       """
     }
-    
+    /*
     //preparing xtext-lib
     print "##### Preparing xtext-lib ########"
     dir('xtext-lib') {
@@ -169,5 +169,6 @@ node {
     
     // slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
   }
+  */
 }
 
