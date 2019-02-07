@@ -23,8 +23,7 @@ node {
     error('XTEXT_VERSION invalid')
   
   }
-  deleteDir()
-
+ 
   def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
   def releaseType="${params.RELEASE}"
   def baseGitURL='git@github.com:pngowda'
@@ -71,18 +70,18 @@ node {
       }
     }
   }
-  
+  /*
   stage('Modify') {
     def pom    = load 'pom_changes.groovy'
     def gradle = load 'gradle_functions.groovy'
     def git    = load 'git_functions.groovy'
     def jenkinsfile = load 'jenkins_functions.groovy'
   
-    /*sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
+    sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
       sh """
         sh ./adjustPipelines.sh $branchName
       """
-    }*/
+    }
     
     //preparing xtext-lib
     print "##### Preparing xtext-lib ########"
@@ -180,6 +179,7 @@ node {
     
     // slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
   }
+  */
   
 }
 
