@@ -8,12 +8,16 @@ node {
     [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
     parameters([
       string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
-      choice(name: 'RELEASE', choices: ['Beta','M1','M2','M3','RC1','RC2','GA'], description: 'Type of release to build')
-      // TODO: Add DRY_RUN
+      choice(name: 'RELEASE', choices: ['Beta','M1','M2','M3','RC1','RC2','GA'], description: 'Type of release to build'),
+      booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
     ])
   ])
 
   // TODO Make property XTEXT_VERSION obsolete. The base version can be retrieved from xtext-lib/gradle/version.gradle
+  def dryRunMode="${params.DRY_RUN}"
+  if(dryRunMode){
+    println "##### NOTE: Running script in dry run mode, changes will not be pushed to git repos ######"
+  }
   def xtextVersion="${params.XTEXT_VERSION}"
   if (!xtextVersion.startsWith('2.')) {
     currentBuild.result = 'ABORTED'
@@ -51,8 +55,12 @@ node {
 
     def gitFunctions    = load 'git_functions.groovy'
     repositoryNames.each {
-      // TODO: Do not delete the repository, just reset and switch to master
-      dir(it) { deleteDir() }
+      dir(it) {
+        if(fileExists("/")){ 
+          gitFunctions.gitResetHard()
+          gitFunctions.gitCheckoutMaster()
+        }
+      }
       dir(it) {
         git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
       }
@@ -160,10 +168,12 @@ node {
       gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
       gitFunctions.tagGit(it, tagName)
     }
-    sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
-      sh "echo pushing branch ${branchName}"
-      repositoryNames.each {
-        gitFunctions.pushGitChanges(it, branchName)
+    if(!dryRunMode){   
+      sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
+        sh "echo pushing branch ${branchName}"
+        repositoryNames.each {
+          gitFunctions.pushGitChanges(it, branchName)
+        }
       }
     }
     
