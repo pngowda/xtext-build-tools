@@ -55,25 +55,21 @@ def getGitChanges(path) {
     return git_changes
 }
 
-def gitResetHard(path) {
+def gitResetHard() {
     def git_cmd
-    dir(path) {
       git_cmd = sh (
           script: 'git reset --hard',
           returnStdout: true
       ).trim()
-    }
     return git_cmd
 }
 
-def gitCheckoutMaster(path) {
+def gitCheckoutMaster() {
     def git_cmd
-    dir(path) {
       git_cmd = sh (
           script: 'git checkout master',
           returnStdout: true
       ).trim()
-    }
     return git_cmd
 }
 
