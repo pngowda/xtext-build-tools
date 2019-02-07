@@ -10,14 +10,14 @@ def addUpstream(upstreamJob, branchName){
    def linesW = fh.readLines()
    for (line in linesR){
      linenum++
+     (line =~ /^\s+pipelineTriggers\((.*)\)/).each {trigger1 -> println trigger1}
      if (line=~/^\s+]\)/){
        count++
        insertLineNumber=linenum
-       //linesW.add(linenum-1, insertTrigger)
      }
    }
    print count
-   linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
+   //linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
        w<< wline +"\n"
