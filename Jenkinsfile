@@ -26,7 +26,7 @@ node {
 
   def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
   def releaseType="${params.RELEASE}"
-  def baseGitURL='git@github.com:eclipse'
+  def baseGitURL='git@github.com:pngowda'
   
   def branchName
   def isIntermediateRelease = releaseType != 'GA'
@@ -62,7 +62,7 @@ node {
         }
       }
       dir(it) {
-        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: '559af3c2-7b91-482e-81d1-37792c7cb861'
       }
       // TODO When release branch already exists, then delete it and create a new one
       if (gitFunctions.verifyGitBranch(it, branchName)!=0){
