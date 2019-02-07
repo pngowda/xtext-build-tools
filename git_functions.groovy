@@ -55,6 +55,16 @@ def getGitChanges(path) {
     return git_changes
 }
 
+def gitResetHard(path) {
+    def git_cmd
+    dir(path) {
+      git_cmd = sh (
+          script: 'git reset --hard',
+          returnStdout: true
+      ).trim()
+    }
+    return git_cmd
+}
 
 def getGitRemote(name = '', type = 'fetch') {
     dir("workDir") {
