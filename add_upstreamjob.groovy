@@ -17,7 +17,7 @@ def addUpstream(upstreamJob, branchName){
      }
    }
    print count
-   linesW.add(insertLineNumber-2, ",")
+   linesW.append(insertLineNumber-2, ",")
    linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
