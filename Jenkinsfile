@@ -23,6 +23,7 @@ node {
     error('XTEXT_VERSION invalid')
   
   }
+  deleteDir()
 
   def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
   def releaseType="${params.RELEASE}"
