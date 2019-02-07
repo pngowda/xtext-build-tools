@@ -4,7 +4,8 @@ import groovy.xml.XmlUtil
 
 node('master') {
 	properties([
-			[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']]
+			[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
+			pipelineTriggers([cron('H 2 * * *')])
 	])
 	def xtextVersion="${params.XTEXT_VERSION}"
 	if (!xtextVersion.startsWith('2.')) {
