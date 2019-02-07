@@ -10,7 +10,7 @@ def addUpstream(upstreamJob, branchName){
    def linesW = fh.readLines()
    for (line in linesR){
      linenum++
-     (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> println match[0] }
+     (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> println match[1] }
      if (line=~/^\s+]\)/){
        count++
        insertLineNumber=linenum
