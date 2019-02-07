@@ -8,15 +8,17 @@ def addUpstream(upstreamJob, branchName){
    def insertLineNumber=0
    def linesR = fh.readLines()
    def linesW = fh.readLines()
+   def exisitngTrigger
    for (line in linesR){
      linenum++
-     (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> println match[1] }
+     (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> exisitngTrigger=match[1] }
      if (line=~/^\s+]\)/){
        count++
        insertLineNumber=linenum
      }
    }
-   print count
+   println count
+   println "exisitng trigger "+ exisitngTrigger
    //linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
