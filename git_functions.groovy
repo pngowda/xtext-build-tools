@@ -98,4 +98,22 @@ def getGitCommit() {
     return git_commit
 }
 
+def gitResetHard() {
+    def git_cmd
+      git_cmd = sh (
+          script: 'git reset --hard',
+          returnStdout: true
+      ).trim()
+    return git_cmd
+}
+
+def gitCheckoutMaster() {
+    def git_cmd
+      git_cmd = sh (
+          script: 'git checkout master',
+          returnStdout: true
+      ).trim()
+    return git_cmd
+}
+
 return this
