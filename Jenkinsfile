@@ -58,7 +58,7 @@ node {
       dir(it) {
         if(fileExists("/")){ 
           gitFunctions.gitResetHard(it)
-          gitFunctions.gitCheckoutMaster(it)
+          //gitFunctions.gitCheckoutMaster(it)
         }
       }
       dir(it) {
