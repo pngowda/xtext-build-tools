@@ -5,17 +5,19 @@ def addUpstream(upstreamJob, branchName){
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
    def count=0
+   def insertLineNumber=0
    def linesR = fh.readLines()
    def linesW = fh.readLines()
    for (line in linesR){
      linenum++
      if (line=~/^\s+]/){
        count++
-       print linenum
+       insertLineNumber=linenum
        //linesW.add(linenum-1, insertTrigger)
      }
    }
    print count
+   linesW.add(insertLineNumber-1, insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
        w<< wline +"\n"
