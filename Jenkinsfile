@@ -76,13 +76,8 @@ node {
     def gradle = load 'gradle_functions.groovy'
     def git    = load 'git_functions.groovy'
     def jenkinsfile = load 'jenkins_functions.groovy'
+    def targetdef   = load 'targetdef_functions.groovy'
   
-    sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
-      sh """
-        sh ./adjustPipelines.sh $branchName
-      """
-    }
-    
     //preparing xtext-lib
     print "##### Preparing xtext-lib ########"
     dir('xtext-lib') {
@@ -115,6 +110,7 @@ node {
     print "##### Preparing xtext-eclipse ########"
     dir('xtext-eclipse') {
       jenkinsfile.addUpstream("$workspace/xtext-eclipse/Jenkinsfile", 'xtext-extras', branchName)
+      targetdef.updateXtextRepositories("$workspace/xtext-eclipse/releng/org.eclipse.xtext.target", JENKINS_URL, branchName, false)
     }
     
     //preparing xtext-idea
