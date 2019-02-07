@@ -1,7 +1,7 @@
 
 def addUpstream(upstreamJob, branchName){
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))])"
-   println insertTrigger
+   //println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
    def count=0
@@ -10,8 +10,8 @@ def addUpstream(upstreamJob, branchName){
    def linesW = fh.readLines()
    for (line in linesR){
      linenum++
-     if(line =~ /^\s+pipelineTriggers\((.*)\)/){
-        println ${0}
+     if(mtcher=line=~ /^\s+pipelineTriggers\((.*)\)/){
+        println ${mtcher[0]}
      }
      if (line=~/^\s+]\)/){
        count++
