@@ -10,7 +10,7 @@ def addUpstream(upstreamJob, branchName){
    def linesW = fh.readLines()
    for (line in linesR){
      linenum++
-     if (line=~/^\s+])/){
+     if (line=~/^\s+]\)/){
        count++
        insertLineNumber=linenum
        //linesW.add(linenum-1, insertTrigger)
