@@ -55,7 +55,12 @@ node {
     def gitFunctions    = load 'git_functions.groovy'
     repositoryNames.each {
       // TODO: Do not delete the repository, just reset and switch to master
-      dir(it) { deleteDir() }
+      dir(it) {
+        if(fileExists("/")){ 
+          gitResetHard(it)
+          gitCheckoutMaster(it)
+        }
+      }
       dir(it) {
         git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
       }
