@@ -57,8 +57,8 @@ node {
       // TODO: Do not delete the repository, just reset and switch to master
       dir(it) {
         if(fileExists("/")){ 
-          gitResetHard(it)
-          gitCheckoutMaster(it)
+          gitFunctions.gitResetHard(it)
+          gitFunctions.gitCheckoutMaster(it)
         }
       }
       dir(it) {
