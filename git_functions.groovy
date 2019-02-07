@@ -66,6 +66,17 @@ def gitResetHard(path) {
     return git_cmd
 }
 
+def gitCheckoutMaster(path) {
+    def git_cmd
+    dir(path) {
+      git_cmd = sh (
+          script: 'git checkout master',
+          returnStdout: true
+      ).trim()
+    }
+    return git_cmd
+}
+
 def getGitRemote(name = '', type = 'fetch') {
     dir("workDir") {
     gitRemote = sh (
