@@ -25,7 +25,7 @@ def addUpstream(upstreamJob, branchName){
        continue;
      }
    }
-   if(${exisitngTrigger}){
+   if(exisitngTrigger){
       insertTrigger="pipelineTriggers(${exisitngTrigger}, ${appendTrigger})"
       linesW.set(insert_append-1, "\t\t"+insertTrigger)
    }
