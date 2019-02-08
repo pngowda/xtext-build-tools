@@ -5,6 +5,7 @@ def addUpstream(upstreamJob, branchName){
    //println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
+   def lineToReplace
    def count=0
    def insertLineNumber=0
    def insertLineNumber1=0
@@ -15,6 +16,7 @@ def addUpstream(upstreamJob, branchName){
      linenum++
      if(line=~ /^\s+pipelineTriggers\((.*)\)/){
         insertLineNumber1=linenum
+        lineToReplace=line
         (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> exisitngTrigger=match[1] }
      }      
      if (line=~/^\s+]\)/){
@@ -30,7 +32,7 @@ def addUpstream(upstreamJob, branchName){
    println "Trigger to append "+ insertTrigger
    //linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
    //linesW.drop(insertLineNumber1)
-   linesW.add(insertLineNumber1-1, "\t\t"+insertTrigger)
+   linesW.replace(lineToReplace, "\t\t"+insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
        w<< wline +"\n"
