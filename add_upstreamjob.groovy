@@ -1,7 +1,7 @@
 
 def addUpstream(upstreamJob, branchName){
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))])"
-   def appendTrigger="[upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))]"
+   def appendTrigger="upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))"
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
    def lineToReplace
@@ -14,7 +14,7 @@ def addUpstream(upstreamJob, branchName){
      linenum++
      if(line=~ /^\s+pipelineTriggers\((.*)\)/){
         insert_append=linenum
-        (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> exisitngTrigger=match[1] }
+        (line=~ /^\s+pipelineTriggers\([(.*)]\)/).each {match -> exisitngTrigger=match[1] }
         continue
      }      
      if (line=~/^\s+]\)/){
@@ -26,7 +26,7 @@ def addUpstream(upstreamJob, branchName){
    println insert_append
    if(exisitngTrigger){
       println "am here"
-      insertTrigger="pipelineTriggers(${exisitngTrigger}, ${appendTrigger})"
+      insertTrigger="pipelineTriggers([${exisitngTrigger}, ${appendTrigger}])"
       linesW.set(insert_append-1, "\t\t"+insertTrigger)
    }
    else{
