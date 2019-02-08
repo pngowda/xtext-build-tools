@@ -29,8 +29,8 @@ def addUpstream(upstreamJob, branchName){
    insertTrigger="pipelineTriggers(${exisitngTrigger}, ${appendTrigger})"
    println "Trigger to append "+ insertTrigger
    //linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
-   linesW.drop(insertLineNumber1)
-   linesW.add(insertLineNumber, "\t\t"+insertTrigger)
+   //linesW.drop(insertLineNumber1)
+   linesW.add(insertLineNumber1, "\t\t"+insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
        w<< wline +"\n"
