@@ -15,14 +15,14 @@ def addUpstream(upstreamJob, branchName){
      insert_new++
      insert_append++
      if(line=~ /^\s+pipelineTriggers\((.*)\)/){
-        //insert_append=linenum
+        insert_append=linenum
         //lineToReplace=line
         (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> exisitngTrigger=match[1] }
         println "till i continue"
         continue;
      }      
      if (line=~/^\s+]\)/){
-       //insert_new=linenum
+       insert_new=linenum
        println "till i continue 2"
        continue;
      }
