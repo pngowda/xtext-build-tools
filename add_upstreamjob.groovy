@@ -14,7 +14,7 @@ def addUpstream(upstreamJob, branchName){
    for (line in linesR){
      linenum++
      (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> exisitngTrigger=match[1] }
-      if(match[1]){
+      if(exisitngTrigger){
          insertLineNumber1=linenum
       }
      if (line=~/^\s+]\)/){
