@@ -25,6 +25,7 @@ def addUpstream(upstreamJob, branchName){
    }
    println count
    println insertLineNumber1
+   println insertLineNumber
    println "Trigger to append "+ exisitngTrigger+ ", " +appendTrigger
    insertTrigger="pipelineTriggers(${exisitngTrigger}, ${appendTrigger})"
    println "Trigger to append "+ insertTrigger
