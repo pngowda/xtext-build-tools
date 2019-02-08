@@ -32,7 +32,7 @@ def addUpstream(upstreamJob, branchName){
    println "Trigger to append "+ insertTrigger
    //linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
    //linesW.drop(insertLineNumber1)
-   linesW.replace(lineToReplace, "\t\t"+insertTrigger)
+   linesW.delete(lineToReplace)
    def w = fh.newWriter() 
    for(wline in linesW){
        w<< wline +"\n"
