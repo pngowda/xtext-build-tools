@@ -12,8 +12,6 @@ def addUpstream(upstreamJob, branchName){
    def exisitngTrigger
    for (line in linesR){
      linenum++
-     insert_new++
-     insert_append++
      if(line=~ /^\s+pipelineTriggers\((.*)\)/){
         insert_append=linenum
         //lineToReplace=line
