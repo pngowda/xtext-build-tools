@@ -4,12 +4,8 @@ import groovy.xml.XmlUtil
 
 node('master') {
 		properties([
-				[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
-				disableConcurrentBuilds(),
-				parameters([
-					choice(choices: 'oxygen\nphoton\nr201809\nlatest', description: 'Which Target Platform should be used?', name: 'target_platform')
-				])
-		])
+				[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']]
+			])
 	def xtextVersion="${params.XTEXT_VERSION}"
 	if (!xtextVersion.startsWith('2.')) {
 		currentBuild.result = 'ABORTED'
