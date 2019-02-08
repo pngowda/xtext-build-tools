@@ -17,6 +17,18 @@ def setUpstreamBranch (pomFile, branchName) {
   writeXML (pom, pomFile)
 }
 
+def setXtendPluginVersionBranch (pomFile, xtextVersion) {
+  def pom = readXML (pomFile)
+  pom.properties.xtend-maven-plugin-version = xtextVersion
+  writeXML (pom, pomFile)
+}
+
+def setXtextBOMVersionBranch (pomFile, xtextVersion) {
+  def pom = readXML (pomFile)
+  pom.properties.xtextBOMVersion = xtextVersion
+  writeXML (pom, pomFile)
+}
+
 // TODO Move to some XML Utility file
 def readXML (xmlFile) {
   curdir = new File('.')

@@ -1,0 +1,104 @@
+import jenkins.model.*
+import hudson.model.*
+import groovy.xml.XmlUtil
+
+node {
+  
+  properties([
+    [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
+    parameters([
+      string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version to use for bootstrapping (without -SNAPSHOT suffix)'),
+      booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
+    ])
+  ])
+
+  // TODO Make property XTEXT_VERSION obsolete. The base version can be retrieved from xtext-lib/gradle/version.gradle
+  def dryRunMode="${params.DRY_RUN}"
+  if(dryRunMode){
+    println "##### NOTE: Running script in dry run mode, changes will not be pushed to git repos ######"
+  }
+  def xtextVersion="${params.XTEXT_VERSION}"
+  if (!xtextVersion.startsWith('2.')) {
+    currentBuild.result = 'ABORTED'
+    error('XTEXT_VERSION invalid')
+  }
+
+  def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
+  def releaseType="${params.RELEASE}"
+  def baseGitURL='git@github.com:eclipse'
+  
+  def branchName = 'releng_bootstrap'
+  
+  // list of Xtext repository names
+  def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
+  
+  stage('Checkout') {
+    // checkout xtext-build-tools
+    checkout scm
+    
+    sh "ls -al ."
+
+    def gitFunctions    = load 'git_functions.groovy'
+    repositoryNames.each {
+      dir(it) {
+        if(fileExists("/")){ 
+          gitFunctions.gitResetHard()
+          gitFunctions.gitCheckoutMaster()
+        }
+      }
+      dir(it) {
+        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+      }
+      // TODO When release branch already exists, then delete it and create a new one
+      if (gitFunctions.verifyGitBranch(it, branchName)!=0){
+        gitFunctions.createGitBranch(it, branchName)
+      }
+    }
+  }
+  
+  stage('Modify') {
+    def gradle = load 'gradle_functions.groovy'
+    def git    = load 'git_functions.groovy'
+    def pom    = load 'pom_changes.groovy'
+  
+    ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-xtend', 'xtext-idea'].each {
+      print "##### Preparing $it ########"
+      dir(it) {
+        gradle.updateXtextBootstrapVersion(xtextVersion)
+      }
+    }
+    print "##### Preparing xtext-eclipse ########"
+    dir('xtext-eclipse') {
+      gradle.updateXtextBootstrapVersion(xtextVersion)
+      pom.setXtendPluginVersionBranch("$workspace/xtext-eclipse/releng/org.eclipse.xtext.tycho.parent/pom.xml", xtextVersion)
+    }
+    dir('xtext-xtend') {
+      gradle.updateXtextBootstrapVersion(xtextVersion)
+      pom.setXtendPluginVersionBranch("$workspace/xtext-xtend/ org.eclipse.xtend.maven.plugin/src/test/resources/it/pom.xml", xtextVersion)
+      pom.setXtextBOMVersionBranch("$workspace/xtext-eclipse/releng/org.eclipse.xtext.tycho.parent/pom.xml", xtextVersion)
+      
+    }
+  }
+
+
+  stage('Commit & Push') {
+    def gitFunctions    = load 'git_functions.groovy'
+    
+    repositoryNames.each {
+      gitFunctions.getGitChanges(it)
+      gitFunctions.commitGitChanges(it, xtextVersion, "[releng] update")
+      gitFunctions.tagGit(it, tagName)
+    }
+    if(!dryRunMode){   
+      sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
+        sh "echo pushing branch ${branchName}"
+        repositoryNames.each {
+          gitFunctions.pushGitChanges(it, branchName)
+        }
+      }
+    }
+    
+    // slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
+  }
+}
+
