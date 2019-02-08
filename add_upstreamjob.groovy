@@ -17,12 +17,14 @@ def addUpstream(upstreamJob, branchName){
       if(exisitngTrigger){
          insertLineNumber1=linenum
       }
+      
      if (line=~/^\s+]\)/){
        count++
        insertLineNumber=linenum
      }
    }
    println count
+   println insertLineNumber1
    println "Trigger to append "+ exisitngTrigger+ ", " +appendTrigger
    insertTrigger="pipelineTriggers(${exisitngTrigger}, ${appendTrigger})"
    println "Trigger to append "+ insertTrigger
