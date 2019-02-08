@@ -1,6 +1,7 @@
 
 def addUpstream(upstreamJob, branchName){
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))])"
+   def appendTrigger="[upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"$branchName\", \"UTF-8\"))]"
    //println insertTrigger
    File fh = new File("${workspace}/test_jenkinsfile")
    def linenum=0
@@ -18,7 +19,7 @@ def addUpstream(upstreamJob, branchName){
      }
    }
    println count
-   println "exisitng trigger "+ exisitngTrigger
+   println "Trigger to append "+ exisitngTrigger+ ", " appendTrigger
    //linesW.add(insertLineNumber-1, "\t\t"+insertTrigger)
    def w = fh.newWriter() 
    for(wline in linesW){
