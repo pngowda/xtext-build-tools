@@ -19,12 +19,10 @@ def addUpstream(upstreamJob, branchName){
         //lineToReplace=line
         (line=~ /^\s+pipelineTriggers\((.*)\)/).each {match -> exisitngTrigger=match[1] }
         println "till i continue"
-        continue;
      }      
      if (line=~/^\s+]\)/){
        insert_new=linenum
        println "till i continue 2"
-       continue;
      }
    }
    println insert_new
