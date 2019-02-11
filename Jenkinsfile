@@ -147,6 +147,7 @@ node {
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml", snapshotVersion)
+      pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.plugin/src/test/resources/it/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml", snapshotVersion)
       jenkinsfile.addUpstream("$workspace/xtext-xtend/Jenkinsfile", 'xtext-eclipse', branchName)
     }
