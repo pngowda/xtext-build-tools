@@ -37,6 +37,7 @@ node {
     checkout scm
     
     sh "ls -al ."
+    println GENIE_TOKEN
 
     def gitFunctions    = load 'git_functions.groovy'
     repositoryNames.each {
@@ -47,7 +48,7 @@ node {
         }
       }
       dir(it) {
-        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: GENIE_TOKEN
       }
       // TODO When release branch already exists, then delete it and create a new one
       if (gitFunctions.verifyGitBranch(it, branchName)!=0){
@@ -90,7 +91,7 @@ node {
       gitFunctions.tagGit(it, tagName)
     }
     if(!dryRunMode){   
-      sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
+      sshagent(["${GENIE_TOKEN}"]) {
         sh "echo pushing branch ${branchName}"
         repositoryNames.each {
           gitFunctions.pushGitChanges(it, branchName)
