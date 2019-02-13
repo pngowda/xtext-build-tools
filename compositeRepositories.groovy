@@ -13,6 +13,7 @@ def addChildToComposite (String compositeDescriptorPath, String childLocation) {
     repository.children.appendNode {
       child (location:childLocation)
     }
+    repository.children.@size=repository.children.size
     println "${compositeDescriptorPath}: child ${childLocation} added"
   } else {
     println "${compositeDescriptorPath}: child ${childLocation} already exists"
