@@ -144,7 +144,6 @@ node {
     dir('xtext-xtend') {
       gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "maven-pom.xml", snapshotVersion)
-      pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.android.archetype/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.plugin/src/test/resources/it/pom.xml", snapshotVersion)
