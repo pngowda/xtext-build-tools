@@ -30,7 +30,7 @@ def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost',
         )
         // return status, but ignore
         sh(
-            script: "git commit -a -m '${message} ${xtext_version}' >> commit.log",
+            script: "git commit -a -m '${message} ${xtext_version}'",
             returnStatus: true
         )
         print sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
