@@ -22,7 +22,6 @@ node {
   if (!xtextVersion.startsWith('2.')) {
     currentBuild.result = 'ABORTED'
     error('XTEXT_VERSION invalid')
-  
   }
 
   def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
@@ -77,19 +76,14 @@ node {
     def git    = load 'git_functions.groovy'
     def jenkinsfile = load 'jenkins_functions.groovy'
   
-    sshagent(['29d79994-c415-4a38-9ab4-7463971ba682']) {
-      sh """
-        sh ./adjustPipelines.sh $branchName
-      """
-    }
+    sh "./adjustPipelines.sh $branchName"
     
     //preparing xtext-lib
     print "##### Preparing xtext-lib ########"
     dir('xtext-lib') {
       // do not pass snapshotVersion. Just set xtextVersion.
       gradle.gradleVersionUpdate(xtextVersion,snapshotVersion)
-      // do not pass snapshotVersion. Just set xtextVersion.
-      pom.pomVersionUpdate("$workspace/xtext-lib/releng/org.eclipse.xtext.dev-bom", xtextVersion, snapshotVersion)
+      pom.pomVersionUpdate("$workspace/xtext-lib/releng/org.eclipse.xtext.dev-bom/pom.xml", xtextVersion)
       pom.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", snapshotVersion)
     }
       
@@ -134,7 +128,9 @@ node {
     //preparing xtext-maven
     print "##### Preparing xtext-maven ########"
     dir('xtext-maven') {
-      pom.pomVersionUpdate("$workspace/xtext-maven", xtextVersion, snapshotVersion)
+      pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", xtextVersion)
+      pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/pom.xml", xtextVersion)
+      pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/src/test/resources/it/generate/pom.xml", xtextVersion)
       pom.setUpstreamBranch("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", branchName)
       jenkinsfile.addUpstream("$workspace/xtext-maven/Jenkinsfile", 'xtext-extras', branchName)
     }
@@ -168,7 +164,7 @@ node {
       gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
       gitFunctions.tagGit(it, tagName)
     }
-    if(!dryRunMode){   
+    if(!dryRunMode){
       sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
         sh "echo pushing branch ${branchName}"
         repositoryNames.each {

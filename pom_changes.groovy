@@ -36,15 +36,15 @@ def writeXML (xml, xmlFile) {
   file.setText(content)
 }
 
-def pomVersionUpdate(path, xtext_version, snapshot_version) {
-  def update_cmd
-    dir(path) {
-      update_cmd = sh (
-        script: "find ./ -type f -name \"pom.xml\" | xargs  sed -i -e \"s/${snapshot_version}/${xtext_version}/g\"",
-        returnStdout: true
-      ).trim()
-    }
-    return update_cmd
+def pomVersionUpdate(pomFile, xtext_version) {
+  def pom = readXML(pomFile)
+  
+  pom.version = xtext_version
+  if (pom.parent != null) {
+    pom.parent.version = xtext_version
+  }
+  
+  writeXML (pom, pomFile)
 }
 
 def pomZipVersionUpdate(xtext_version, pomFile,snapshot_version) {
