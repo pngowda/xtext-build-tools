@@ -14,8 +14,7 @@ node {
   ])
 
   // TODO Make property XTEXT_VERSION obsolete. The base version can be retrieved from xtext-lib/gradle/version.gradle
-  def dryRunMode="${params.DRY_RUN}"
-  if(dryRunMode){
+  if(params.DRY_RUN){
     println "##### NOTE: Running script in dry run mode, changes will not be pushed to git repos ######"
   }
   def xtextVersion="${params.XTEXT_VERSION}"
@@ -164,7 +163,7 @@ node {
       gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
       gitFunctions.tagGit(it, tagName)
     }
-    if(!dryRunMode){
+    if(!params.DRY_RUN){
       sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
         sh "echo pushing branch ${branchName}"
         repositoryNames.each {
