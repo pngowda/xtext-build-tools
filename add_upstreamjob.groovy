@@ -26,11 +26,11 @@ def addUpstream(upstreamJob){
    if(exisitngTrigger){
       insertTrigger="pipelineTriggers([${exisitngTrigger}, ${appendTrigger}])"
       linesW.set(insert_append-1, "\t\t"+insertTrigger)
-      true
+      break;
    }
    else{
       linesW.add(insert_new-1, "\t\t"+insertTrigger)
-      true
+      break;
    }
    def w = fh.newWriter() 
    for(wline in linesW){
