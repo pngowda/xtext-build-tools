@@ -11,6 +11,7 @@ def addUpstream(upstreamJob){
    def linesW = fh.readLines()
    def exisitngTrigger
    for (line in linesR){
+      println "..."+line
      linenum++
      if(line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/){
         insert_append=linenum
