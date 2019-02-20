@@ -34,7 +34,7 @@ node('master') {
 	
 	stage('addUpstream') {
 	    def Functions    = load 'add_upstreamjob.groovy'
-	     Functions.addUpstream("xtext_lib","test_branch")
+	     Functions.addUpstream("xtext_lib")
 	}
 	
 	/*
