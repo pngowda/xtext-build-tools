@@ -13,6 +13,10 @@ def addUpstream(upstreamJob){
    for (line in linesR){
       println "..."+line
      linenum++
+     if(line=~ /^\s+.*pipelineTriggers\(\[upstream.*/){
+        println "Upstream trigger already present, so skipping"
+        return this
+     }
      if(line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/){
         insert_append=linenum
         (line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/).each {match -> exisitngTrigger=match[1] }
