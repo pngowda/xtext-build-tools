@@ -11,10 +11,9 @@ def addUpstream(upstreamJob){
    def linesW = fh.readLines()
    def exisitngTrigger
    for (line in linesR){
-      println "..."+line
      linenum++
      if(line=~ /^\s+.*pipelineTriggers\(\[upstream.*/){
-        println "Upstream trigger already present, so skipping"
+        println "Upstream job trigger already present"
         return this
      }
      if(line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/){
