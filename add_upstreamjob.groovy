@@ -9,7 +9,7 @@ def addUpstream(upstreamJob){
    def insert_append=0
    def linesR = fh.readLines()
    def linesW = fh.readLines()
-   def exisitngTrigger
+   def existingTrigger
    for (line in linesR){
      linenum++
      if(line=~ /^\s+.*pipelineTriggers\(\[upstream.*/){
@@ -18,7 +18,7 @@ def addUpstream(upstreamJob){
      }
      if(line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/){
         insert_append=linenum
-        (line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/).each {match -> exisitngTrigger=match[1] }
+        (line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/).each {match -> existingTrigger=match[1] }
         continue
      }      
      if (line=~/^\s+]\)/){
@@ -26,8 +26,8 @@ def addUpstream(upstreamJob){
        continue
      }
    }
-   if(exisitngTrigger){
-      insertTrigger="pipelineTriggers([${exisitngTrigger}, ${appendTrigger}])"
+   if(existingTrigger){
+      insertTrigger="pipelineTriggers([${existingTrigger}, ${appendTrigger}])"
       linesW.set(insert_append-1, "\t\t"+insertTrigger)
    }
    else{
