@@ -1,8 +1,8 @@
 
-def addUpstream(upstreamJob){
+def addUpstream(jenkinsfile, upstreamJob){
    def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"\$BRANCH_NAME\", \"UTF-8\"))])"
    def appendTrigger="upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"\$BRANCH_NAME\", \"UTF-8\"))"
-   File fh = new File('Jenkinsfile')
+   File fh = new File(jenkinsfile)
    def linenum=0
    def lineToReplace
    def insert_new=0
