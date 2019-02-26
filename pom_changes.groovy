@@ -48,11 +48,12 @@ def pomVersionUpdate(pomFile, xtext_version) {
 }
 
 def setProperty (pomFile, propertyName, propertyValue) {
-  def pom = readXML(pomFile)
-  
-  pom.properties.'*'.findResult { node -> node.name() == propertyName } = propertyValue
-  
-  writeXML (pom, pomFile)
+  def update_cmd
+  update_cmd = sh (
+    script: "sed -i -e \"s?<${propertyName}>.*</${propertyName}>?<${propertyName}>${propertyValue}</${propertyName}>?g\" ${pomFile}",
+    returnStdout: true
+  ).trim()
+  return update_cmd
 }
 
 def pomZipVersionUpdate(xtext_version, pomFile,snapshot_version) {
