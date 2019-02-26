@@ -62,10 +62,11 @@ node {
       dir(it) {
         git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
       }
-      // TODO When release branch already exists, then delete it and create a new one
+      // When release branch already exists, then delete it and create a new one
       if (gitFunctions.verifyGitBranch(it, branchName)!=0){
-        gitFunctions.createGitBranch(it, branchName)
+        sh "git branch -D ${branchName}"
       }
+      gitFunctions.createGitBranch(it, branchName)
     }
   }
   
