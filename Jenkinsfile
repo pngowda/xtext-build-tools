@@ -130,8 +130,8 @@ node {
     dir('xtext-maven') {
       pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", xtextVersion)
       pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/pom.xml", xtextVersion)
-      pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/src/test/resources/it/generate/pom.xml", xtextVersion)
       pom.setUpstreamBranch("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", branchName)
+      pom.setProperty("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/src/test/resources/it/generate/pom.xml", 'xtext-version', xtextVersion)
       jenkinsfile.addUpstream("$workspace/xtext-maven/Jenkinsfile", 'xtext-extras')
     }
     
