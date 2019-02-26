@@ -47,6 +47,14 @@ def pomVersionUpdate(pomFile, xtext_version) {
   writeXML (pom, pomFile)
 }
 
+def setProperty (pomFile, propertyName, propertyValue) {
+  def pom = readXML(pomFile)
+  
+  pom.properties.'*'.findResult { node -> node.name() == propertyName } = propertyValue
+  
+  writeXML (pom, pomFile)
+}
+
 def pomZipVersionUpdate(xtext_version, pomFile,snapshot_version) {
   def update_cmd
   update_cmd = sh (
