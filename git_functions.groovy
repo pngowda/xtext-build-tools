@@ -1,4 +1,4 @@
-def createGitBranch(path, branch) {
+def createBranch(path, branch) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
@@ -9,7 +9,7 @@ def createGitBranch(path, branch) {
     return git_cmd
 }
 
-def verifyGitBranch(path, branch) {
+def boolean branchExists(path, branch) {
     def git_cmd
     dir(path) {
         git_cmd = sh (
@@ -17,7 +17,15 @@ def verifyGitBranch(path, branch) {
             returnStatus: true
         )
     }
-    return git_cmd
+    println ("*** verifyGitBranch ${git_cmd} ${git_cmd.class}")
+    return "${git_cmd}"=="0"
+}
+
+def boolean deleteBranch(path, branch) {
+    dir(path) {
+        def rc = sh (script: "git branch -D ${branch}", returnStatus: true)
+        return rc == 0
+    }
 }
 
 
