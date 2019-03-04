@@ -60,7 +60,7 @@ node {
         }
       }
       dir(it) {
-        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: 'a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8'
+        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
       }
       // When release branch already exists, then delete it and create a new one
       if (gitFunctions.branchExists(it, branchName)){
@@ -165,7 +165,7 @@ node {
       gitFunctions.tagGit(it, tagName)
     }
     if(!params.DRY_RUN){
-      sshagent([GENIE_TOKEN]) {
+      sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
         sh "echo pushing branch ${branchName}"
         repositoryNames.each {
           gitFunctions.pushGitChanges(it, branchName)
