@@ -165,7 +165,7 @@ node {
       gitFunctions.tagGit(it, tagName)
     }
     if(!params.DRY_RUN){
-      sshagent(['a7dd6ae8-486e-4175-b0ef-b7bc82dc14a8']) {
+      sshagent([GENIE_TOKEN]) {
         sh "echo pushing branch ${branchName}"
         repositoryNames.each {
           gitFunctions.pushGitChanges(it, branchName)
