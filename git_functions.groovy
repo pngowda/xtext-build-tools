@@ -29,7 +29,7 @@ def commit(path, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie
         )
         // return status, but ignore
         sh(
-            script: "git -c user.email='${gitEmail}' -c user.name='${gitName}' commit -a -m '${message}\n\nSigned-off-by: ${gitName} <${gitEmail}>'",
+            script: "git -c user.email='${gitEmail}' -c user.name='${gitName}' commit -a -m '**** TEST TEST ${message}\n\nSigned-off-by: ${gitName} <${gitEmail}>'",
             returnStatus: true
         )
 
@@ -37,6 +37,7 @@ def commit(path, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie
              script: "git show --name-only HEAD",
                  returnStdout: true
              )
+        
     }
     
     return git_cmd
@@ -100,15 +101,23 @@ def tagGit(path, tagName) {
 
 }
 
-def pushGitChanges(path, branch) {
-    def git_cmd
+def pushGitChanges(path, branch, openPR=false) {
     dir(path) {
-        git_cmd = sh (
+        def rc = sh (
             script: "git push --force --tags origin ${branch}",
             returnStatus: true
         )
+        /*
+        if (rc == 0 && openPR) {
+          def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
+          sh(
+            script: "hub pull-request -m '**** TEST TEST ${message}'",
+            returnStatus: true
+          )
+        }
+        */
+        return rc
     }
-    return git_cmd
 }
 
 def getGitCommit() {

@@ -97,15 +97,23 @@ pipeline {
             git.getGitChanges(it)
             git.commit(it, "[releng] Set version to ${TO_VERSION}")
           }
+        } // script
+        
+        container ('jnlp') {
+          script {
+          def git    = load 'build-tools/git_functions.groovy'
+          def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
           if(!params.DRY_RUN){
             sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
-              sh "echo pushing branch ${branchName}"
+              sh "echo pushing branch ${TARGET_BRANCH}"
               repositoryNames.each {
-                gitFunctions.pushGitChanges(it, branchName)
+                git.pushGitChanges(it, TARGET_BRANCH, true)
               }
             }
           }
-        } // script
+          }
+        
+        }
       } // steps
     } // stage
   } // stages
