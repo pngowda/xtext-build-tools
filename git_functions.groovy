@@ -10,15 +10,10 @@ def createBranch(path, branch) {
 }
 
 def boolean branchExists(path, branch) {
-    def git_cmd
     dir(path) {
-        git_cmd = sh (
-            script: "git rev-parse --verify ${branch}",
-            returnStatus: true
-        )
+        def rc = sh (script: "git rev-parse --verify ${branch}", returnStatus: true)
+        return git_cmd == 0
     }
-    println ("*** verifyGitBranch ${git_cmd} ${git_cmd.class}")
-    return "${git_cmd}"=="0"
 }
 
 def boolean deleteBranch(path, branch) {
