@@ -1,12 +1,8 @@
 def createBranch(path, branch) {
-    def git_cmd
     dir(path) {
-        git_cmd = sh (
-            script: "git checkout -b ${branch}",
-            returnStatus: true
-        )
+        def rc = sh (script: "git checkout -b ${branch}", returnStatus: true)
+        return rc == 0
     }
-    return git_cmd
 }
 
 def boolean branchExists(path, branch) {
@@ -24,7 +20,7 @@ def boolean deleteBranch(path, branch) {
 }
 
 
-def commitGitChanges(path, xtext_version, message, gitEmail='jenkins@localhost', gitName='jenkins-slave') {
+def commitGitChanges(path, xtext_version, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie.xtext') {
     def git_cmd
     dir(path) {
         print sh(
