@@ -132,7 +132,6 @@ checkVersionFormat "$to"
 
 if [ "$bump" == "StoS" ]; then
    echo "# bumping version from Snapshot to Snapshot"
-   echo "dhdjdhjdj"
    directories=$(find $(pwd) -maxdepth 1 -type d -name "xtext-*")
    for directory in $directories
    do

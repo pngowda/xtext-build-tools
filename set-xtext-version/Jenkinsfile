@@ -62,13 +62,9 @@ pipeline {
             def baseGitURL='git@github.com:eclipse'
             // list of Xtext repository names
             def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+            
+            // checkout master branch for each repository and create the target branch
             repositoryNames.each {
-              dir(it) {
-                if(fileExists("/")){ 
-                  gitFunctions.gitResetHard()
-                  gitFunctions.gitCheckoutMaster()
-                }
-              }
               dir(it) {
                 git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
               }
@@ -86,6 +82,7 @@ pipeline {
       steps {
         script {
           sh "sh ./fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b $TO_TYPE"
+          sh "git status"
         }
       }
     }
