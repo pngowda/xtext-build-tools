@@ -29,10 +29,9 @@ def commit(path, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie
         )
         // return status, but ignore
         sh(
-            script: "git commit -a -m '${message}'",
+            script: "git -c user.email='${gitEmail}' -c user.name='${gitName}' commit -a -m '${message}\n\nSigned-off-by: ${gitName} <${gitEmail}>'",
             returnStatus: true
         )
-        print sh("git diff-index --quiet HEAD || git commit -m '${message}'")
 
         print sh(
              script: "git show --name-only HEAD",
