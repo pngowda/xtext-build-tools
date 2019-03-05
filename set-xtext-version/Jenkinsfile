@@ -81,8 +81,15 @@ pipeline {
     stage('Modify') {
       steps {
         script {
+          def git = load 'git_functions.groovy'
+          def pom = load 'pom_changes.groovy'
+          
+          dir('xtext-lib') {
+            pom.pomVersionUpdate("$workspace/xtext-lib/releng/org.eclipse.xtext.dev-bom/pom.xml", "${TO_VERSION}-SNAPSHOT")
+            sh "git status"
+          }
+          
           sh "sh ./fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b $TO_TYPE"
-          sh "git status"
         }
       }
     }
