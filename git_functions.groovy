@@ -20,6 +20,29 @@ def boolean deleteBranch(path, branch) {
 }
 
 
+def commit(path, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie.xtext') {
+    def git_cmd
+    dir(path) {
+        print sh(
+            script: 'git add -A',
+            returnStdout: true
+        )
+        // return status, but ignore
+        sh(
+            script: "git commit -a -m '${message}'",
+            returnStatus: true
+        )
+        print sh("git diff-index --quiet HEAD || git commit -m '${message}'")
+
+        print sh(
+             script: "git show --name-only HEAD",
+                 returnStdout: true
+             )
+    }
+    
+    return git_cmd
+}
+
 def commitGitChanges(path, xtext_version, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie.xtext') {
     def git_cmd
     dir(path) {

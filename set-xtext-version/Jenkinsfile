@@ -86,6 +86,27 @@ pipeline {
       }
     }
     
-  }
-
+    stage('Commit & Push') {
+      steps {
+        script {
+          // list of Xtext repository names
+          def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+          def git    = load 'build-tools/git_functions.groovy'
+          
+          repositoryNames.each {
+            git.getGitChanges(it)
+            git.commit(it, "[releng] Set version to ${TO_VERSION}")
+          }
+          if(!params.DRY_RUN){
+            sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
+              sh "echo pushing branch ${branchName}"
+              repositoryNames.each {
+                gitFunctions.pushGitChanges(it, branchName)
+              }
+            }
+          }
+        } // script
+      } // steps
+    } // stage
+  } // stages
 }
