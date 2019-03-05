@@ -12,7 +12,7 @@ def createBranch(path, branch) {
 def boolean branchExists(path, branch) {
     dir(path) {
         def rc = sh (script: "git rev-parse --verify ${branch}", returnStatus: true)
-        return git_cmd == 0
+        return rc == 0
     }
 }
 
