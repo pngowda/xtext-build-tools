@@ -56,7 +56,7 @@ pipeline {
 
             def baseGitURL='git@github.com:eclipse'
             // list of Xtext repository names
-            def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+            def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
             
             // checkout source branch for each repository and create the target branch
             repositoryNames.each {
@@ -87,7 +87,7 @@ pipeline {
       steps {
         script {
           // list of Xtext repository names
-          def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+          def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
           def git    = load 'build-tools/git_functions.groovy'
           
           repositoryNames.each {
@@ -99,7 +99,7 @@ pipeline {
         container ('jnlp') {
           script {
           def git    = load 'build-tools/git_functions.groovy'
-          def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+          def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
           if(!params.DRY_RUN){
             sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
               sh "echo pushing branch ${TARGET_BRANCH}"
