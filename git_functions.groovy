@@ -106,6 +106,7 @@ def pushGitChanges(path, branch, openPR=false) {
             script: "git push --force --tags origin ${branch}",
             returnStatus: true
         )
+        /*
         if (rc == 0 && openPR) {
           def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
           sh(
@@ -113,6 +114,7 @@ def pushGitChanges(path, branch, openPR=false) {
             returnStatus: true
           )
         }
+        */
         return rc
     }
 }
@@ -142,5 +144,6 @@ def checkoutBranch(branchName) {
       ).trim()
     return git_cmd
 }
+
 
 return this

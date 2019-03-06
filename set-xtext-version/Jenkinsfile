@@ -102,7 +102,11 @@ pipeline {
           }
         } // script
         
-        //container ('jnlp') {
+        // TODO: git push does not work in the xtext-buildenv container
+        //   No user exists for uid 1000100000
+        //   fatal: Could not read from remote repository.
+        // But jnlp does not contain hub utility
+        container ('jnlp') {  
           script {
           def git    = load 'build-tools/git_functions.groovy'
           def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
@@ -116,7 +120,7 @@ pipeline {
           }
           }
         
-        // }
+        }
       } // steps
     } // stage
   } // stages
