@@ -15,7 +15,7 @@ pipeline {
             - mountPath: /home/jenkins/.ssh
               name: volume-known-hosts
           - name: xtext-buildenv
-            image: docker.io/smoht/xtext-buildenv:latest
+            image: docker.io/smoht/xtext-buildenv:0.2.1
             tty: true
           volumes:
           - configMap:

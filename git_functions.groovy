@@ -109,7 +109,7 @@ def pushGitChanges(path, branch, openPR=false) {
         if (rc == 0 && openPR) {
           def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
           sh(
-            script: "hub pull-request -m '**** TEST TEST ${message}'",
+            script: "hub pull-request -m '${message}\n\nThis PR was opened by Jenkins'",
             returnStatus: true
           )
         }
