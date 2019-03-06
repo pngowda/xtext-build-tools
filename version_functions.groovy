@@ -18,4 +18,8 @@ def getXtextGradleVersion (branch) {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/gradle/wrapper/gradle-wrapper.properties |grep -Po 'distributionUrl=.*/gradle-\\K[\\d\\.]*'", returnStdout: true).trim()
 }
 
+def getXtextBootstrapVersion (branch) {
+  return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/gradle/versions.gradle |grep -Po 'xtext_bootstrap[^\\d]*\\K[\\d\\.]*'", returnStdout: true).trim()
+}
+
 return this

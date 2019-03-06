@@ -75,9 +75,10 @@ pipeline {
           }
           
           def results = [] // 0: Check; 1: Current Version used by Xtext; 2: Latest Available Version
-          results.add(['Eclipse Tycho'      , versions.getXtextTychoVersion(SOURCE_BRANCH)       , versions.getLatestArtifactVersion('org.eclipse.tycho','tycho-maven-plugin')])
-          results.add(['Gradle'             , versions.getXtextGradleVersion(SOURCE_BRANCH)      , versions.getLatestReleaseFromGitHubRepository('gradle','gradle')])
-          results.add(['xtext-gradle-plugin', versions.getXtextGradlePluginVersion(SOURCE_BRANCH), versions.getLatestArtifactVersion('org.xtext','xtext-gradle-plugin')])
+          results.add(['Eclipse Tycho'          , versions.getXtextTychoVersion(SOURCE_BRANCH)       , versions.getLatestArtifactVersion('org.eclipse.tycho','tycho-maven-plugin')])
+          results.add(['Gradle'                 , versions.getXtextGradleVersion(SOURCE_BRANCH)      , versions.getLatestReleaseFromGitHubRepository('gradle','gradle')])
+          results.add(['Xtext Bootstrap Version', versions.getXtextBootstrapVersion(SOURCE_BRANCH)   , versions.getLatestArtifactVersion('org.eclipse.xtend','xtend-maven-plugin')])
+          results.add(['xtext-gradle-plugin'    , versions.getXtextGradlePluginVersion(SOURCE_BRANCH), versions.getLatestArtifactVersion('org.xtext','xtext-gradle-plugin')])
           
           sh "mkdir target" // make sure target directory exists
           writeJUnitReport(results,"target/report.xml")
