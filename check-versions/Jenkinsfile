@@ -34,6 +34,10 @@ pipeline {
     disableConcurrentBuilds()
   }
 
+  triggers { // https://jenkins.io/doc/book/pipeline/syntax/#triggers
+    cron('H H(2-6) * * 1-5') // once a day in the night on weekdays
+  }
+
   stages {
     stage('Check') {
       steps {
@@ -75,7 +79,7 @@ pipeline {
           results.add(['Gradle'             , versions.getXtextGradleVersion(SOURCE_BRANCH)      , versions.getLatestReleaseFromGitHubRepository('gradle','gradle')])
           results.add(['xtext-gradle-plugin', versions.getXtextGradlePluginVersion(SOURCE_BRANCH), versions.getLatestArtifactVersion('org.xtext','xtext-gradle-plugin')])
           
-          sh "mkdir target"
+          sh "mkdir target" // make sure target directory exists
           writeJUnitReport(results,"target/report.xml")
         } // END script
         
@@ -84,6 +88,7 @@ pipeline {
     } // END stage
   } // stages
 
+  // TODO Send messages when status changes
   post {
     always {
       archiveArtifacts artifacts: 'target/**'
