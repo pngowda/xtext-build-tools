@@ -30,7 +30,7 @@ pipeline {
     string(name: 'AUTHOR_EMAIL', description: 'Committer email address (used for Git commits)')
     string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source Git Branch')
     string(name: 'TARGET_BRANCH', defaultValue: 'releng_set_version', description: 'Target Git Branch')
-    string(name: 'TO_VERSION', description: 'New Xtext version to set (major.minor.micro, without SNAPSHOT)')
+    string(name: 'NEW_XTEXT_VERSION', description: 'New Xtext version to set (major.minor.micro, without SNAPSHOT)')
     booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
   }
 
@@ -55,9 +55,9 @@ pipeline {
               currentBuild.result = 'ABORTED'
               error('TARGET_BRANCH \'master\' is disallowed...')
             }
-            if (!TO_VERSION?.matches('\\d\\.\\d+\\.\\d+')) {
+            if (!NEW_XTEXT_VERSION?.matches('\\d\\.\\d+\\.\\d+')) {
               currentBuild.result = 'ABORTED'
-              error("TO_VERSION '${TO_VERSION}' Invalid...")
+              error("NEW_XTEXT_VERSION '${NEW_XTEXT_VERSION}' Invalid...")
             }
 
             def baseGitURL='git@github.com:eclipse'
@@ -84,7 +84,7 @@ pipeline {
         script {
           def gradle = load 'build-tools/gradle_functions.groovy'
           def FROM_VERSION = gradle.getXtextVersion()
-          sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b StoS"
+          sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $NEW_XTEXT_VERSION -b StoS"
         }
       }
     }
@@ -98,7 +98,7 @@ pipeline {
           
           repositoryNames.each {
             git.getGitChanges(it)
-            git.commit(it, "[releng] Set version to ${TO_VERSION}", AUTHOR_NAME, AUTHOR_EMAIL)
+            git.commit(it, "[releng] Set version to ${NEW_XTEXT_VERSION}", AUTHOR_NAME, AUTHOR_EMAIL)
           }
         } // script
         
