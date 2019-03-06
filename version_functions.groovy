@@ -6,6 +6,17 @@ def getLatestReleaseFromGitHubRepository (owner, repository) {
   return sh (script: "curl -s curl https://api.github.com/repos/${owner}/${repository}/releases/latest | grep -Po '\"name\"[^\\d]*\\K[\\d\\.]*'", returnStdout: true).trim()
 }
 
+/**
+ * Fetch the latest Orbit repository URL
+ * @param buildType R=Release, S=Stable, I=Integration
+ */
+def getLatestOrbitUrl (buildType) {
+  assert ['R','S','I'].contains(buildType)
+  def repoID= sh (script: "curl -s https://download.eclipse.org/tools/orbit/downloads/ |grep -m1 -Po 'drops/\\K${buildType}\\d+'", returnStdout: true).trim()
+  def repoURL = "http://download.eclipse.org/tools/orbit/downloads/drops/${repoID}/repository"
+  return repoURL
+}
+
 def getXtextTychoVersion (branch) {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-eclipse/${branch}/releng/org.eclipse.xtext.tycho.parent/pom.xml |grep -Po '<tycho-version>\\K[^<]*'", returnStdout: true).trim()
 }
