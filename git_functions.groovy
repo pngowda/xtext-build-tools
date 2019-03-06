@@ -20,7 +20,7 @@ def boolean deleteBranch(path, branch) {
 }
 
 
-def commit(path, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie.xtext') {
+def commit(path, message, gitName='genie.xtext', gitEmail='genie.xtext@git.eclipse.org') {
     def git_cmd
     dir(path) {
         print sh(
