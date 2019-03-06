@@ -26,8 +26,8 @@ pipeline {
   }
   
   parameters {
+    string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source Git Branch')
     string(name: 'TARGET_BRANCH', defaultValue: 'releng_set_version', description: 'Target Git Branch')
-    string(name: 'FROM_VERSION', description: 'Current Xtext version to match (major.minor.micro, without SNAPSHOT)')
     string(name: 'TO_VERSION', description: 'New Xtext version to set (major.minor.micro, without SNAPSHOT)')
     booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
   }
@@ -49,10 +49,6 @@ pipeline {
               currentBuild.result = 'ABORTED'
               error('TARGET_BRANCH \'master\' is disallowed...')
             }
-            if (!FROM_VERSION?.matches('\\d\\.\\d+\\.\\d+')) {
-              currentBuild.result = 'ABORTED'
-              error("FROM_VERSION '${FROM_VERSION}' Invalid...")
-            }
             if (!TO_VERSION?.matches('\\d\\.\\d+\\.\\d+')) {
               currentBuild.result = 'ABORTED'
               error("TO_VERSION '${TO_VERSION}' Invalid...")
@@ -62,10 +58,10 @@ pipeline {
             // list of Xtext repository names
             def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
             
-            // checkout master branch for each repository and create the target branch
+            // checkout source branch for each repository and create the target branch
             repositoryNames.each {
               dir(it) {
-                git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
+                git url: "${baseGitURL}/${it}.git", branch: SOURCE_BRANCH, credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
               }
               // When release branch already exists, then delete it and create a new one
               if (gitFunctions.branchExists(it, TARGET_BRANCH)){
@@ -80,6 +76,8 @@ pipeline {
     stage('Modify') {
       steps {
         script {
+          def gradle = load 'build-tools/gradle_functions.groovy'
+          def FROM_VERSION = gradle.getXtextVersion('xtext-lib/gradle/versions.gradle')
           sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b StoS"
         }
       }

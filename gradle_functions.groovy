@@ -7,4 +7,13 @@ def gradleVersionUpdate(xtext_version, snapshot_version) {
   return update_cmd
 }
 
+/**
+ * @param versionGradlePath path to versions.gradle file
+ * @return Xtext version
+ */
+def boolean getXtextVersion(versionGradlePath) {
+  // grep usage see grep usage see see https://stackoverflow.com/a/16675391/512227
+  return sh (script: "grep -Po 'version = \'\\K[^-]*\' ${versionGradlePath}", returnStdout: true).trim()
+}
+
 return this
