@@ -102,7 +102,7 @@ pipeline {
           }
         } // script
         
-        container ('jnlp') {
+        //container ('jnlp') {
           script {
           def git    = load 'build-tools/git_functions.groovy'
           def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
@@ -116,7 +116,7 @@ pipeline {
           }
           }
         
-        }
+        // }
       } // steps
     } // stage
   } // stages
