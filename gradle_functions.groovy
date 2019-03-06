@@ -8,12 +8,13 @@ def gradleVersionUpdate(xtext_version, snapshot_version) {
 }
 
 /**
- * @param versionGradlePath path to versions.gradle file
+ * Get current Xtext version. The version is retrieved by querying the SDK parent POM from xtext-umbrella.
+ * @param branch Git branch
  * @return Xtext version
  */
-def boolean getXtextVersion(versionGradlePath) {
+def boolean getXtextVersion(branch='master') {
   // grep usage see grep usage see see https://stackoverflow.com/a/16675391/512227
-  return sh (script: "grep -Po 'version = \'\\K[^-]*\' ${versionGradlePath}", returnStdout: true).trim()
+  return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-umbrella/${branch}/releng/org.eclipse.xtext.sdk.parent/pom.xml | grep -m1 -Po \"<version>\\K[^-]*\"", returnStdout: true).trim()
 }
 
 return this

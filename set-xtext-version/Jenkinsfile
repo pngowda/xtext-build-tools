@@ -77,7 +77,7 @@ pipeline {
       steps {
         script {
           def gradle = load 'build-tools/gradle_functions.groovy'
-          def FROM_VERSION = gradle.getXtextVersion('xtext-lib/gradle/versions.gradle')
+          def FROM_VERSION = gradle.getXtextVersion()
           sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b StoS"
         }
       }
