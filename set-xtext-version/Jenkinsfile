@@ -29,7 +29,6 @@ pipeline {
     string(name: 'TARGET_BRANCH', defaultValue: 'releng_set_version', description: 'Target Git Branch')
     string(name: 'FROM_VERSION', description: 'Current Xtext version to match (major.minor.micro, without SNAPSHOT)')
     string(name: 'TO_VERSION', description: 'New Xtext version to set (major.minor.micro, without SNAPSHOT)')
-    choice(name: 'TO_TYPE', choices: ['StoS','StoR','MtoR','RCtoR','BSTlatest'], description: 'StoS - Snapshot version to another Snapshot version\nStoR - Snapshot version to another Release version\nMtoR - Milestone version to another Release version\nRCtoR - RC version to another Release version\nBST - BootStrap version to another version')
     booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
   }
 
@@ -81,7 +80,7 @@ pipeline {
     stage('Modify') {
       steps {
         script {
-          sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b $TO_TYPE"
+          sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $TO_VERSION -b StoS"
         }
       }
     }
