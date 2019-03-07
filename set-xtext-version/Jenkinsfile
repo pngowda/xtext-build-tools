@@ -65,14 +65,13 @@ pipeline {
               error("NEW_XTEXT_VERSION '${NEW_XTEXT_VERSION}' Invalid...")
             }
 
-            def baseGitURL='git@github.com:eclipse'
             // list of Xtext repository names
             def repositoryNames = ALL_REPOSITORIES ? ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella'] : [TARGET_REPOSITORY]
             
             // checkout source branch for each repository and create the target branch
             repositoryNames.each {
               dir(it) {
-                git url: "${baseGitURL}/${it}.git", branch: SOURCE_BRANCH, credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
+                git url: "git@github.com:eclipse/${it}.git", branch: SOURCE_BRANCH, credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
               }
               // When release branch already exists, then delete it and create a new one
               if (gitFunctions.branchExists(it, TARGET_BRANCH)){
@@ -84,28 +83,36 @@ pipeline {
       }
     }
 
-    stage('Modify') {
+    stage('Set Xtext Version') {
+      when {
+        expression { params.NEW_XTEXT_VERSION?.trim() }
+      }
       steps {
         script {
+          def git    = load 'build-tools/git_functions.groovy'
           def gradle = load 'build-tools/gradle_functions.groovy'
           def FROM_VERSION = gradle.getXtextVersion()
-          sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $NEW_XTEXT_VERSION -b StoS"
-        }
-      }
-    }
-    
-    stage('Commit & Push') {
-      steps {
-        script {
           // list of Xtext repository names
           def repositoryNames = ALL_REPOSITORIES ? ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella'] : [TARGET_REPOSITORY]
           def git    = load 'build-tools/git_functions.groovy'
           
+          // MODIFY
+          sh "sh build-tools/fixVersions.sh -f $FROM_VERSION -t $NEW_XTEXT_VERSION -b StoS"
+
+          // COMMIT
           repositoryNames.each {
             git.getGitChanges(it)
             git.commit(it, "[releng] Set version to ${NEW_XTEXT_VERSION}", AUTHOR_NAME, AUTHOR_EMAIL)
           }
         } // script
+      }
+    }
+    
+    stage('Push') {
+      when {
+        expression { !params.DRY_RUN }
+      }
+      steps {
         
         // TODO: git push does not work in the xtext-buildenv container
         //   No user exists for uid 1000100000
