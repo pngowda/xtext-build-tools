@@ -26,6 +26,8 @@ pipeline {
   }
   
   parameters {
+    string(name: 'AUTHOR_NAME', description: 'Committer name (used for Git commits)')
+    string(name: 'AUTHOR_EMAIL', description: 'Committer email address (used for Git commits)')
     string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source Git Branch')
     string(name: 'TARGET_BRANCH', defaultValue: 'releng_set_version', description: 'Target Git Branch')
     string(name: 'TO_VERSION', description: 'New Xtext version to set (major.minor.micro, without SNAPSHOT)')
@@ -45,6 +47,10 @@ pipeline {
             def gitFunctions    = load 'build-tools/git_functions.groovy'
             
             // Check preconditions
+            if (!AUTHOR_NAME?.trim() || !AUTHOR_EMAIL?.trim()) {
+              currentBuild.result = 'ABORTED'
+              error('Author required.')
+            }
             if (TARGET_BRANCH == 'master') {
               currentBuild.result = 'ABORTED'
               error('TARGET_BRANCH \'master\' is disallowed...')
@@ -92,7 +98,7 @@ pipeline {
           
           repositoryNames.each {
             git.getGitChanges(it)
-            git.commit(it, "[releng] Set version to ${TO_VERSION}")
+            git.commit(it, "[releng] Set version to ${TO_VERSION}", AUTHOR_NAME, AUTHOR_EMAIL)
           }
         } // script
         
