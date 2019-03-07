@@ -18,7 +18,7 @@ pipeline {
             image: eclipsecbi/fedora-gtk3-mutter:29-gtk3.24
             tty: true
           - name: xtext-buildenv
-            image: docker.io/smoht/xtext-buildenv:0.2.1
+            image: docker.io/smoht/xtext-buildenv:0.2
             tty: true
           volumes:
           - configMap:
@@ -33,6 +33,8 @@ pipeline {
     string(name: 'AUTHOR_EMAIL', description: 'Committer email address (used for Git commits)')
     string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source Git Branch')
     string(name: 'TARGET_BRANCH', defaultValue: 'releng_set_version', description: 'Target Git Branch')
+    booleanParam(name: 'ALL_REPOSITORIES', defaultValue: true, description: 'Perform modification on ALL repositories. If NOT checked, the TARGET_REPOSITORY below is used.')
+    choice(name: 'TARGET_REPOSITORY', choices: ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'], description: 'ONLY used when ALL_REPOSITORIES is NOT SET. Repository to modify.')
     string(name: 'NEW_XTEXT_VERSION', description: 'New Xtext version to set (major.minor.micro, without SNAPSHOT)')
     booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
   }
@@ -65,7 +67,7 @@ pipeline {
 
             def baseGitURL='git@github.com:eclipse'
             // list of Xtext repository names
-            def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
+            def repositoryNames = ALL_REPOSITORIES ? ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella'] : [TARGET_REPOSITORY]
             
             // checkout source branch for each repository and create the target branch
             repositoryNames.each {
@@ -96,7 +98,7 @@ pipeline {
       steps {
         script {
           // list of Xtext repository names
-          def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
+          def repositoryNames = ALL_REPOSITORIES ? ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella'] : [TARGET_REPOSITORY]
           def git    = load 'build-tools/git_functions.groovy'
           
           repositoryNames.each {
@@ -112,7 +114,7 @@ pipeline {
         container ('eclipsecbi-fedora') {  
           script {
           def git    = load 'build-tools/git_functions.groovy'
-          def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
+          def repositoryNames = ALL_REPOSITORIES ? ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella'] : [TARGET_REPOSITORY]
           if(!params.DRY_RUN){
             sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
               sh "echo pushing branch ${TARGET_BRANCH}"
@@ -126,7 +128,7 @@ pipeline {
         }
           script {
           def git    = load 'build-tools/git_functions.groovy'
-          def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+          def repositoryNames = ALL_REPOSITORIES ? ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'] : [TARGET_REPOSITORY]
           if(!params.DRY_RUN){
             sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
               repositoryNames.each {
