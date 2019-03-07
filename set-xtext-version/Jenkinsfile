@@ -14,6 +14,9 @@ pipeline {
             volumeMounts:
             - mountPath: /home/jenkins/.ssh
               name: volume-known-hosts
+          - name: eclipsecbi-fedora
+            image: eclipsecbi/fedora-gtk3-mutter:29-gtk3.24
+            tty: true
           - name: xtext-buildenv
             image: docker.io/smoht/xtext-buildenv:0.2.1
             tty: true
@@ -106,7 +109,7 @@ pipeline {
         //   No user exists for uid 1000100000
         //   fatal: Could not read from remote repository.
         // But jnlp does not contain hub utility
-        container ('jnlp') {  
+        container ('eclipsecbi-fedora') {  
           script {
           def git    = load 'build-tools/git_functions.groovy'
           def repositoryNames = ['xtext-lib', 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
