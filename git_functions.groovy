@@ -106,10 +106,12 @@ def pushGitChanges(path, branch, openPR=false) {
             script: "git push --force --tags origin ${branch}",
             returnStatus: true
         )
+        /*
         if (rc == 0 && openPR) {
           def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
           rc = createPullRequest('eclipse',path,message,branch,'master')
         }
+        */
         return rc
     }
 }
@@ -153,10 +155,14 @@ def checkoutBranch(branchName) {
  * @see https://developer.github.com/v3/pulls/#create-a-pull-request
  */
 def createPullRequest (repoOwner, repoName, title, head, base='master') {
+  dir(repoName) {
   def data = "{\"title\":\"${title}\",\"head\":\"${head}\",\"base\",\"${base}\"}"
-  def rc = sh (script: "curl -s -X POST -H 'authToken: ${GITHUB_AUTH_TOKEN}' --data '${data}' https://api.github.com/repos/${repoOwner}/${repoName}/pulls", returnStatus: true)
+  //def rc = sh (script: "curl -s -X POST -H 'authToken: ${GITHUB_AUTH_TOKEN}' --data '${data}' https://api.github.com/repos/${repoOwner}/${repoName}/pulls", returnStatus: true)
+  def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
+  def rc = sh (script: "hub pull-request -m '${message}' -h head -b base", returnStatus: true)
   println "PR OPEN RC: ${rc}"
   return rc
+  }
 }
 
 return this

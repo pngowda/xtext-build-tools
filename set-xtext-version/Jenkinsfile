@@ -121,6 +121,17 @@ pipeline {
           }
         
         }
+          script {
+          def git    = load 'build-tools/git_functions.groovy'
+          def repositoryNames = ['xtext-lib' /*, 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella'*/]
+          if(!params.DRY_RUN){
+            sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
+              repositoryNames.each {
+                git.createPullRequest('eclipse',it,'[releng] Set xtext version',TARGET_BRANCH,SOURCE_BRANCH)
+              }
+            }
+          }
+          }
       } // steps
     } // stage
   } // stages
