@@ -25,12 +25,29 @@ def getXtextGradlePluginVersion (branch) {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/gradle/versions.gradle |grep -Po 'xtext_gradle_plugin[^\\d]*\\K[\\d\\.]*'", returnStdout: true).trim()
 }
 
+/**
+ * Get a version from 'versions.gradle' file
+ * @param id Version identifier from ext.versions, e.g. 'xtext_gradle_plugin'
+ * @param branch (Optional) Branch on GH repository to check
+ * @param repository (Optional) Xtext repository name on GH
+ */
+def getVersionFromGradleVersions (id,branch='master',repository='xtext-lib') {
+  return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/${repository}/${branch}/gradle/versions.gradle |grep -Po \"${id}[^\\d]*\\K[^']*\"", returnStdout: true).trim()
+}
+
 def getXtextGradleVersion (branch) {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/gradle/wrapper/gradle-wrapper.properties |grep -Po 'distributionUrl=.*/gradle-\\K[\\d\\.]*'", returnStdout: true).trim()
 }
 
 def getXtextBootstrapVersion (branch) {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/gradle/versions.gradle |grep -Po 'xtext_bootstrap[^\\d]*\\K[\\d\\.]*'", returnStdout: true).trim()
+}
+
+/**
+ * @param id Version property identifier from BOM's properties section, without '-version' suffix. For example 'core.commands'
+ */
+def getVersionFromBOM (id, branch='master') {
+  return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/releng/org.eclipse.xtext.dev-bom/pom.xml |grep -Po '${id}-version>\\K[^<]*'", returnStdout: true).trim()
 }
 
 return this
