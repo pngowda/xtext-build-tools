@@ -44,6 +44,8 @@ def getXtextBootstrapVersion (branch) {
 }
 
 /**
+ * Get a version configured in Xtext's dev-bom BOM.
+ * @param branch (Optional) Branch on GH repository to check
  * @param id Version property identifier from BOM's properties section, without '-version' suffix. For example 'core.commands'
  */
 def getVersionFromBOM (id, branch='master') {
