@@ -47,26 +47,37 @@ pipeline {
           def SOURCE_BRANCH = "${params.SOURCE_BRANCH}"
           
           def writeJUnitReport = {results, fileName ->
-            def numberOfFailures = results.count { result -> result[1]!=result[2] }
             sh """
               echo \"<?xml version='1.0' encoding='UTF-8'?>\" > ${fileName}
               echo \"<testsuites>\" >> ${fileName}
-              echo \"  <testsuite name='version_check' tests='${results.size()}' failures='${numberOfFailures}'>\" >> ${fileName}
             """
-            results.each {
-              def checkName      = it[0]
-              def currentVersion = it[1]
-              def latestVersion  = it[2]
-              sh "echo \"    <testcase name='${checkName}'>\" >> ${fileName}"
-              if (currentVersion!=latestVersion) {
-                sh "echo \"      <failure message='UPDATE AVAILABLE ${currentVersion} -> ${latestVersion}'></failure>\" >> ${fileName}"
-              }
-              
-              sh "echo \"      <system-out>VERSION IS UP-TO-DATE: ${latestVersion}</system-out>\" >> ${fileName}"
-              sh "echo \"    </testcase>\" >> ${fileName}"
-            }
+            
+            // OPEN TESTSUITE
+            results
+              .groupBy { it[0] }
+              .each { entry -> 
+                def resultsForKey = results.filter{it[0]==entry.key}
+                def numberOfFailures = resultsForKey.count { result -> result[2]!=result[3] }
+                sh """
+                  echo \"  <testsuite name='${entry.key}' tests='${resultsForKey.size()}' failures='${numberOfFailures}'>\" >> ${fileName}
+                """
+                // iterate over all entries with the current test suite key
+                resultsForKey.each {
+                  def checkCategory  = it[0]
+                  def checkName      = it[1]
+                  def currentVersion = it[2]
+                  def latestVersion  = it[3]
+                  sh "echo \"    <testcase name='${checkName}'>\" >> ${fileName}"
+                  if (currentVersion!=latestVersion) {
+                    sh "echo \"      <failure message='UPDATE AVAILABLE ${currentVersion} -> ${latestVersion}'></failure>\" >> ${fileName}"
+                  }
+                  
+                  sh "echo \"      <system-out>LATEST AVAILABLE VERSION: ${latestVersion}</system-out>\" >> ${fileName}"
+                  sh "echo \"    </testcase>\" >> ${fileName}"
+                }
+                sh "echo \"  </testsuite>\" >> ${fileName}"
+            } // END each
             sh """
-              echo \"  </testsuite>\" >> ${fileName}
               echo \"</testsuites>\" >> ${fileName}
               cat ${fileName}
               pwd
@@ -74,28 +85,33 @@ pipeline {
             """
           }
           
-          def results = [] // 0: Check; 1: Current Version used by Xtext; 2: Latest Available Version
+          def results = [] // 0: Category(Class), 1: Check; 2: Current Version used by Xtext; 3: Latest Available Version
           results.add([
+            'Maven Plugins',
             'Eclipse Tycho',
             versions.getXtextTychoVersion(SOURCE_BRANCH),
             versions.getLatestArtifactVersion('org.eclipse.tycho','tycho-maven-plugin')
           ])
           results.add([
             'Gradle',
+            'Gradle',
             versions.getXtextGradleVersion(SOURCE_BRANCH),
             versions.getLatestReleaseFromGitHubRepository('gradle','gradle')
           ])
           results.add([
+            'versions.gradle',
             'Xtext Bootstrap Version',
             versions.getVersionFromGradleVersions('xtext_bootstrap',SOURCE_BRANCH),
             versions.getLatestArtifactVersion('org.eclipse.xtend','xtend-maven-plugin')
           ])
           results.add([
+            'versions.gradle',
             'Spring dependency-management-plugin',
             versions.getVersionFromGradleVersions('dependency_management_plugin',SOURCE_BRANCH),
             versions.getLatestArtifactVersion('io.spring.gradle','dependency-management-plugin')
           ])
           results.add([
+            'Gradle',
             'xtext-gradle-plugin',
             versions.getXtextGradlePluginVersion(SOURCE_BRANCH),
             versions.getLatestArtifactVersion('org.xtext','xtext-gradle-plugin')
@@ -106,6 +122,7 @@ pipeline {
           
           bomProperties.each {
             results.add([
+              'BOM',
               "org.eclipse.${it}",
               versions.getVersionFromBOM(it, SOURCE_BRANCH),
               versions.getLatestArtifactVersion('org.eclipse.platform',"org.eclipse.${it}")
