@@ -35,6 +35,16 @@ def getVersionFromGradleVersions (id,branch='master',repository='xtext-lib') {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/${repository}/${branch}/gradle/versions.gradle |grep -Po \"${id}[^\\d]*\\K[^']*\"", returnStdout: true).trim()
 }
 
+/**
+ * Grep an artifact version from a remote pom.xml file.
+ * It is assumed that the version tag is in the line following the artifactId tag.
+ */
+def getArtifactVersionFromPOM (url, artifactId) {
+  // first grep for <artifactId> and the line after
+  // then grep the result for <version> tag
+  return sh (script: "curl -s ${url} |grep \"<artifactId>${artifactId}</artifactId>\" -A 1 |grep -Po \"<version>\\K[^<]*\"", returnStdout: true).trim()
+}
+
 def getXtextGradleVersion (branch) {
   return sh (script: "curl -s https://raw.githubusercontent.com/eclipse/xtext-lib/${branch}/gradle/wrapper/gradle-wrapper.properties |grep -Po 'distributionUrl=.*/gradle-\\K[\\d\\.]*'", returnStdout: true).trim()
 }

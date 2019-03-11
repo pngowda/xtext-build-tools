@@ -159,6 +159,19 @@ pipeline {
             versions.getXtextTychoVersion(SOURCE_BRANCH),
             versions.getLatestArtifactVersion('org.eclipse.tycho','tycho-maven-plugin')
           ])
+          
+          // Use org.eclipse.xtext.maven.parent as reference for Maven plugins
+          def mavenParentUrl = "https://raw.githubusercontent.com/eclipse/xtext-maven/${SOURCE_BRANCH}/org.eclipse.xtext.maven.parent/pom.xml"
+          // List all Maven plugin artifactIds in that POM
+          def standardMavenPluginArtifactIds = ['maven-antrun-plugin','maven-compiler-plugin','maven-deploy-plugin','maven-enforcer-plugin','maven-install-plugin','maven-javadoc-plugin','maven-plugin-plugin','maven-source-plugin','maven-surefire-plugin']
+          standardMavenPluginArtifactIds.each {
+            results.add([
+              'Maven Plugins',
+              it,
+              versions.getArtifactVersionFromPOM(mavenParentUrl, it),
+              versions.getLatestArtifactVersion('org.apache.maven.plugins',it)
+            ])
+          }
 
           sh "mkdir target" // make sure target directory exists
           writeJUnitReport(results,"target/report.xml")
