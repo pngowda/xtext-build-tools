@@ -87,25 +87,25 @@ pipeline {
           
           def results = [] // 0: Category(Class), 1: Check; 2: Current Version used by Xtext; 3: Latest Available Version
           results.add([
-            'Gradle',
+            'versions.Gradle',
             'Gradle',
             versions.getXtextGradleVersion(SOURCE_BRANCH),
             versions.getLatestReleaseFromGitHubRepository('gradle','gradle')
           ])
           results.add([
-            'versions.gradle',
+            'versions.versions_gradle',
             'Xtext Bootstrap Version',
             versions.getVersionFromGradleVersions('xtext_bootstrap',SOURCE_BRANCH),
             versions.getLatestArtifactVersion('org.eclipse.xtend','xtend-maven-plugin')
           ])
           results.add([
-            'versions.gradle',
+            'versions.versions_gradle',
             'Spring dependency-management-plugin',
             versions.getVersionFromGradleVersions('dependency_management_plugin',SOURCE_BRANCH),
             versions.getLatestArtifactVersion('io.spring.gradle','dependency-management-plugin')
           ])
           results.add([
-            'Gradle',
+            'versions.Gradle',
             'xtext-gradle-plugin',
             versions.getXtextGradlePluginVersion(SOURCE_BRANCH),
             versions.getLatestArtifactVersion('org.xtext','xtext-gradle-plugin')
@@ -121,7 +121,7 @@ pipeline {
           ]
           eclipsePlatformProperties.each {
             results.add([
-              'BOM',
+              'versions.BOM',
               "org.eclipse.${it}",
               versions.getVersionFromBOM(it, SOURCE_BRANCH),
               versions.getLatestArtifactVersion('org.eclipse.platform',"org.eclipse.${it}")
@@ -130,14 +130,14 @@ pipeline {
           // JDT
           ['jdt.core','jdt.compiler.apt','jdt.compiler.tool'].each {
             results.add([
-              'BOM',
+              'versions.BOM',
               "org.eclipse.${it}",
               versions.getVersionFromBOM(it, SOURCE_BRANCH),
               versions.getLatestArtifactVersion('org.eclipse.jdt',"org.eclipse.${it}")
             ])
           }
           results.add([
-            'BOM',
+            'versions.BOM',
             'javax.annotation-api',
             versions.getVersionFromBOM('javax.annotation-api', SOURCE_BRANCH),
             versions.getLatestArtifactVersion('javax.annotation','javax.annotation-api')
