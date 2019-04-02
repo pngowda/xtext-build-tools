@@ -137,10 +137,10 @@ def gitResetHard() {
     return git_cmd
 }
 
-def gitCheckoutMaster() {
+def checkoutBranch(branchName) {
     def git_cmd
       git_cmd = sh (
-          script: 'git checkout master',
+          script: "git checkout ${branchName}",
           returnStdout: true
       ).trim()
     return git_cmd

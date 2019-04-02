@@ -8,6 +8,7 @@ node {
     [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
     parameters([
       string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
+      string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source branch for checkout & create the release branches from'),
       choice(name: 'RELEASE', choices: ['Beta','M1','M2','M3','RC1','RC2','GA'], description: 'Type of release to build'),
       booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
     ])
@@ -43,7 +44,7 @@ node {
   println "tag to be created ${tagName}"
   
   // list of Xtext repository names
-  def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-idea', 'xtext-umbrella']
+  def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
   
   stage('Checkout') {
     // checkout xtext-build-tools
@@ -51,22 +52,22 @@ node {
     
     sh "ls -al ."
 
-    def gitFunctions    = load 'git_functions.groovy'
+    def git    = load 'git_functions.groovy'
     repositoryNames.each {
       dir(it) {
         if(fileExists("/")){ 
-          gitFunctions.gitResetHard()
-          gitFunctions.gitCheckoutMaster()
+          git.gitResetHard()
+          git.checkoutBranch(params.SOURCE_BRANCH)
         }
       }
       dir(it) {
-        git url: "${baseGitURL}/${it}.git", branch: 'master', credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
+        git url: "${baseGitURL}/${it}.git", branch: params.SOURCE_BRANCH, credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
       }
       // When release branch already exists, then delete it and create a new one
-      if (gitFunctions.branchExists(it, branchName)){
-        gitFunctions.deleteBranch(branchName)
+      if (git.branchExists(it, branchName)){
+        git.deleteBranch(branchName)
       }
-      gitFunctions.createBranch(it, branchName)
+      git.createBranch(it, branchName)
     }
   }
   
@@ -111,13 +112,6 @@ node {
       jenkinsfile.addUpstream("$workspace/xtext-eclipse/Jenkinsfile", 'xtext-extras')
     }
     
-    //preparing xtext-idea
-    print "##### Preparing xtext-idea ########"
-    dir('xtext-idea') {
-      gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-idea/Jenkinsfile", 'xtext-xtend')
-    }
-    
     //preparing xtext-web
     print "##### Preparing xtext-web ########"
     dir('xtext-web') {
@@ -157,18 +151,18 @@ node {
 
 
   stage('Commit & Push') {
-    def gitFunctions    = load 'git_functions.groovy'
+    def git    = load 'git_functions.groovy'
     
     repositoryNames.each {
-      gitFunctions.getGitChanges(it)
-      gitFunctions.commitGitChanges(it, xtextVersion, "[release] version")
-      gitFunctions.tagGit(it, tagName)
+      git.getGitChanges(it)
+      git.commitGitChanges(it, xtextVersion, "[release] version")
+      git.tagGit(it, tagName)
     }
     if(!params.DRY_RUN){
       sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
         sh "echo pushing branch ${branchName}"
         repositoryNames.each {
-          gitFunctions.pushGitChanges(it, branchName)
+          git.pushGitChanges(it, branchName)
         }
       }
     }
