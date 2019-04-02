@@ -41,7 +41,7 @@ sed_inplace() {
 }
 
 if [[ -z "${JENKINS_URL}" ]]; then
-	JENKINS_URL="http://services.typefox.io/open-source/jenkins"
+	JENKINS_URL="https://ci.eclipse.org/xtext"
 fi
 echo "JENKINS_URL=$JENKINS_URL"
 
