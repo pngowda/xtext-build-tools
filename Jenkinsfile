@@ -55,13 +55,10 @@ node {
     def git    = load 'git_functions.groovy'
     repositoryNames.each {
       dir(it) {
-        if(fileExists("/")){ 
+        if(fileExists(".git")){ 
           git.gitResetHard()
           git.checkoutBranch(params.SOURCE_BRANCH)
         }
-      }
-      dir(it) {
-        git url: "${baseGitURL}/${it}.git", branch: params.SOURCE_BRANCH, credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
       }
       // When release branch already exists, then delete it and create a new one
       if (git.branchExists(it, branchName)){
