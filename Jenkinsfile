@@ -59,12 +59,12 @@ node {
           git.gitResetHard()
           git.checkoutBranch(params.SOURCE_BRANCH)
         }
+        // When release branch already exists, then delete it and create a new one
+        if (git.branchExists(branchName)) {
+          git.deleteBranch(branchName)
+        }
+        git.createBranch(branchName)
       }
-      // When release branch already exists, then delete it and create a new one
-      if (git.branchExists(it, branchName)){
-        git.deleteBranch(branchName)
-      }
-      git.createBranch(it, branchName)
     }
   }
   
