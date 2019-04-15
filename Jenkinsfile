@@ -171,9 +171,9 @@ node {
           git.pushGitChanges(it, branchName)
         }
       }
+      slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", botUser: true, channel: 'xtext-builds', color: '#00FF00'
     }
     
-    // slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", baseUrl: 'https://itemis.slack.com/services/hooks/jenkins-ci/', botUser: true, channel: 'xtext-builds', color: '#00FF00', token: '1vbkhv8Hwlp3ausuFGj1BdJb'
   }
 }
 
