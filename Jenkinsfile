@@ -58,6 +58,8 @@ node {
         if(fileExists(".git")){ 
           git.gitResetHard()
           git.checkoutBranch(params.SOURCE_BRANCH)
+        } else {
+          git url: "${baseGitURL}/${it}.git", branch: "${params.SOURCE_BRANCH}", credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
         }
         // When release branch already exists, then delete it and create a new one
         if (git.branchExists(branchName)) {
@@ -92,6 +94,7 @@ node {
       pom.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion)
       pom.setUpstreamBranch("$workspace/xtext-core/releng/pom.xml", branchName)
       jenkinsfile.addUpstream("$workspace/xtext-core/Jenkinsfile", 'xtext-lib')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-core/CBI.Jenkinsfile", 'xtext-lib')
     }
     
     //preparing xtext-extras
@@ -101,12 +104,14 @@ node {
       pom.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion)
       pom.setUpstreamBranch("$workspace/xtext-extras/releng/pom.xml", branchName)
       jenkinsfile.addUpstream("$workspace/xtext-extras/Jenkinsfile", 'xtext-core')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-extras/CBI.Jenkinsfile", 'xtext-core')
     }
     
     //preparing xtext-eclipse
     print "##### Preparing xtext-eclipse ########"
     dir('xtext-eclipse') {
       jenkinsfile.addUpstream("$workspace/xtext-eclipse/Jenkinsfile", 'xtext-extras')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-eclipse/CBI.Jenkinsfile", 'xtext-extras')
     }
     
     //preparing xtext-web
@@ -114,6 +119,7 @@ node {
     dir('xtext-web') {
       gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
       jenkinsfile.addUpstream("$workspace/xtext-web/Jenkinsfile", 'xtext-extras')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-web/CBI.Jenkinsfile", 'xtext-extras')
     }
     
     //preparing xtext-maven
@@ -124,6 +130,7 @@ node {
       pom.setUpstreamBranch("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", branchName)
       pom.setProperty("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/src/test/resources/it/generate/pom.xml", 'xtext-version', xtextVersion)
       jenkinsfile.addUpstream("$workspace/xtext-maven/Jenkinsfile", 'xtext-extras')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-maven/CBI.Jenkinsfile", 'xtext-extras')
     }
     
     //preparing xtext-xtend
@@ -136,6 +143,7 @@ node {
       pom.xtextXtendPomVersionUpdate(xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml", snapshotVersion)
       pom.setProperty("org.eclipse.xtend.maven.plugin/src/test/resources/it/pom.xml", 'xtextVersion', xtextVersion)
       jenkinsfile.addUpstream("$workspace/xtext-xtend/Jenkinsfile", 'xtext-eclipse')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-xtend/CBI.Jenkinsfile", 'xtext-eclipse')
     }
 
     //preparing xtext-umbrella
@@ -143,6 +151,7 @@ node {
     dir('xtext-umbrella') {
       pom.pomZipVersionUpdate(xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
       jenkinsfile.addUpstream("$workspace/xtext-umbrella/Jenkinsfile", 'xtext-xtend')
+      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-umbrella/CBI.Jenkinsfile", 'xtext-xtend')
     }
   }
 
