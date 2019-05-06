@@ -94,7 +94,7 @@ node {
       gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
       pom.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion)
       pom.setUpstreamBranch("$workspace/xtext-core/releng/pom.xml", branchName)
-      jenkinsfile.addUpstream("$workspace/xtext-core/Jenkinsfile", 'xtext-lib')
+      jenkinsfile.addUpstream("$workspace/xtext-core/Jenkinsfile", 'xtext-lib', branchName)
     }
     
     //preparing xtext-extras
@@ -103,20 +103,20 @@ node {
       gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
       pom.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion)
       pom.setUpstreamBranch("$workspace/xtext-extras/releng/pom.xml", branchName)
-      jenkinsfile.addUpstream("$workspace/xtext-extras/Jenkinsfile", 'xtext-core')
+      jenkinsfile.addUpstream("$workspace/xtext-extras/Jenkinsfile", 'xtext-core', branchName)
     }
     
     //preparing xtext-eclipse
     print "##### Preparing xtext-eclipse ########"
     dir('xtext-eclipse') {
-      jenkinsfile.addUpstream("$workspace/xtext-eclipse/Jenkinsfile", 'xtext-extras')
+      jenkinsfile.addUpstream("$workspace/xtext-eclipse/Jenkinsfile", 'xtext-extras', branchName)
     }
     
     //preparing xtext-web
     print "##### Preparing xtext-web ########"
     dir('xtext-web') {
       gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-web/Jenkinsfile", 'xtext-extras')
+      jenkinsfile.addUpstream("$workspace/xtext-web/Jenkinsfile", 'xtext-extras', branchName)
     }
     
     //preparing xtext-maven
@@ -126,7 +126,7 @@ node {
       pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/pom.xml", xtextVersion)
       pom.setUpstreamBranch("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", branchName)
       pom.setProperty("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/src/test/resources/it/generate/pom.xml", 'xtext-version', xtextVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-maven/Jenkinsfile", 'xtext-extras')
+      jenkinsfile.addUpstream("$workspace/xtext-maven/Jenkinsfile", 'xtext-extras', branchName)
     }
     
     //preparing xtext-xtend
@@ -138,14 +138,14 @@ node {
       pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml", snapshotVersion)
       pom.xtextXtendPomVersionUpdate(xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml", snapshotVersion)
       pom.setProperty("org.eclipse.xtend.maven.plugin/src/test/resources/it/pom.xml", 'xtextVersion', xtextVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-xtend/Jenkinsfile", 'xtext-eclipse')
+      jenkinsfile.addUpstream("$workspace/xtext-xtend/Jenkinsfile", 'xtext-eclipse', branchName)
     }
 
     //preparing xtext-umbrella
     print "###### Preparing xtext-umbrella ########"
     dir('xtext-umbrella') {
       pom.pomZipVersionUpdate(xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-umbrella/Jenkinsfile", 'xtext-xtend')
+      jenkinsfile.addUpstream("$workspace/xtext-umbrella/Jenkinsfile", 'xtext-xtend', branchName)
     }
   }
 

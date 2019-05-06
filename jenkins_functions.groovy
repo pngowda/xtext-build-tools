@@ -1,7 +1,7 @@
 
-def addUpstream(jenkinsfile, upstreamJob){
-   def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"\$BRANCH_NAME\", \"UTF-8\"))])"
-   def appendTrigger="upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"\$BRANCH_NAME\", \"UTF-8\"))"
+def addUpstream(jenkinsfile, upstreamJob, branchName){
+   def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"\$branchName\", \"UTF-8\"))])"
+   def appendTrigger="upstream(threshold: \'SUCCESS\', upstreamProjects: \'$upstreamJob/\' + URLEncoder.encode(\"\$branchName\", \"UTF-8\"))"
    File fh = new File(jenkinsfile)
    def linenum=0
    def lineToReplace
