@@ -13,6 +13,11 @@ def boolean deleteBranch(branch) {
     return rc == 0
 }
 
+def boolean pull() {
+    def rc = sh (script: "git pull", returnStatus: true)
+    return rc == 0
+}
+
 
 def commit(path, message, gitName='genie.xtext', gitEmail='genie.xtext@git.eclipse.org') {
     def git_cmd
