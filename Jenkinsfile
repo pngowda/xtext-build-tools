@@ -59,7 +59,7 @@ node {
           sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
             git.gitResetHard()
             git.checkoutBranch(params.SOURCE_BRANCH)
-            git.pull()
+            git.pull(params.SOURCE_BRANCH)
           }
         } else {
           git url: "${baseGitURL}/${it}.git", branch: "${params.SOURCE_BRANCH}", credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB

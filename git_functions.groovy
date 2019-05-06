@@ -13,8 +13,8 @@ def boolean deleteBranch(branch) {
     return rc == 0
 }
 
-def boolean pull() {
-    def rc = sh (script: "git pull", returnStatus: true)
+def boolean pull(branch, remote='origin') {
+    def rc = sh (script: "git pull ${remote} ${branch}", returnStatus: true)
     return rc == 0
 }
 
