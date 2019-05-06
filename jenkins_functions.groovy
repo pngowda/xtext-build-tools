@@ -40,8 +40,8 @@ def addUpstream(jenkinsfile, upstreamJob, branchName){
    w.close()
 }
 
-def addDeclarativeUpstream (jenkinsfile, upstreamJob) {
-  def upstreamProject = upstreamJob + '/' + URLEncoder.encode(BRANCH_NAME, 'UTF-8')
+def addDeclarativeUpstream (jenkinsfile, upstreamJob, branchName) {
+  def upstreamProject = upstreamJob + '/' + URLEncoder.encode(branchName, 'UTF-8')
   return sh (script: "sed -i \"s/triggers.*{/triggers {\\\n    upstream(upstreamProjects: '${upstreamProject}', threshold: hudson.model.Result.SUCCESS) /\" ${jenkinsfile}", returnStatus: true)
 }
 
