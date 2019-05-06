@@ -55,10 +55,12 @@ node {
     def git    = load 'git_functions.groovy'
     repositoryNames.each {
       dir(it) {
-        if(fileExists(".git")){ 
-          git.gitResetHard()
-          git.checkoutBranch(params.SOURCE_BRANCH)
-          git.pull()
+        if(fileExists(".git")) {
+          sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
+            git.gitResetHard()
+            git.checkoutBranch(params.SOURCE_BRANCH)
+            git.pull()
+          }
         } else {
           git url: "${baseGitURL}/${it}.git", branch: "${params.SOURCE_BRANCH}", credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
         }
