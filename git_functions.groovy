@@ -1,22 +1,16 @@
-def createBranch(path, branch) {
-    dir(path) {
-        def rc = sh (script: "git checkout -b ${branch}", returnStatus: true)
-        return rc == 0
-    }
+def createBranch(branch) {
+    def rc = sh (script: "git checkout -b ${branch}", returnStatus: true)
+    return rc == 0
 }
 
-def boolean branchExists(path, branch) {
-    dir(path) {
-        def rc = sh (script: "git rev-parse --verify ${branch}", returnStatus: true)
-        return rc == 0
-    }
+def boolean branchExists(branch) {
+    def rc = sh (script: "git rev-parse --verify ${branch}", returnStatus: true)
+    return rc == 0
 }
 
-def boolean deleteBranch(path, branch) {
-    dir(path) {
-        def rc = sh (script: "git branch -D ${branch}", returnStatus: true)
-        return rc == 0
-    }
+def boolean deleteBranch(branch) {
+    def rc = sh (script: "git branch -D ${branch}", returnStatus: true)
+    return rc == 0
 }
 
 
