@@ -1,49 +1,59 @@
+import java.util.regex.*
 
-def addUpstream(jenkinsfile, upstreamJob, branchName){
-   def upstreamProject = upstreamJob + '/' + URLEncoder.encode(branchName, 'UTF-8')
-   def insertTrigger=", pipelineTriggers([upstream(threshold: \'SUCCESS\', upstreamProjects: \'${upstreamProject}\')])"
-   def appendTrigger="upstream(threshold: \'SUCCESS\', upstreamProjects: \'${upstreamProject}\')"
-   File fh = new File(jenkinsfile)
-   def linenum=0
-   def lineToReplace
-   def insert_new=0
-   def insert_append=0
-   def linesR = fh.readLines()
-   def linesW = fh.readLines()
-   def existingTrigger
-   for (line in linesR){
-     linenum++
-     if(line=~ /^\s+.*pipelineTriggers\(\[upstream.*/){
-        println "Upstream job trigger already present"
-        return this
-     }
-     if(line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/){
-        insert_append=linenum
-        (line=~ /^\s+pipelineTriggers\(\[(.*)\]\)/).each {match -> existingTrigger=match[1] }
-        continue
-     }      
-     if (line=~/^\s+]\)/){
-       insert_new=linenum
-       continue
-     }
-   }
-   if(existingTrigger){
-      insertTrigger="pipelineTriggers([${existingTrigger}, ${appendTrigger}])"
-      linesW.set(insert_append-1, "\t\t"+insertTrigger)
-   }
-   else{
-      linesW.add(insert_new-1, "\t\t"+insertTrigger)
-   }
-   def w = fh.newWriter() 
-   for(wline in linesW){
-       w<< wline +"\n"
-     }
-   w.close()
+def void addDeclarativeUpstream (jenkinsfile, upstreamJob, branchName, dryRun=false) {
+  def file = new File(jenkinsfile)
+  if (!file.text.contains('pipeline')) throw new IllegalArgumentException ("$jenkinsfile is not a declarative Jenkins pipeline file")
+
+  def upstreamProject = upstreamJob + '/' + URLEncoder.encode(branchName, 'UTF-8')
+  def String newContent
+  if (file.text.contains('triggers')) {
+    newContent = file.text.replaceFirst("triggers\\s*\\{", "triggers {\n    upstream(upstreamProjects: '${upstreamProject}', threshold: hudson.model.Result.SUCCESS)")
+  } else {
+    // insert after closing brace of options block; options block is always present
+    def offset = file.text.indexOf('}', file.text.indexOf('options')) + 1
+    newContent = file.text.substring(0, offset)
+    newContent += "\n\n  triggers {\n    upstream(upstreamProjects: '${upstreamProject}', threshold: hudson.model.Result.SUCCESS)\n  }\n"
+    newContent += file.text.substring(offset+1)
+  }
+  file.write(newContent)
 }
 
-def addDeclarativeUpstream (jenkinsfile, upstreamJob, branchName) {
+def void addScriptedUpstream (jenkinsfile, upstreamJob, branchName, dryRun=false) {
+  println "jdd"
+  def file = new File(jenkinsfile)
+  if (!file.text.contains('node')) throw new IllegalArgumentException ("$jenkinsfile is not a scripted Jenkins pipeline file")
+
   def upstreamProject = upstreamJob + '/' + URLEncoder.encode(branchName, 'UTF-8')
-  return sh (script: "sed -i \"s?triggers.*{?triggers {\\\n    upstream(upstreamProjects: '${upstreamProject}', threshold: hudson.model.Result.SUCCESS) ?\" ${jenkinsfile}", returnStatus: true)
+  def String newContent
+  def trigger          = "upstream(threshold: 'SUCCESS', upstreamProjects: '${upstreamProject}')"
+  def pipelineTriggers = "pipelineTriggers([${trigger}])"
+
+  // 'pipelineTriggers' exists, append within section
+  def PATTERN_ADD_TO_PIPELINETRIGGERS=Pattern.compile('(.*(?:pipelineTriggers)\\(\\[.*)(\\]\\)\\s+\\]\\).*)', Pattern.DOTALL).matcher(file.text)
+  // 'properties' section exists before 'stage' section
+  def PATTERN_ADD_TO_PROPERTIES=Pattern.compile('(.*(?:properties).*)(\\]\\)\\s+(?:stage).*)', Pattern.DOTALL).matcher(file.text)
+
+  if (PATTERN_ADD_TO_PIPELINETRIGGERS.find()) {
+    // pipelineTriggers already there, add another one
+    newContent = PATTERN_ADD_TO_PIPELINETRIGGERS.group(1)
+    newContent += ", ${trigger}"
+    newContent += PATTERN_ADD_TO_PIPELINETRIGGERS.group(2)
+  } else if (PATTERN_ADD_TO_PROPERTIES.find()) {
+    newContent = PATTERN_ADD_TO_PROPERTIES.group(1)
+    newContent += "\t, ${pipelineTriggers}\n\t"
+    newContent += PATTERN_ADD_TO_PROPERTIES.group(2)
+  } else {
+    // insert after closing brace of options block; options block is always present
+    def offset = file.text.indexOf('stage')
+    newContent = file.text.substring(0, offset)
+    newContent += "\n\n    properties([\n      ${pipelineTriggers}\n    ])\n\n"
+    newContent += file.text.substring(offset+1)
+  }
+  if (dryRun) {
+    println(newContent)
+  } else {
+   file.write(newContent)
+  }
 }
 
 return this

@@ -1,182 +1,164 @@
-import jenkins.model.*
-import hudson.model.*
-import groovy.xml.XmlUtil
+pipeline {
+  agent {
+    kubernetes {
+      label 'xtext-build-pod'
+      defaultContainer 'jnlp'
+      yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: jnlp
+    image: 'eclipsecbi/jenkins-jnlp-agent'
+    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+    volumeMounts:
+    - mountPath: /home/jenkins/.ssh
+      name: volume-known-hosts
+  - name: groovy
+    image: 'groovy:jre11'
+    tty: true
+    command: ["/bin/bash"]
+  volumes:
+  - name: volume-known-hosts
+    configMap:
+      name: known-hosts
+    '''
+    }
+  }
 
-node {
-  
-  properties([
-    [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '15']],
-    parameters([
-      string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)'),
-      string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source branch for checkout & create the release branches from'),
-      choice(name: 'RELEASE', choices: ['Beta','M1','M2','M3','RC1','RC2','GA'], description: 'Type of release to build'),
+  parameters {
+      string(name: 'XTEXT_VERSION', defaultValue: '2.17.0', description: 'Xtext version (without -SNAPSHOT suffix)')
+      string(name: 'SOURCE_BRANCH', defaultValue: 'master', description: 'Source branch for checkout & create the release branches from')
+      choice(name: 'RELEASE', choices: ['Beta','M1','M2','M3','RC1','RC2','GA'], description: 'Type of release to build')
+      booleanParam(name: 'VERBOSE', defaultValue: false, description: 'Print additional verbose output (e.g. git diff)')
       booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Dry run mode')
-    ])
-  ])
+  }
+
+  options {
+    buildDiscarder(logRotator(numToKeepStr:'5'))
+    timeout(time: 90, unit: 'MINUTES')
+  }
+  
+  environment {
+    xtextVersion="${params.RELEASE != 'GA' ? params.XTEXT_VERSION+'.'+params.RELEASE : params.XTEXT_VERSION}"
+    snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
+    releaseType="${params.RELEASE}"
+    baseGitURL='git@github.com:eclipse'
+    tagName="v${xtextVersion}"
+    repositoryNames = 'xtext-lib,xtext-core,xtext-extras,xtext-eclipse,xtext-xtend,xtext-maven,xtext-web,xtext-umbrella'
+    // repositoryNames = 'xtext-umbrella'
+    branchName="${params.RELEASE != 'GA' ? 'milestone_'+params.XTEXT_VERSION+'.'+params.RELEASE : 'release_'+params.XTEXT_VERSION}"
+    gitUser="genie.xtext"
+    gitEmail="genie.xtext@git.eclipse.org"
+  }
 
   // TODO Make property XTEXT_VERSION obsolete. The base version can be retrieved from xtext-lib/gradle/version.gradle
-  if(params.DRY_RUN){
-    println "##### NOTE: Running script in dry run mode, changes will not be pushed to git repos ######"
-  }
-  def xtextVersion="${params.XTEXT_VERSION}"
-  if (!xtextVersion.startsWith('2.')) {
-    currentBuild.result = 'ABORTED'
-    error('XTEXT_VERSION invalid')
-  }
-
-  def snapshotVersion="${params.XTEXT_VERSION}-SNAPSHOT"
-  def releaseType="${params.RELEASE}"
-  def baseGitURL='git@github.com:eclipse'
   
-  def branchName
-  def isIntermediateRelease = releaseType != 'GA'
-  if(isIntermediateRelease){
-    xtextVersion="${xtextVersion}.${releaseType}"
-    branchName="milestone_${xtextVersion}"
-  } else { // GA release
-    branchName="release_${xtextVersion}"
-  }
-
-  def tagName="v${xtextVersion}"
+  stages {
+    stage('Prepare') {
+      steps {
+        // checkout xtext-build-tools
+        checkout scm
+        
+        script {
+          def git    = load 'git_functions.groovy'
   
-  println "xtext version to be released ${xtextVersion}"
-  println "branch to be created ${branchName}"
-  println "tag to be created ${tagName}"
-  
-  // list of Xtext repository names
-  def repositoryNames = ['xtext-lib' , 'xtext-core', 'xtext-extras', 'xtext-eclipse', 'xtext-xtend', 'xtext-maven', 'xtext-web', 'xtext-umbrella']
-  
-  stage('Checkout') {
-    // checkout xtext-build-tools
-    checkout scm
-    
-    sh "ls -al ."
-
-    def git    = load 'git_functions.groovy'
-    repositoryNames.each {
-      dir(it) {
-        if(fileExists(".git")) {
-          sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
-            git.gitResetHard()
-            git.checkoutBranch(params.SOURCE_BRANCH)
-            git.pull(params.SOURCE_BRANCH)
+          if (!xtextVersion.startsWith('2.')) {
+            currentBuild.result = 'ABORTED'
+            error('XTEXT_VERSION invalid')
           }
-        } else {
-          git url: "${baseGitURL}/${it}.git", branch: "${params.SOURCE_BRANCH}", credentialsId: CREDENTIAL_ID_GENIE_XTEXT_GITHUB
-        }
-        // When release branch already exists, then delete it and create a new one
-        if (git.branchExists(branchName)) {
-          git.deleteBranch(branchName)
-        }
-        git.createBranch(branchName)
-      }
-    }
-  }
+          println "xtext version to be released ${xtextVersion}"
+          println "branch to be created ${branchName}"
+          println "tag to be created ${tagName}"
+    
+          sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
+            repositoryNames.split(',').each {
+              if(fileExists("${it}/.git")) {
+                dir(it) {
+                      git.resetHard()
+                      git.checkoutBranch(params.SOURCE_BRANCH)
+                      git.pull(params.SOURCE_BRANCH)
+                      // When release branch already exists, then delete it and create a new one
+                      if (git.branchExists(branchName)) {
+                        git.deleteBranch(branchName)
+                      }
+                }
+              } else {
+                sh "git clone -b ${params.SOURCE_BRANCH} --depth 1 --no-tags ${baseGitURL}/${it}.git"
+              }
+              dir(it) {
+                sh """
+                  git config user.name ${gitUser}
+                  git config user.email ${gitEmail}
+                """
+                git.createBranch(branchName)
+              }
+            }
+
+            // compile Groovy scripts, needs xtext-buildenv container
+            container('groovy') {
+              sh 'groovyc -d target *.groovy'
+            }
+          } // END sshagent
+        } // END script
+      } // END steps
+    } // END stage
+    
+    stage('Modify') {
+      steps {
+        script {
+          def pom    = load 'pom_changes.groovy'
+          def gradle = load 'gradle_functions.groovy'
+          def git    = load 'git_functions.groovy'
+          def jenkinsfile = load 'jenkins_functions.groovy'
+          
+          sh "./adjustPipelines.sh $branchName"
+          
+          container('groovy') {
+            repositoryNames.split(',').each {
+              print "##### Preparing $it ########"
+              dir(it) {
+                // TODO: do not pass snapshotVersion. xtextVersion has to be enough.
+                sh "groovy -cp $workspace/target $workspace/modify_files_for_release $it $xtextVersion $snapshotVersion $branchName"
+                if (params.VERBOSE) {
+                  container('jnlp') {
+                    sh "git diff"
+                  }
+                }
+              }
+            }
+          }
+
+        } // END script
+      } // END steps
+    } // END stage
   
-  stage('Modify') {
-    def pom    = load 'pom_changes.groovy'
-    def gradle = load 'gradle_functions.groovy'
-    def git    = load 'git_functions.groovy'
-    def jenkinsfile = load 'jenkins_functions.groovy'
-  
-    sh "./adjustPipelines.sh $branchName"
-    
-    //preparing xtext-lib
-    print "##### Preparing xtext-lib ########"
-    dir('xtext-lib') {
-      // do not pass snapshotVersion. Just set xtextVersion.
-      gradle.gradleVersionUpdate(xtextVersion,snapshotVersion)
-      pom.pomVersionUpdate("$workspace/xtext-lib/releng/org.eclipse.xtext.dev-bom/pom.xml", xtextVersion)
-      pom.changePomDependencyVersion(xtextVersion, "$workspace/xtext-lib/releng/pom.xml", snapshotVersion)
-    }
-      
-    //preparing xtext-core
-    print "##### Preparing xtext-core ########"
-    dir('xtext-core') {
-      gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      pom.changePomDependencyVersion(xtextVersion,"$workspace/xtext-core/releng/pom.xml", snapshotVersion)
-      pom.setUpstreamBranch("$workspace/xtext-core/releng/pom.xml", branchName)
-      jenkinsfile.addUpstream("$workspace/xtext-core/Jenkinsfile", 'xtext-lib', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-core/CBI.Jenkinsfile", 'xtext-lib', branchName)
-    }
-    
-    //preparing xtext-extras
-    print "##### Preparing xtext-extras ########"
-    dir('xtext-extras') {
-      gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      pom.changePomDependencyVersion(xtextVersion, "$workspace/xtext-extras/releng/pom.xml", snapshotVersion)
-      pom.setUpstreamBranch("$workspace/xtext-extras/releng/pom.xml", branchName)
-      jenkinsfile.addUpstream("$workspace/xtext-extras/Jenkinsfile", 'xtext-core', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-extras/CBI.Jenkinsfile", 'xtext-core', branchName)
-    }
-    
-    //preparing xtext-eclipse
-    print "##### Preparing xtext-eclipse ########"
-    dir('xtext-eclipse') {
-      jenkinsfile.addUpstream("$workspace/xtext-eclipse/Jenkinsfile", 'xtext-extras', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-eclipse/CBI.Jenkinsfile", 'xtext-extras', branchName)
-    }
-    
-    //preparing xtext-web
-    print "##### Preparing xtext-web ########"
-    dir('xtext-web') {
-      gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-web/Jenkinsfile", 'xtext-extras', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-web/CBI.Jenkinsfile", 'xtext-extras', branchName)
-    }
-    
-    //preparing xtext-maven
-    print "##### Preparing xtext-maven ########"
-    dir('xtext-maven') {
-      pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", xtextVersion)
-      pom.pomVersionUpdate("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/pom.xml", xtextVersion)
-      pom.setUpstreamBranch("$workspace/xtext-maven/org.eclipse.xtext.maven.parent/pom.xml", branchName)
-      pom.setProperty("$workspace/xtext-maven/org.eclipse.xtext.maven.plugin/src/test/resources/it/generate/pom.xml", 'xtext-version', xtextVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-maven/Jenkinsfile", 'xtext-extras', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-maven/CBI.Jenkinsfile", 'xtext-extras', branchName)
-    }
-    
-    //preparing xtext-xtend
-    print "##### Preparing xtext-xtend ########"
-    dir('xtext-xtend') {
-      gradle.gradleVersionUpdate(xtextVersion, snapshotVersion)
-      pom.xtextXtendPomVersionUpdate(xtextVersion, "maven-pom.xml", snapshotVersion)
-      pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.archetype/pom.xml", snapshotVersion)
-      pom.xtextXtendPomVersionUpdate(xtextVersion, "org.eclipse.xtend.maven.plugin/pom.xml", snapshotVersion)
-      pom.xtextXtendPomVersionUpdate(xtextVersion, "releng/org.eclipse.xtend.maven.parent/pom.xml", snapshotVersion)
-      pom.setProperty("org.eclipse.xtend.maven.plugin/src/test/resources/it/pom.xml", 'xtextVersion', xtextVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-xtend/Jenkinsfile", 'xtext-eclipse', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-xtend/CBI.Jenkinsfile", 'xtext-eclipse', branchName)
-    }
+    stage('Commit & Push') {
+      steps {
+        script {
+          def git    = load 'git_functions.groovy'
+          
+          repositoryNames.split(',').each {
+            dir (it) {
+              git.printChanges()
+              git.commit("[release] version $xtextVersion")
+              git.tag(tagName)
+            }
+          }
+          if(!params.DRY_RUN){
+            sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
+              sh "echo pushing branch ${branchName}"
+              repositoryNames.split(',').each {
+                dir (it) {
+                  git.push(branchName)
+                }
+              }
+            }
+            slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", botUser: true, channel: 'xtext-builds', color: '#00FF00'
+          }
+        } // END script
+      } // END steps
+    } // END stage
+  } // END stages
 
-    //preparing xtext-umbrella
-    print "###### Preparing xtext-umbrella ########"
-    dir('xtext-umbrella') {
-      pom.pomZipVersionUpdate(xtextVersion, "releng/org.eclipse.xtext.sdk.p2-repository/pom.xml", snapshotVersion)
-      jenkinsfile.addUpstream("$workspace/xtext-umbrella/Jenkinsfile", 'xtext-xtend', branchName)
-      jenkinsfile.addDeclarativeUpstream("$workspace/xtext-umbrella/CBI.Jenkinsfile", 'xtext-xtend', branchName)
-    }
-  }
-
-
-  stage('Commit & Push') {
-    def git    = load 'git_functions.groovy'
-    
-    repositoryNames.each {
-      git.getGitChanges(it)
-      git.commitGitChanges(it, xtextVersion, "[release] version")
-      git.tagGit(it, tagName)
-    }
-    if(!params.DRY_RUN){
-      sshagent([CREDENTIAL_ID_GENIE_XTEXT_GITHUB]) {
-        sh "echo pushing branch ${branchName}"
-        repositoryNames.each {
-          git.pushGitChanges(it, branchName)
-        }
-      }
-      slackSend message: "RELEASE BRANCH '${branchName}' PREPARED.", botUser: true, channel: 'xtext-builds', color: '#00FF00'
-    }
-    
-  }
-}
-
+} // END pipeline
