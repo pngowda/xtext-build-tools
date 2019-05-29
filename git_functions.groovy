@@ -19,61 +19,33 @@ def boolean pull(branch, remote='origin') {
 }
 
 
-def commit(path, message, gitName='genie.xtext', gitEmail='genie.xtext@git.eclipse.org') {
+def commit(message, gitName='genie.xtext', gitEmail='genie.xtext@git.eclipse.org') {
     def git_cmd
-    dir(path) {
-        print sh(
-            script: 'git add -A',
-            returnStdout: true
-        )
-        // return status, but ignore
-        sh(
-            script: "git -c user.email='${gitEmail}' -c user.name='${gitName}' commit -a -m '**** TEST TEST ${message}\n\nSigned-off-by: ${gitName} <${gitEmail}>'",
-            returnStatus: true
-        )
+    print sh(
+        script: 'git add -A',
+        returnStdout: true
+    )
+    // return status, but ignore
+    sh(
+        script: "git commit -a -m '${message}\n\nSigned-off-by: ${gitName} <${gitEmail}>'",
+        returnStatus: true
+    )
 
-        print sh(
-             script: "git show --name-only HEAD",
-                 returnStdout: true
-             )
-        
-    }
+    print sh(
+            script: "git show --name-only HEAD",
+                returnStdout: true
+            )
     
     return git_cmd
 }
 
-def commitGitChanges(path, xtext_version, message, gitEmail='genie.xtext@git.eclipse.org', gitName='genie.xtext') {
-    def git_cmd
-    dir(path) {
-        print sh(
-            script: 'git add -A',
-            returnStdout: true
-        )
-        // return status, but ignore
-        sh(
-            script: "git commit -a -m '${message} ${xtext_version}'",
-            returnStatus: true
-        )
-        print sh("git diff-index --quiet HEAD || git commit -m '${message} ${xtext_version}'")
 
-        print sh(
-             script: "git show --name-only HEAD",
-                 returnStdout: true
-             )
-    }
-    
-    return git_cmd
-}
-
-def getGitChanges(path) {
-    dir(path) {
-      git_changes = sh (
-          script: 'git show --name-only HEAD',
-          returnStdout: true
-      ).trim()
-    }
+def void printChanges() {
+    git_changes = sh (
+        script: 'git show --name-only HEAD',
+        returnStdout: true
+    ).trim()
     print git_changes
-    return git_changes
 }
 
 
@@ -88,35 +60,31 @@ def getGitRemote(name = '', type = 'fetch') {
 }
 
 
-def tagGit(path, tagName) {
+def tag(tagName) {
     def git_cmd
-    dir(path) {
-        git_cmd = sh (
-            script: "git tag --force -a ${tagName} -m 'release ${tagName}'",
-            returnStdout: true
-        ).trim()
-    }
+    git_cmd = sh (
+        script: "git tag --force -a ${tagName} -m 'release ${tagName}'",
+        returnStdout: true
+    ).trim()
     return git_cmd
-
 }
 
-def pushGitChanges(path, branch, openPR=false) {
-    dir(path) {
-        def rc = sh (
-            script: "git push --force --tags origin ${branch}",
-            returnStatus: true
+
+def push(branch, openPR=false) {
+    def rc = sh (
+        script: "git push --force --tags origin ${branch}",
+        returnStatus: true
+    )
+    /*
+    if (rc == 0 && openPR) {
+        def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
+        sh(
+        script: "hub pull-request -m '**** TEST TEST ${message}'",
+        returnStatus: true
         )
-        /*
-        if (rc == 0 && openPR) {
-          def message = sh (script: "git log -1 --pretty='format:%s'", returnStdout: true)
-          sh(
-            script: "hub pull-request -m '**** TEST TEST ${message}'",
-            returnStatus: true
-          )
-        }
-        */
-        return rc
     }
+    */
+    return rc
 }
 
 def getGitCommit() {
@@ -127,7 +95,7 @@ def getGitCommit() {
     return git_commit
 }
 
-def gitResetHard() {
+def resetHard() {
     def git_cmd
       git_cmd = sh (
           script: 'git reset --hard',

@@ -11,14 +11,8 @@ def changePomDependencyVersion(xtext_version, pomFile, snapshot_version) {
   writeXML (pom, pomFile)
 }
 
-def setUpstreamBranch (pomFile, branchName) {
-  def pom = readXML (pomFile)
-  pom.properties.upstreamBranch = branchName
-  writeXML (pom, pomFile)
-}
-
 // TODO Move to some XML Utility file
-def readXML (xmlFile) {
+def readXML (String xmlFile) {
   curdir = new File('.')
   println "XML file to process: ${curdir.absolutePath} ${xmlFile}"
   def xml = new XmlSlurper( false, false ).parseText(new File(xmlFile).getText())
@@ -47,30 +41,24 @@ def pomVersionUpdate(pomFile, xtext_version) {
   writeXML (pom, pomFile)
 }
 
-def setProperty (pomFile, propertyName, propertyValue) {
-  def update_cmd
-  update_cmd = sh (
-    script: "sed -i -e \"s?<${propertyName}>.*</${propertyName}>?<${propertyName}>${propertyValue}</${propertyName}>?g\" ${pomFile}",
-    returnStdout: true
-  ).trim()
-  return update_cmd
+def setProperty (String pomFile, propertyName, propertyValue) {
+  println ("Set property $propertyName")
+  def pom = readXML (pomFile)
+  pom.properties.'*'.find { node -> node.name() == propertyName }.replaceBody(propertyValue)
+  writeXML (pom, pomFile)
+}
+
+// just for debugging with groovysh
+def setProperty2 (pom, propertyName, propertyValue) {
+  println ("Set property $propertyName")
+  pom.properties.'*'.find { node -> node.name() == propertyName }.replaceBody(propertyValue)
+  println(XmlUtil.serialize(pom))
 }
 
 def pomZipVersionUpdate(xtext_version, pomFile,snapshot_version) {
-  def update_cmd
-  update_cmd = sh (
-    script: "sed -i -r 's/tofile=(.*)repository-${snapshot_version}.zip/tofile=\\1repository-${xtext_version}.zip/g\' ${pomFile}",
-    returnStdout: true
-  ).trim()
-  return update_cmd
+  def file = new File(pomFile)
+  def newContent = file.text.replaceFirst("tofile=(.*)repository-.+\\.zip", "tofile=\$1repository-${xtext_version}.zip")
+  file.write(newContent)
 }
 
-def xtextXtendPomVersionUpdate(xtext_version, pomFile, snapshot_version) {
-  def update_cmd
-  update_cmd = sh (
-    script: "sed -i -e \"s/${snapshot_version}/${xtext_version}/g\" ${pomFile}",
-    returnStdout: true
-  ).trim()
-  return update_cmd
-}
 return this
